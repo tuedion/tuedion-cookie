@@ -1,0 +1,751 @@
+/**
+ * Tuedion Cookie — Frontend CSS Layer
+ * Ensures proper modal layering, accessibility, and theme compatibility.
+ */
+
+:root {
+    --cc-z-index: 2147483640;
+}
+
+#cc-main {
+    position: fixed !important;
+    z-index: var(--cc-z-index) !important;
+}
+
+/* Ensure focus outline is visible for accessibility */
+#cc-main button:focus-visible,
+#cc-main a:focus-visible {
+    outline: 2px solid #3b82f6 !important;
+    outline-offset: 2px !important;
+}
+
+/* ==========================================================================
+   Persistent Privacy Trigger Styles
+   ========================================================================== */
+
+.tdcc-trigger-wrapper {
+    position: fixed;
+    z-index: 2147483630;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.25s;
+}
+
+.tdcc-trigger-wrapper.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.tdcc-trigger-wrapper.is-modal-open {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* Corner Positions (Desktop) */
+.tdcc-trigger-wrapper.tdcc-pos-bottom-left {
+    bottom: var(--tdcc-trig-y, 20px);
+    left: var(--tdcc-trig-x, 20px);
+}
+
+.tdcc-trigger-wrapper.tdcc-pos-bottom-right {
+    bottom: var(--tdcc-trig-y, 20px);
+    right: var(--tdcc-trig-x, 20px);
+}
+
+.tdcc-trigger-wrapper.tdcc-pos-top-left {
+    top: var(--tdcc-trig-y, 20px);
+    left: var(--tdcc-trig-x, 20px);
+}
+
+.tdcc-trigger-wrapper.tdcc-pos-top-right {
+    top: var(--tdcc-trig-y, 20px);
+    right: var(--tdcc-trig-x, 20px);
+}
+
+/* Trigger Button */
+.tdcc-persistent-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 8px 16px;
+    background-color: #ffffff;
+    color: #0f172a;
+    border: 1px solid #cbd5e1;
+    border-radius: 9999px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.tdcc-persistent-trigger:hover {
+    background-color: #f8fafc;
+    border-color: #94a3b8;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.tdcc-persistent-trigger:active {
+    transform: translateY(0);
+}
+
+.tdcc-persistent-trigger:focus-visible {
+    outline: 2px solid #2563eb !important;
+    outline-offset: 3px !important;
+}
+
+.tdcc-persistent-trigger.tdcc-mode-icon {
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.tdcc-trigger-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #dc2626;
+}
+
+.tdcc-trigger-svg {
+    display: block;
+}
+
+/* Mobile Responsiveness & Safe Area Inset */
+@media (max-width: 768px) {
+    .tdcc-trigger-wrapper.tdcc-mob-pos-bottom-left {
+        top: auto;
+        right: auto;
+        bottom: calc(var(--tdcc-trig-mob-y, 16px) + env(safe-area-inset-bottom, 0px));
+        left: var(--tdcc-trig-mob-x, 16px);
+    }
+
+    .tdcc-trigger-wrapper.tdcc-mob-pos-bottom-right {
+        top: auto;
+        left: auto;
+        bottom: calc(var(--tdcc-trig-mob-y, 16px) + env(safe-area-inset-bottom, 0px));
+        right: var(--tdcc-trig-mob-x, 16px);
+    }
+
+    .tdcc-trigger-wrapper.tdcc-mob-pos-top-left {
+        bottom: auto;
+        right: auto;
+        top: var(--tdcc-trig-mob-y, 16px);
+        left: var(--tdcc-trig-mob-x, 16px);
+    }
+
+    .tdcc-trigger-wrapper.tdcc-mob-pos-top-right {
+        bottom: auto;
+        left: auto;
+        top: var(--tdcc-trig-mob-y, 16px);
+        right: var(--tdcc-trig-mob-x, 16px);
+    }
+
+    .tdcc-persistent-trigger {
+        min-height: 48px;
+        min-width: 48px;
+    }
+}
+
+/* ==========================================================================
+   Iframe Enforcement & Consent Placeholders
+   ========================================================================== */
+
+.tdcc-iframe-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    min-height: 280px;
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #0f172a;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.tdcc-iframe-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    background-color: #0f172a;
+    color: #f8fafc;
+    z-index: 2;
+}
+
+.tdcc-placeholder-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+}
+
+.tdcc-placeholder-icon {
+    width: 16px;
+    height: 16px;
+    color: #60a5fa;
+}
+
+.tdcc-placeholder-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #cbd5e1;
+    max-width: 460px;
+    margin: 0 0 1.25rem 0;
+}
+
+.tdcc-placeholder-text strong {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.tdcc-placeholder-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.tdcc-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    border: 1px solid transparent;
+    text-decoration: none;
+    user-select: none;
+}
+
+.tdcc-btn-primary {
+    background-color: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+}
+
+.tdcc-btn-primary:hover {
+    background-color: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+.tdcc-btn-primary:focus-visible {
+    outline: 2px solid #60a5fa !important;
+    outline-offset: 2px !important;
+}
+
+.tdcc-btn-secondary {
+    background-color: transparent;
+    color: #cbd5e1;
+    border-color: #475569;
+}
+
+.tdcc-btn-secondary:hover {
+    background-color: #1e293b;
+    color: #ffffff;
+    border-color: #64748b;
+}
+
+.tdcc-btn-secondary:focus-visible {
+    outline: 2px solid #94a3b8 !important;
+    outline-offset: 2px !important;
+}
+
+.tdcc-iframe-wrapper iframe.tdcc-blocked-iframe {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+}
+
+/* ==========================================================================
+   Elementor Video & IframeManager Compatibility Layer
+   ========================================================================== */
+
+/* 1. Ensure div[data-service] fills Elementor, Gutenberg, and theme wrappers */
+.elementor-wrapper .tdcc-iframe-wrapper,
+.elementor-widget-video .tdcc-iframe-wrapper,
+.elementor-video-wrapper .tdcc-iframe-wrapper,
+.elementor-fit-aspect-ratio .tdcc-iframe-wrapper,
+.elementor-wrapper div[data-service],
+.elementor-widget-video div[data-service],
+.elementor-video-wrapper div[data-service],
+.elementor-fit-aspect-ratio div[data-service],
+div[data-service].elementor-video,
+div[data-service].tdcc-managed {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    z-index: 2 !important;
+    overflow: hidden !important;
+}
+
+/* 2. Suppress iframemanager :before padding inside aspect-ratio containers */
+.elementor-wrapper div[data-service]:before,
+.elementor-widget-video div[data-service]:before,
+.elementor-video-wrapper div[data-service]:before,
+div[data-service][data-widget]:before,
+div[data-service].elementor-video:before {
+    display: none !important;
+    padding-top: 0 !important;
+    height: 0 !important;
+}
+
+/* 3. Container for placeholder card (.cll) */
+div[data-service] .cll {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    z-index: 2 !important;
+}
+
+/* 4. Content layer (.c-nt) - perfectly centered */
+div[data-service] .cll .c-nt {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 3 !important;
+}
+
+div[data-service] .cll .c-n-c {
+    width: 100% !important;
+    max-width: 520px !important;
+    padding: 24px 20px !important;
+    margin: auto !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    z-index: 3 !important;
+}
+
+div[data-service] .cll .c-t-cn {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    padding: 0 10px !important;
+    z-index: 3 !important;
+}
+
+div[data-service] .cll .cc-text {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+/* Title */
+div[data-service] .cll .c-tl {
+    display: block !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 1.15rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    margin-bottom: 8px !important;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Notice text */
+div[data-service] .cll .c-n-t {
+    display: block !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 0.92rem !important;
+    line-height: 1.55 !important;
+    font-weight: 500 !important;
+    color: #ffffff !important;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8) !important;
+    margin: 0 auto 16px auto !important;
+    max-width: 440px !important;
+    text-align: center !important;
+}
+
+/* Buttons group */
+div[data-service] .cll .c-n-a {
+    display: flex !important;
+    gap: 10px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    margin-top: 4px !important;
+}
+
+/* Primary unlock button */
+div[data-service] .cll .c-l-b {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #0066db !important;
+    background: var(--im-btn-bg, #0066db) !important;
+    color: #ffffff !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    padding: 10px 20px !important;
+    border-radius: 6px !important;
+    border: none !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 12px rgba(0, 102, 219, 0.4) !important;
+    transition: all 0.2s ease !important;
+    text-decoration: none !important;
+    line-height: 1.2 !important;
+}
+
+div[data-service] .cll .c-l-b:hover {
+    background: #0950a1 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 16px rgba(0, 102, 219, 0.6) !important;
+}
+
+/* Secondary allow-all button */
+div[data-service] .cll .c-la-b {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    color: #ffffff !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    padding: 10px 18px !important;
+    border-radius: 6px !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    text-decoration: none !important;
+    line-height: 1.2 !important;
+}
+
+div[data-service] .cll .c-la-b:hover {
+    background: rgba(255, 255, 255, 0.35) !important;
+    border-color: rgba(255, 255, 255, 0.7) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Thumbnail and gradient overlay */
+div[data-service] .cll .c-bg {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(180deg, rgba(11, 16, 22, 0.65) 0%, rgba(11, 16, 22, 0.9) 100%) !important;
+    z-index: 1 !important;
+    opacity: 1 !important;
+}
+
+div[data-service] .cll .c-bg-i {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    opacity: 0.75 !important;
+}
+
+/* ==========================================================================
+   Long-Copy & Hyphenation Robustness (e.g. German, Dutch compound words)
+   ========================================================================== */
+
+#cc-main .cm__btn,
+#cc-main .pm__btn,
+.tdcc-btn,
+.tdcc-persistent-trigger {
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+#cc-main .cm__title,
+#cc-main .pm__title,
+#cc-main .pm__section-title {
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* ==========================================================================
+   RTL (Right-to-Left) Styles (Arabic, Hebrew)
+   ========================================================================== */
+
+[dir="rtl"] #cc-main,
+html[dir="rtl"] #cc-main,
+body.rtl #cc-main {
+    direction: rtl;
+    text-align: right;
+}
+
+[dir="rtl"] #cc-main .cm__btn-group,
+[dir="rtl"] #cc-main .pm__btn-group {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .tdcc-persistent-trigger {
+    direction: rtl;
+}
+
+/* RTL Position Mirroring for Persistent Trigger */
+[dir="rtl"] .tdcc-trigger-wrapper.tdcc-pos-bottom-left {
+    left: auto;
+    right: var(--tdcc-trig-x, 20px);
+}
+
+[dir="rtl"] .tdcc-trigger-wrapper.tdcc-pos-bottom-right {
+    right: auto;
+    left: var(--tdcc-trig-x, 20px);
+}
+
+[dir="rtl"] .tdcc-trigger-wrapper.tdcc-pos-top-left {
+    left: auto;
+    right: var(--tdcc-trig-x, 20px);
+}
+
+[dir="rtl"] .tdcc-trigger-wrapper.tdcc-pos-top-right {
+    right: auto;
+    left: var(--tdcc-trig-x, 20px);
+}
+
+@media (max-width: 768px) {
+    [dir="rtl"] .tdcc-trigger-wrapper.tdcc-mob-pos-bottom-left {
+        left: auto;
+        right: var(--tdcc-trig-mob-x, 16px);
+    }
+
+    [dir="rtl"] .tdcc-trigger-wrapper.tdcc-mob-pos-bottom-right {
+        right: auto;
+        left: var(--tdcc-trig-mob-x, 16px);
+    }
+
+    [dir="rtl"] .tdcc-trigger-wrapper.tdcc-mob-pos-top-left {
+        left: auto;
+        right: var(--tdcc-trig-mob-x, 16px);
+    }
+
+    [dir="rtl"] .tdcc-trigger-wrapper.tdcc-mob-pos-top-right {
+        right: auto;
+        left: var(--tdcc-trig-mob-x, 16px);
+    }
+}
+
+/* ==========================================================================
+   Cookie Declaration & Policy Page Shortcode Styles
+   ========================================================================== */
+
+.tdcc-declaration-wrap {
+    margin: 28px 0;
+    font-family: inherit;
+    color: #1e293b;
+}
+
+.tdcc-declaration-intro p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #475569;
+    margin-bottom: 24px;
+}
+
+.tdcc-declaration-category {
+    margin-bottom: 32px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.tdcc-declaration-cat-header {
+    margin-bottom: 16px;
+}
+
+.tdcc-declaration-cat-title {
+    margin: 0 0 6px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.tdcc-declaration-cat-desc {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #64748b;
+}
+
+.tdcc-table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.tdcc-declaration-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    text-align: left;
+    margin: 0 !important;
+    background: #ffffff;
+}
+
+.tdcc-declaration-table th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+}
+
+.tdcc-declaration-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    vertical-align: top;
+    line-height: 1.5;
+}
+
+.tdcc-declaration-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tdcc-declaration-table tbody tr:hover td {
+    background-color: #f8fafc;
+}
+
+.tdcc-cell-name code {
+    display: inline-block;
+    padding: 2px 6px;
+    background-color: #f1f5f9;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    color: #0f172a;
+}
+
+.tdcc-badge-duration {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 9999px;
+    white-space: nowrap;
+}
+
+.tdcc-declaration-actions {
+    margin-top: 24px;
+    text-align: left;
+}
+
+.tdcc-declaration-manage-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: #2563eb;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.tdcc-declaration-manage-btn:hover {
+    background-color: #1d4ed8;
+    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+    transform: translateY(-1px);
+}
+
+.tdcc-open-preferences-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+    font-family: inherit;
+    color: #2563eb;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.tdcc-open-preferences-link:hover {
+    color: #1d4ed8;
+}
+
+@media (max-width: 640px) {
+    .tdcc-declaration-category {
+        padding: 16px;
+    }
+    .tdcc-declaration-table th,
+    .tdcc-declaration-table td {
+        padding: 10px 12px;
+    }
+}
+
+
+

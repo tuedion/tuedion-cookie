@@ -1,0 +1,2538 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Tuedion Cookie 1.3.1\n"
+"Report-Msgid-Bugs-To: https://tuedion.com\n"
+"POT-Creation-Date: 2026-09-17 14:05+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Tuedion Team <support@tuedion.com>\n"
+"Language-Team: English <support@tuedion.com>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: tuedion-cookie\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: includes/Admin/Pages/ExperiencePage.php:358
+msgid "\"Accept All\" and \"Save Preferences\" primary CTA buttons."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:378
+msgid "\"Reject Non-Essential\" and \"Manage Preferences\" buttons."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:335
+#, php-format
+msgid "%d detected services have been synchronized to your active cookie preferences!"
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:830
+#, php-format
+msgid "%d services synchronized to cookie preferences."
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:206
+#, php-format
+msgid "%s records"
+msgstr ""
+
+#: includes/Admin/Assets.php:68
+#: includes/Admin/Pages/CategoriesPage.php:898
+msgid "+ Add Service"
+msgstr ""
+
+#: includes/Admin/Assets.php:69
+#: includes/Admin/Pages/CategoriesPage.php:819
+msgid "+ Add to Preferences"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:290
+msgid "1. Base Surfaces & Typography"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:361
+msgid "1. Register Custom Service Recipe via PHP:"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:606
+msgid "12 Engines Supported"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:330
+msgid "12 performance plugins are actively monitored to prevent delayed JavaScript execution or script merging from breaking cookie consent."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:348
+msgid "2. Interactive Buttons & Controls"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:374
+msgid "2. Map Enqueued Script to Category via Filter:"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:382
+msgid "3. Map Embedded Iframe to Category via Filter:"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:390
+msgid "4. JavaScript Client-side Event Bridge Listeners:"
+msgstr ""
+
+#: includes/Admin/Menu.php:112
+msgid "About & Licenses"
+msgstr ""
+
+#: includes/Admin/Menu.php:111
+#: includes/Admin/Pages/AboutPage.php:21
+msgid "About & Licenses — Tuedion Cookie"
+msgstr ""
+
+#: includes/Admin/Pages/AboutPage.php:28
+msgid "About Tuedion Cookie"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:142
+msgid "Accept All"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:164
+#: includes/Admin/Pages/DiagnosticsPage.php:152
+msgid "Accepted Categories"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:493
+msgid "Accessible Label (Aria)"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:842
+#: includes/Admin/Pages/ConsentLogsPage.php:163
+msgid "Action"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:412
+#: includes/Admin/Pages/CategoriesPage.php:487
+msgid "Actions"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:593
+msgid "Active & Guarded"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:565
+#: includes/Admin/Pages/CategoriesPage.php:579
+msgid "Active & Protected"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:113
+msgid "Active (Minimal/Cleanable)"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:173
+msgid "Active (Native CustomEvent + jQuery trigger for maximum compatibility)"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:29
+msgid "Active (Publish)"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:143
+msgid "Active (Published)"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:121
+msgid "Active Caching Engine"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:315
+msgid "Active Language Packs"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:765
+msgid "Active Service"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:695
+msgid "Active Services on Site"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:275
+msgid "Active Theme Preset:"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:398
+msgid "Active category toggle switch and floating cookie icon color."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:858
+msgid "Active on Site"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:541
+msgid "Add Service"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:513
+msgid "Add Tracking Service"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:447
+msgid "Add or Update Category"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:532
+msgid "Add this attribute to any link or button in your theme, footer or Elementor:"
+msgstr ""
+
+#: includes/Admin/Assets.php:58
+msgid "Adding..."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:568
+msgid "Ads Data Redaction"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:729
+msgid "Advanced & Data Governance"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:261
+msgid "Advanced & Scripts"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:457
+msgid "After Visitor Choice (Standard — only appears once banner is answered)"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:141
+msgid "All Actions"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:730
+msgid "All Supported Presets"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:54
+msgid "All consent log records have been permanently purged."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:479
+msgid "Allows avoiding collision with chat widgets (WhatsApp, Tawk.to, etc.) on mobile viewports."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:615
+msgid "Always Granted"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:460
+msgid "Always Visible (Persistent from first page load)"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:135
+msgid "Always enabled, required for page functioning (read-only)."
+msgstr ""
+
+#: includes/Admin/Assets.php:57
+msgid "An error occurred. Please try again."
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:136
+msgid "Analytics & Performance:"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:599
+msgid "Anti-spam verification and CAPTCHA challenges guarded with accessible unlock notices to prevent silent form failures."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:434
+msgid "Are you sure you want to delete this category?"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:227
+msgid "Are you sure you want to permanently delete all consent records? This action cannot be undone."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:597
+msgid "Assigned Category"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:536
+msgid "Associated Cookie Names (comma-separated):"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:486
+msgid "Associated Cookies"
+msgstr ""
+
+#: includes/Settings/Validator.php:179
+msgid "At least one strictly necessary category (readOnly) must be configured."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:664
+msgid "Audit Viewer"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:228
+msgid "Audit of all scripts registered in the WordPress execution pipeline and their consent enforcement status."
+msgstr ""
+
+#: includes/Admin/Pages/AboutPage.php:51
+msgid "Author"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:840
+msgid "Auto-Cleared Cookie Patterns"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:685
+msgid "Automated Scanning"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:679
+msgid "Automatically add all detected services to your visitor cookie preferences"
+msgstr ""
+
+#: includes/Diagnostics/CacheInspector.php:61
+msgid "Autoptimize is active: Script exclude filter autoptimize_filter_js_exclude is hooked."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:501
+msgid "Available Parameters & Categories"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:472
+msgid "Available Parameters & Examples"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:126
+#: includes/Admin/Pages/WizardPage.php:142
+#: includes/Admin/Pages/WizardPage.php:168
+#: includes/Admin/Pages/WizardPage.php:178
+msgid "Back"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:589
+msgid "Banner"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:167
+msgid "Banner Editor"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:196
+msgid "Bar Inline"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:325
+msgid "Borders & Separators"
+msgstr ""
+
+#: includes/Integrations/Google/SiteKitDetector.php:71
+msgid "Both Tuedion Cookie and Google Site Kit have Google Consent Mode enabled. To avoid duplicate default states and timing conflicts, disable Consent Mode in Google Site Kit settings (Site Kit > Settings > Analytics > Consent Mode)."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:208
+msgid "Bottom Center"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:207
+#: includes/Admin/Pages/ExperiencePage.php:469
+msgid "Bottom Left"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:437
+msgid "Bottom Left (Standard)"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:438
+#: includes/Admin/Pages/ExperiencePage.php:470
+msgid "Bottom Right"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:206
+msgid "Bottom Right (Recommended)"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:154
+msgid "Bottom corner dialog. Unobtrusive and clear."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:194
+msgid "Box Inline"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:193
+msgid "Box Wide"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:102
+msgid "Built on Orest Bida Vanilla CookieConsent (v3.1.0):"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:164
+msgid "Bundled Engine"
+msgstr ""
+
+#: includes/Admin/Pages/AboutPage.php:55
+msgid "Bundled Version"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:216
+msgid "Buttons Configuration"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:91
+msgid "Cache & Optimization Hints"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:328
+msgid "Cache Engine Compatibility & Minification Hints"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:571
+msgid "Cart session & checkout cookies are strictly protected under necessary category with zero checkout disruption."
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:95
+msgid "Categories"
+msgstr ""
+
+#: includes/Admin/Menu.php:72
+msgid "Categories & Services"
+msgstr ""
+
+#: includes/Admin/Menu.php:71
+msgid "Categories & Services — Tuedion Cookie"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:385
+msgid "Categories & Tracking Services Manager"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:256
+msgid "Categories have been reset to their default values."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:766
+#: includes/Admin/Pages/CategoriesPage.php:921
+msgid "Category"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:335
+msgid "Category Card & Footer Surface"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:459
+msgid "Category ID (slug):"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:138
+msgid "Category Table"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:241
+msgid "Category and its attached services removed successfully."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:215
+msgid "Category saved successfully."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:525
+msgid "Category:"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:247
+msgid "Centered Dialog (Box)"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:164
+msgid "Centered floating bubble with modern rounded accents."
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:146
+msgid "Change / Revoke"
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:243
+msgid "Change your consent"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:149
+msgid "Choose Banner Layout"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:153
+msgid "Classic Box (Recommended)"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:192
+msgid "Classic Box (Standard)"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:235
+msgid "Classification"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:197
+msgid "Clean Cloud (Floating)"
+msgstr ""
+
+#: includes/Settings/ThemeManager.php:46
+msgid "Clean Light"
+msgstr ""
+
+#: includes/Diagnostics/AdminBarDebugger.php:85
+msgid "Clear Consent Cookie & Reload"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:198
+msgid "Cloud Inline"
+msgstr ""
+
+#: includes/Diagnostics/CacheInspector.php:97
+msgid "Cloudflare CDN detected: Ensure Rocket Loader does not alter consent scripts. Tuedion Cookie applies data-cfasync=\"false\" to all consent tags."
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:177
+msgid "Compiled Runtime Configuration (window.tuedionCookieConfig)"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:764
+msgid "Completely remove all settings and database tables when plugin is uninstalled."
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:115
+msgid "Compliance Page Shortcodes"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:446
+msgid "Compliance Shortcodes & Policy Page Integration"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:88
+msgid "Config Inspector"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:99
+msgid "Configuration Status"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:104
+msgid "Configuration Warnings"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:121
+msgid "Configuration published successfully and is now active on frontend."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:664
+msgid "Configure Scheduled Scans & Email Alerts"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:353
+msgid "Configure links and display titles for your Privacy Policy and Terms & Conditions. These links and titles are automatically injected into the consent banner and preferences modal footer."
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:61
+msgid "Configure your consent banner, customize preferences center modal, and test responsive viewports (Desktop, Tablet, Mobile) in an isolated sandbox before publishing to visitors."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:403
+msgid "Configured Categories"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:98
+msgid "Configured consent categories (e.g. Necessary, Analytics, Marketing)."
+msgstr ""
+
+#: includes/Admin/Assets.php:60
+#: includes/Admin/Pages/CategoriesPage.php:812
+msgid "Configured in Preferences"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:169
+msgid "Configured, locked to read-only, cannot be unselected by visitors."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:185
+msgid "Consent Banner Appearance"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:79
+msgid "Consent Engine Status"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:100
+msgid "Consent Logging is Currently OFF:"
+msgstr ""
+
+#: includes/Admin/Menu.php:92
+msgid "Consent Logs"
+msgstr ""
+
+#: includes/Admin/Menu.php:91
+msgid "Consent Logs — Tuedion Cookie"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:636
+msgid "Consent Records & Audit Logging (GDPR Art. 7(1))"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:256
+msgid "Consent Records (Audit)"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:87
+#: includes/Admin/Pages/DiagnosticsPage.php:109
+msgid "Consent Revision"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:507
+msgid "Consent Revision & Governance"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:162
+#: includes/Admin/Pages/DiagnosticsPage.php:148
+msgid "Consent UUID"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:300
+msgid "Consent banner and modal backdrop surface."
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:52
+msgid "Consent is always reversible. You can reopen your preferences at any time by clicking the persistent Cookie Preferences button located at the corner of your screen."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:410
+msgid "Consent is reversible. This button stays accessible after visitors make a choice, allowing them to re-open preferences at any time."
+msgstr ""
+
+#: includes/Diagnostics/AdminBarDebugger.php:38
+#, php-format
+msgid "Consent: %s"
+msgstr ""
+
+#: includes/Diagnostics/AdminBarDebugger.php:39
+msgid "Consent: Not Set / Pending"
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:522
+msgid "Contains a unique code for each customer to find cart data in the database."
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:82
+msgid "Controls whether the consent banner and script management are active on the public site."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:549
+msgid "Cookie / Imprint Policy URL"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:543
+msgid "Cookie / Terms Title"
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:86
+msgid "Cookie Consent Records"
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:47
+msgid "Cookie Consent and Privacy Choices"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:919
+msgid "Cookie Identifier"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:768
+msgid "Cookie Patterns"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:141
+msgid "Cookie Present (cc_cookie)"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:138
+msgid "Cookie Set Status"
+msgstr ""
+
+#: includes/Consent/CookieTableBuilder.php:680
+#, php-format
+msgid "Cookie used by %s."
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:131
+#: includes/Admin/Pages/DashboardPage.php:141
+#: includes/Admin/Pages/DashboardPage.php:151
+#: includes/Admin/Pages/SettingsPage.php:466
+#: includes/Admin/Pages/SettingsPage.php:495
+#: includes/Admin/Pages/SettingsPage.php:525
+msgid "Copied!"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:132
+#: includes/Admin/Pages/DashboardPage.php:142
+#: includes/Admin/Pages/DashboardPage.php:152
+#: includes/Admin/Pages/SettingsPage.php:468
+#: includes/Admin/Pages/SettingsPage.php:497
+#: includes/Admin/Pages/SettingsPage.php:527
+msgid "Copy"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:255
+msgid "Core / Library (Exempt)"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:445
+msgid "Corner Offsets (px)"
+msgstr ""
+
+#: includes/Settings/ThemeManager.php:76
+msgid "Corporate Navy"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:509
+msgid "Current Published Revision:"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:134
+msgid "Current Visitor Consent State (Active Browser Session)"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:177
+#, php-format
+msgid "Current locale: %s (WPML, Polylang and Core hooks active)"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:144
+msgid "Custom / Preferences"
+msgstr ""
+
+#: includes/Settings/ThemeManager.php:121
+msgid "Custom Theme"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:628
+#: includes/Admin/Pages/SettingsPage.php:699
+msgid "Daily"
+msgstr ""
+
+#: includes/Admin/Menu.php:52
+msgid "Dashboard"
+msgstr ""
+
+#: includes/Admin/Menu.php:51
+msgid "Dashboard — Tuedion Cookie"
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:90
+msgid "Data Architecture"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:223
+msgid "Data Retention & Purge Zone"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:656
+msgid "Data Retention (Days)"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:167
+msgid "Date (UTC)"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:660
+msgid "Days before logs are automatically pruned by daily cleanup cron (recommended: 90 days)."
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:75
+msgid "Deep runtime inspection, script tracker audits, cache compatibility, and developer API references."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:839
+msgid "Default Category"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:294
+msgid "Default Pre-Consent State"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:360
+msgid "Default Privacy Policy Title"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:368
+msgid "Default Privacy Policy URL"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:539
+msgid "Default Privacy Policy URL for visitors."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:379
+msgid "Default Terms & Conditions Title"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:387
+msgid "Default Terms & Conditions URL"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:495
+msgid "Default: Cookie Preferences"
+msgstr ""
+
+#: includes/Admin/Assets.php:64
+#: includes/Admin/Pages/CategoriesPage.php:435
+#: includes/Admin/Pages/CategoriesPage.php:504
+msgid "Delete"
+msgstr ""
+
+#: includes/Admin/Assets.php:63
+#: includes/Admin/Pages/CategoriesPage.php:503
+msgid "Delete this service?"
+msgstr ""
+
+#: includes/Admin/Assets.php:61
+msgid "Deleting..."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:409
+#: includes/Admin/Pages/CategoriesPage.php:841
+msgid "Description"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:924
+msgid "Description / Purpose"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:467
+msgid "Description / Purpose:"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:320
+msgid "Descriptions, cookie tables, and secondary notes."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:268
+msgid "Design Presets & Complete Color Customization"
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:597
+msgid "Detected HTTP Cookie"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:307
+msgid "Detected Translation Engine"
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:462
+#: includes/Diagnostics/CookieScanner.php:463
+#, php-format
+msgid "Detected in inline page script: %s"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:724
+msgid "Detected on This Site"
+msgstr ""
+
+#: includes/Admin/Assets.php:66
+msgid "Detected services synchronized to preferences."
+msgstr ""
+
+#: includes/Consent/CookieTableBuilder.php:731
+msgid "Detected tracking cookie."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:767
+msgid "Detection Origin / Source"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:92
+msgid "Developer Hooks & API"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:356
+msgid "Developer Platform & Custom Recipe API"
+msgstr ""
+
+#: includes/Admin/Menu.php:102
+msgid "Diagnostics"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:772
+msgid "Diagnostics / Debug"
+msgstr ""
+
+#: includes/Admin/Menu.php:101
+msgid "Diagnostics — Tuedion Cookie"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:31
+msgid "Disabled"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:285
+msgid "Disabled (Completely halted)"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:115
+msgid "Disabled (Zero DB Writes)"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:704
+#: includes/Admin/Pages/CategoriesPage.php:736
+msgid "Discovered Cookies"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:522
+msgid "Display Label:"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:424
+msgid "Display Style"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:419
+msgid "Display floating Privacy Trigger on public pages after consent"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:922
+msgid "Domain"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:80
+msgid "Download Support Report (JSON)"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:30
+msgid "Draft (Preview Only)"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:279
+msgid "Draft (Preview only in admin)"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:143
+msgid "Draft Mode"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:122
+msgid "Draft configuration saved. You can preview changes below."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:254
+msgid "Drawer Position"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:285
+msgid "Duplicate Site Kit Risk:"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:923
+msgid "Duration"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:554
+msgid "Ecosystem Adapters & Integration Catalogue"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:577
+msgid "Elementor"
+msgstr ""
+
+#: includes/Settings/ThemeManager.php:91
+msgid "Emerald Nature"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:643
+msgid "Enable Consent Logging"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:737
+msgid "Enable Deny-Before-Consent script blocking (rewrites and pauses third-party scripts)."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:550
+msgid "Enable GCM v2"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:746
+msgid "Enable Iframe & Video embed blocking (replaces YouTube, Vimeo, Google Maps with consent placeholders)."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:415
+msgid "Enable Trigger"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:689
+msgid "Enable automated background site crawl via WP-Cron."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:776
+msgid "Enable console debugging for consent lifecycle and GCM v2 events."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:282
+msgid "Enabled (Active on frontend)"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:236
+msgid "Enforced Category"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:226
+msgid "Enqueued Scripts Inventory"
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:180
+#: includes/Diagnostics/CookieScanner.php:181
+#, php-format
+msgid "Enqueued script: \"%s\""
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:199
+#: includes/Diagnostics/CookieScanner.php:200
+#, php-format
+msgid "Enqueued stylesheet: \"%s\""
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:488
+msgid "Enter URL path prefixes (one per line) where the trigger button must be hidden."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:680
+msgid "Enterprise CMPs require continuous auditing to catch unauthorized cookie drift or new trackers installed by plugins or marketing tags."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:221
+msgid "Equal Button Weight (Avoid deceptive dark patterns)"
+msgstr ""
+
+#: includes/Consent/CookieTableBuilder.php:600
+msgid "Essential system cookie."
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:172
+msgid "Event Bridge & Dual Dispatch"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:478
+msgid "Example:"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:341
+msgid "Exclusion Identifier Patterns Registered:"
+msgstr ""
+
+#: includes/Admin/Menu.php:62
+msgid "Experience & Preview"
+msgstr ""
+
+#: includes/Admin/Menu.php:61
+msgid "Experience & Preview — Tuedion Cookie"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:468
+msgid "Explain why these cookies are stored..."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:344
+msgid "Export Translations (JSON)"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:338
+msgid "Export language strings to JSON for external localization bureaus, or import custom translation overrides."
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:86
+msgid "Export to CSV"
+msgstr ""
+
+#: includes/Settings/ImportExport.php:68
+msgid "Failed to save imported settings to database."
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:149
+msgid "Filter"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:145
+msgid "First Consent"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:163
+msgid "Floating Cloud"
+msgstr ""
+
+#: includes/Diagnostics/CacheInspector.php:91
+msgid "FlyingPress is active: Delay/defer exclusions are registered."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:476
+msgid "Force a specific language (default: auto-detected)."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:591
+msgid "Form Plugins (CF7 / WPForms / GF)"
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:385
+#: includes/Diagnostics/CookieScanner.php:386
+#, php-format
+msgid "Found &lt;iframe&gt; embed on page: \"%s\""
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:357
+#: includes/Diagnostics/CookieScanner.php:358
+#, php-format
+msgid "Found &lt;script&gt; tag on page: \"%s\""
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:158
+msgid "Full Bar"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:195
+msgid "Full Bar (Edge to Edge)"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:458
+msgid "Full Cookie Declaration Table"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:128
+msgid "Full Declaration Table"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:138
+msgid "Functionality:"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:292
+msgid "GCM v2 Signal"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:588
+msgid "GCM v2 Signal to Category Mapping"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:248
+msgid "General"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:269
+msgid "General Configuration"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:521
+msgid "Generates an accessible button that opens the Cookie Preferences modal when clicked by a visitor. Meets GDPR Art. 7(3) right to withdraw consent."
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:106
+msgid "Get Started &rarr;"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:713
+msgid "Global Recipes Catalogue"
+msgstr ""
+
+#: includes/Diagnostics/AdminBarDebugger.php:96
+msgid "Go to Full Diagnostics & Report &rarr;"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:102
+msgid "Go to Settings"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:255
+msgid "Google Consent Mode v2"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:278
+msgid "Google Consent Mode v2 & Google Site Kit Diagnostics"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:542
+msgid "Google Consent Mode v2 (GCM v2)"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:596
+msgid "Google Signal"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:242
+msgid "Google Site Kit Warning:"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:90
+msgid "Google Stack & GCM v2"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:488
+msgid "Granular"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:121
+msgid "Granular Category Choice"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:106
+msgid "Granular tracking services attached to categories."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:531
+msgid "HTML Attribute Alternative:"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:207
+msgid "Handle"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:102
+msgid "Healthy & Valid"
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:959
+#, php-format
+msgid "Hello,\n"
+"\n"
+"The automated Tuedion Cookie background crawler has completed a scheduled scan on %1$s and detected %2$d new cookie(s):\n"
+"\n"
+"%3$s\n"
+"To ensure your cookie consent banner and GDPR/ePrivacy compliance declarations remain accurate, please review and synchronize these cookies in your WordPress admin panel:\n"
+"%4$s\n"
+"\n"
+"Best regards,\n"
+"Tuedion Cookie Consent Management"
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:514
+msgid "Helps WooCommerce determine when cart contents and session change."
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:103
+msgid "High performance, zero remote tracking dependencies, accessible and GDPR/ePrivacy ready."
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:49
+msgid "How We Store Your Consent"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:703
+msgid "How often the background worker analyzes live HTML and active scripts for unclassified cookies."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:407
+#: includes/Admin/Pages/ConsentLogsPage.php:161
+msgid "ID"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:650
+msgid "IP addresses are strictly anonymized using wp_privacy_anonymize_ip (raw IPs are never stored)."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:427
+msgid "Icon + Text (Recommended)"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:428
+msgid "Icon Only (Compact)"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:767
+msgid "If unchecked, your settings and configuration are preserved even if the plugin is deleted."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:742
+msgid "Iframe / Video Blocking"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:791
+msgid "Import Custom Translations"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:801
+msgid "Import JSON Translations"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:289
+msgid "In Draft mode, consent banners and scripts can be safely previewed in admin before publishing."
+msgstr ""
+
+#: includes/Admin/Assets.php:59
+#: includes/Admin/Pages/CategoriesPage.php:891
+msgid "In Preferences"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:517
+#, php-format
+msgid "Increment revision to %d on next save (Prompt existing visitors again)"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:90
+msgid "Incrementing revision automatically re-prompts visitors when privacy terms or categories change."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:554
+msgid "Inject early default consent state in <head> and dispatch dynamic updates on consent."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:340
+msgid "Inner cards in preferences modal and legal footer strip."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:448
+msgid "Integrate dynamic, real-time cookie declaration tables, category lists, or a preferences modal trigger button directly into your Privacy Policy, Cookie Policy, or custom compliance pages."
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:59
+msgid "Interactive Experience & Live Preview"
+msgstr ""
+
+#: includes/I18n/TranslationManager.php:163
+msgid "Invalid JSON format."
+msgstr ""
+
+#: includes/Settings/ImportExport.php:41
+msgid "Invalid JSON payload provided."
+msgstr ""
+
+#: includes/Settings/Validator.php:31
+#, php-format
+msgid "Invalid operation status: %s"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:133
+msgid "Invalid service identifier."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:39
+msgid "Invalid service preset identifier."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:641
+msgid "Isolated preview. No real cookies are modified."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:408
+#: includes/Admin/Pages/CategoriesPage.php:484
+msgid "Label"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:404
+msgid "Language"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:176
+msgid "Language Resolver"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:329
+msgid "Language is automatically resolved at runtime based on current page language, WPML/Polylang language switcher, or browser locale."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:397
+msgid "Language-Specific Titles & URL Overrides"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:299
+msgid "Languages & Internationalization (i18n)"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:249
+msgid "Languages & i18n"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:645
+#, php-format
+msgid "Last scan: %s (%s)"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:65
+msgid "Launch Experience & Live Editor &rarr;"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:189
+msgid "Layout Preset"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:258
+msgid "Left Slide-In"
+msgstr ""
+
+#: includes/Admin/Pages/AboutPage.php:71
+msgid "Legal Boundaries & Disclaimer"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:351
+msgid "Legal Compliance URLs & Titles (Privacy Policy & Terms)"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:250
+msgid "Legal Documents"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:522
+msgid "Legal Policy Links"
+msgstr ""
+
+#: includes/Diagnostics/CacheInspector.php:51
+msgid "LiteSpeed Cache is active: Automatic JS deferral and delay exclusions are registered."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:647
+msgid "Log minimal, anonymized proof of consent (masked IP, revision, choices, timestamp)."
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:110
+msgid "Logging Status"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:225
+msgid "Logs older than your configured retention threshold are automatically deleted by the daily cleanup cron. You can also manually purge all records immediately."
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:503
+msgid "Maintains session authentication for logged-in users."
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:71
+msgid "Manage Categories & Services"
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:143
+msgid "Manage Cookie Preferences"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:103
+msgid "Managed Services"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:245
+msgid "Managed by Recipe"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:716
+msgid "Manual Scanner"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:590
+msgid "Map the 7 standardized Google signals to your plugin consent categories."
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:293
+msgid "Mapped Category"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:137
+msgid "Marketing & Advertising:"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:166
+msgid "Masked IP"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:136
+msgid "Measures traffic and site usage (GA4, Matomo, etc.)."
+msgstr ""
+
+#: includes/Settings/ThemeManager.php:61
+msgid "Midnight Dark"
+msgstr ""
+
+#: includes/Settings/ThemeManager.php:106
+msgid "Minimal Slate"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:466
+msgid "Mobile Position & Offsets"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:295
+msgid "Modal Background"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:244
+msgid "Modal Layout"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:330
+msgid "Modal boundary borders and section divider lines."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:285
+msgid "Modifying any individual color token below automatically sets the preset to Custom."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:397
+msgid "Modifying categories or assigned services alters consent purposes. After making changes here, please visit the Experience editor to increment the revision and re-prompt existing visitors."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:630
+#: includes/Admin/Pages/SettingsPage.php:701
+msgid "Monthly"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:128
+msgid "Newest Entry"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:127
+#: includes/Admin/Pages/WizardPage.php:143
+#: includes/Admin/Pages/WizardPage.php:169
+msgid "Next &rarr;"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:752
+msgid "No Active Services Detected Yet"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:143
+msgid "No Cookie Set (Fresh Visitor / Pre-Consent)"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:174
+msgid "No consent audit logs recorded matching criteria."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:913
+msgid "No cookies mapped yet. Run a site scan to discover active cookies."
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:101
+msgid "No database writes are being performed. To log proof of consent under GDPR Art. 7(1), enable Consent Logging in Settings."
+msgstr ""
+
+#: includes/Admin/Assets.php:67
+#: includes/Admin/Pages/CategoriesPage.php:493
+msgid "No granular services defined yet. Trackers will be governed at category level."
+msgstr ""
+
+#: includes/Diagnostics/ConfigInspector.php:45
+msgid "No language translations were loaded in runtime configuration."
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:117
+msgid "No non-essential cookies or tracking scripts run until the visitor explicitly gives consent."
+msgstr ""
+
+#: includes/Diagnostics/CacheInspector.php:101
+msgid "No page caching plugins detected. Server-side caching or object caching may still be active."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:647
+msgid "No scan executed yet. Run a site scan to detect active services and cookies."
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:201
+msgid "No third-party tracking cookies are currently active on this site."
+msgstr ""
+
+#: includes/I18n/TranslationManager.php:288
+msgid "No valid language objects could be extracted."
+msgstr ""
+
+#: includes/I18n/TranslationManager.php:172
+msgid "No valid translations dictionary found in payload."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:879
+msgid "None / Third-party"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:862
+msgid "Not Detected"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:567
+#: includes/Admin/Pages/CategoriesPage.php:581
+msgid "Not Installed"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:124
+msgid "Oldest Entry"
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:851
+msgid "Once Monthly"
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:845
+msgid "Once Weekly"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:667
+msgid "Open Consent Logs & CSV Export"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:719
+msgid "Open Live Scanner Console"
+msgstr ""
+
+#: includes/Diagnostics/AdminBarDebugger.php:74
+msgid "Open Preferences Modal"
+msgstr ""
+
+#: includes/Admin/Pages/AboutPage.php:40
+msgid "Open-Source Attribution & Upstream Library"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:274
+msgid "Operation Mode"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:428
+msgid "Optional"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:507
+msgid "Optional language code override."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:462
+msgid "Outputs an all-in-one compliance section: categorized tables (Name, Domain, Lifespan/Duration, Purpose) for all active cookies and a \"Change your consent\" modal opener button."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:491
+msgid "Outputs an isolated table showing cookies for a single specific category (e.g. Analytics, Marketing, or Necessary). Ideal for custom accordion layouts."
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:87
+msgid "Overview & Health"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:485
+msgid "Parent Category"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:581
+msgid "Pass ad click identifiers through URL query parameters when cookies are denied."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:793
+msgid "Paste JSON translation dictionary to override or add custom translations."
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:117
+msgid "Paste these shortcodes into your Privacy Policy, Cookie Policy, or footer to display dynamic declarations or consent controls."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:484
+msgid "Path Exclusions"
+msgstr ""
+
+#: includes/Diagnostics/CacheInspector.php:81
+msgid "Perfmatters is active: Delay and Defer JS filters are hooked."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:408
+msgid "Persistent Privacy Trigger Button"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:137
+msgid "Personalized targeting (Meta Pixel, Google Ads, TikTok)."
+msgstr ""
+
+#: includes/Admin/Pages/AboutPage.php:63
+msgid "Plugin License"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:165
+msgid "Policy Rev."
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:156
+msgid "Policy Revision Match"
+msgstr ""
+
+#: includes/Diagnostics/AdminBarDebugger.php:65
+#, php-format
+msgid "Policy Revision: v%d"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:203
+msgid "Position"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:592
+msgid "Preferences"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:148
+msgid "Preferences Button"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:170
+msgid "Preferences Modal"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:240
+msgid "Preferences Modal Configuration"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:517
+msgid "Preferences Modal Trigger"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:769
+msgid "Preferences Status"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:61
+msgid "Preset not found in recipe catalogue."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:353
+msgid "Primary Button Background"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:363
+msgid "Primary Button Text Color"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:305
+msgid "Primary Text & Headings"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:373
+msgid "Primary fallback URL. If left empty, WordPress's native privacy policy page is used automatically."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:532
+#: includes/Admin/Pages/SettingsPage.php:363
+msgid "Privacy Policy"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:530
+#: includes/Admin/Pages/SettingsPage.php:405
+msgid "Privacy Policy Title"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:536
+#: includes/Admin/Pages/SettingsPage.php:406
+msgid "Privacy Policy URL"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:176
+msgid "Privacy Trigger"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:438
+msgid "Protected"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:920
+msgid "Provider / Service"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:462
+msgid "Public Label:"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:565
+msgid "Publish Changes"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:180
+msgid "Publish to Public Site &check;"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:68
+msgid "Re-run Setup Wizard"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:175
+msgid "Ready to Launch!"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:712
+msgid "Receive instant email notification if newly introduced or unclassified cookies are discovered. Leave blank to use site admin email."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:459
+msgid "Recommended"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:572
+msgid "Redact ad click identifiers (e.g. GCLID) when ad_storage is denied."
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:143
+msgid "Reject Non-Essential"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:751
+msgid "Reload on Revoke"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:755
+msgid "Reload page when visitor revokes consent (purges third-party tracking scripts from browser memory)."
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:151
+msgid "Reset"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:141
+msgid "Reset Categories"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:141
+msgid "Reset categories to defaults?"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:451
+msgid "Restore Default Categories"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:518
+msgid "Reversible Consent"
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:51
+msgid "Reversing or Updating Consent"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:133
+msgid "Review Starter Categories"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:146
+#, php-format
+msgid "Revision %d"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:179
+msgid "Revision & Policy"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:257
+msgid "Right Slide-In"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:758
+msgid "Run First Website Scan"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:755
+msgid "Run a real-time crawl to scan your pages, enqueued scripts, and embedded iframes (e.g. YouTube, Vimeo, Google Maps, GA4)."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:472
+msgid "Save Category"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:562
+msgid "Save Draft"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:785
+msgid "Save Settings"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:179
+msgid "Save as Draft (Inspect First)"
+msgstr ""
+
+#: includes/Admin/Assets.php:55
+msgid "Saving..."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:695
+msgid "Scan Frequency"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:673
+msgid "Scan Website Now"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:115
+msgid "Scanned Scripts"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:678
+msgid "Scheduled Cookie Scanner & Drift Detection"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:259
+msgid "Scheduled Scanner"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:434
+msgid "Screen Position"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:497
+msgid "Screen-reader announcement for WCAG 2.2 AA compliance."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:733
+msgid "Script Enforcement"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:234
+msgid "Script Handle"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:89
+msgid "Script Inventory & Trackers"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:208
+msgid "Script URL"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:138
+msgid "Search UUID or Masked IP..."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:742
+msgid "Search services or cookies..."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:315
+msgid "Secondary / Description Text"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:373
+msgid "Secondary Button Background"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:383
+msgid "Secondary Button Text Color"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:708
+msgid "Security Alert Email"
+msgstr ""
+
+#: includes/Integrations/Adapters/FormsAdapter.php:85
+msgid "Security Notice:"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:27
+#: includes/Admin/Pages/DiagnosticsPage.php:41
+#: includes/Admin/Pages/SettingsPage.php:32
+msgid "Security check failed or link expired. Please refresh the page and try again."
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:112
+msgid "Select Consent Behavior Profile"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:270
+msgid "Select a curated design preset or customize each color surface individually. Choosing a preset immediately populates all color fields below."
+msgstr ""
+
+#: includes/Settings/Validator.php:228
+#, php-format
+msgid "Service \"%1$s\" is assigned to an unconfigured category \"%2$s\"."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:112
+#: includes/Admin/Pages/CategoriesPage.php:373
+#, php-format
+msgid "Service \"%s\" added to your cookie preferences."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:71
+#, php-format
+msgid "Service \"%s\" is already configured."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:836
+msgid "Service / Preset"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:519
+msgid "Service ID (slug):"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:483
+msgid "Service Key"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:315
+msgid "Service deleted successfully."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:150
+msgid "Service not found in configuration."
+msgstr ""
+
+#: includes/Admin/Assets.php:62
+#: includes/Admin/Pages/CategoriesPage.php:158
+msgid "Service removed from cookie preferences."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:299
+msgid "Service saved successfully."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:411
+msgid "Services"
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:601
+msgid "Set directly via server HTTP response headers."
+msgstr ""
+
+#: includes/Admin/Menu.php:82
+msgid "Settings"
+msgstr ""
+
+#: includes/Settings/ImportExport.php:49
+msgid "Settings object missing from import payload."
+msgstr ""
+
+#: includes/Admin/Assets.php:56
+msgid "Settings saved successfully."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:182
+msgid "Settings updated successfully."
+msgstr ""
+
+#: includes/Admin/Menu.php:81
+msgid "Settings — Tuedion Cookie"
+msgstr ""
+
+#: includes/Admin/Menu.php:122
+msgid "Setup Wizard"
+msgstr ""
+
+#: includes/Admin/Menu.php:121
+msgid "Setup Wizard — Tuedion Cookie"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:52
+msgid "Setup wizard completed successfully! Your settings are saved. You can inspect the experience below."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:253
+msgid "Shortcodes"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:229
+msgid "Show \"Manage Preferences\" button"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:225
+msgid "Show \"Reject Non-Essential\" button on first banner"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:248
+msgid "Side Drawer (Bar)"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:487
+msgid "Single Category Table"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:837
+msgid "Site Status"
+msgstr ""
+
+#: includes/Diagnostics/CacheInspector.php:71
+msgid "SiteGround Optimizer is active: JS combine and minify exclusions are hooked."
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:237
+msgid "Source URL / Path"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:159
+msgid "Spans across the bottom or top of the viewport."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:605
+msgid "Speed & Cache Engines"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:126
+msgid "Standard / None"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:595
+msgid "Standard Core Forms"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:544
+msgid "Standardized Google consent signaling for Google Analytics 4, Google Ads, and Google Tag Manager."
+msgstr ""
+
+#: includes/Consent/CookieTableBuilder.php:619
+#: includes/Consent/CookieTableBuilder.php:632
+msgid "Stores chosen language."
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:491
+msgid "Stores visitor consent preferences and revision status."
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:116
+msgid "Strict Opt-in (EU / GDPR Standard)"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:426
+msgid "Strictly Necessary"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:168
+msgid "Strictly Necessary Category"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:135
+msgid "Strictly Necessary:"
+msgstr ""
+
+#: includes/I18n/TranslationManager.php:303
+#, php-format
+msgid "Successfully imported %d language translation(s)."
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:209
+msgid "Suggested Category"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:606
+msgid "Switch Preset Live"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:681
+msgid "Sync Detected to Preferences"
+msgstr ""
+
+#: includes/Admin/Assets.php:65
+msgid "Syncing services..."
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:160
+msgid "System Health & Compliance Readiness"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:407
+msgid "Terms Title"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:545
+#: includes/Admin/Pages/SettingsPage.php:382
+msgid "Terms of Service"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:408
+msgid "Terms of Service URL"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:429
+msgid "Text Only"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:368
+msgid "Text color inside primary CTA buttons (ensures WCAG contrast)."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:388
+msgid "Text color inside secondary buttons."
+msgstr ""
+
+#: includes/Diagnostics/ConfigInspector.php:39
+msgid "The \"necessary\" category is missing from the compiled categories."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:229
+msgid "The \"necessary\" category is strictly required by consent regulations and cannot be deleted."
+msgstr ""
+
+#: includes/Diagnostics/ConfigInspector.php:51
+#, php-format
+msgid "The default language \"%s\" is not defined in translations."
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:202
+msgid "The following third-party scripts originate from known tracking/advertising domains but have not been mapped to any consent recipe. Visitors may be tracked before consent unless these scripts are assigned to a category."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:173
+msgid "Theme & Styling"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:265
+msgid "Theme / Plugin UI"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:605
+msgid "Theme Preset"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:525
+msgid "These URLs are embedded in the consent modal footer and legal notices."
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:343
+msgid "These strings are injected into delay/defer/combine exclusion filters across all active optimizers:"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:803
+msgid "Third-party session"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:179
+msgid "This JSON payload is injected into the document head and consumed by Orest Bida vanilla-cookieconsent v3.1.0."
+msgstr ""
+
+#: includes/Integrations/Adapters/FormsAdapter.php:86
+msgid "This form uses automated spam protection that requires your consent to load."
+msgstr ""
+
+#: includes/Admin/Pages/AboutPage.php:42
+msgid "This plugin integrates vanilla-cookieconsent v3.1.0 created by Orest Bida."
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:194
+msgid "This website uses cookies to personalize content, analyze traffic, and ensure you receive the best user experience. In accordance with data privacy regulations (GDPR / ePrivacy), below is a comprehensive list of all active cookies and tracking services categorized by their purpose."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:451
+msgid "This will overwrite your categories with the 4 default categories. Are you sure?"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:99
+msgid "This wizard configures your site for professional consent management in 2 minutes. We will set up starter cookie categories, banner appearance, and compliance behavior."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:564
+msgid "Time Google tags wait for consent state update before firing default ping (recommended: 500ms)."
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:317
+msgid "Timing & Ingestion Rule:"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:310
+msgid "Titles, category names, and prominent labels."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:474
+msgid "Toggle \"Change your consent\" button (default: true)."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:393
+msgid "Toggle Active & Accent Highlight"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:475
+msgid "Toggle introductory explanation text (default: true)."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:211
+msgid "Top Center"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:210
+#: includes/Admin/Pages/ExperiencePage.php:439
+#: includes/Admin/Pages/ExperiencePage.php:471
+msgid "Top Left"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:209
+#: includes/Admin/Pages/ExperiencePage.php:440
+#: includes/Admin/Pages/ExperiencePage.php:472
+msgid "Top Right"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:120
+msgid "Total Stored Records"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:479
+msgid "Tracking Services (Granular Control)"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:399
+msgid "Translate the link titles and specify dedicated policy URLs for each language. Note: If Polylang or WPML is active, translated policy pages are automatically detected when URLs are left blank."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:336
+msgid "Translation Dictionary Import & Export"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:595
+msgid "Trigger"
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:229
+msgid "Truncate All Consent Logs"
+msgstr ""
+
+#: includes/Admin/Menu.php:39
+#: includes/Admin/Menu.php:40
+msgid "Tuedion Cookie"
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:67
+#: includes/Privacy/PrivacyTools.php:112
+msgid "Tuedion Cookie Consent Records"
+msgstr ""
+
+#: includes/Core/Requirements.php:48
+msgid "Tuedion Cookie Error"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:556
+msgid "Tuedion Cookie automatically interfaces with the active WordPress ecosystem to protect core site functions, avoid broken checkouts or forms, and govern third-party trackers declaratively."
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:319
+msgid "Tuedion Cookie hooks GCM v2 default signals at wp_head priority 0. This guarantees that Google tags (gtag.js / GTM) will always read default \"denied\" states before transmitting hits."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:301
+msgid "Tuedion Cookie includes native support for 9 world languages, automated RTL layout mirroring for Arabic, and seamless WPML/Polylang/TranslatePress synchronization."
+msgstr ""
+
+#: includes/Admin/Pages/AboutPage.php:30
+msgid "Tuedion Cookie is a professional WordPress integration of Orest Bida’s high-performance vanilla-cookieconsent library, developed by Tuedion to give publishers and site administrators full control over visitor consent, privacy triggers, script blocking, and multi-language support."
+msgstr ""
+
+#: includes/Admin/Pages/AboutPage.php:73
+msgid "Tuedion Cookie provides technical consent management tools. It does not provide legal advice or guarantee compliance with privacy laws (such as GDPR, CCPA, or ePrivacy). Proper compliance depends on your cookies, tracking practices, and accurate disclosure policies."
+msgstr ""
+
+#: includes/Core/Requirements.php:31
+#, php-format
+msgid "Tuedion Cookie requires PHP version %1$s or higher. Your server is running PHP %2$s."
+msgstr ""
+
+#: includes/Core/Requirements.php:40
+#, php-format
+msgid "Tuedion Cookie requires WordPress version %1$s or higher. Your site is running WordPress %2$s."
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:131
+msgid "Tuedion Cookie stores consent logs pseudonymously without collecting personal email addresses; no database records are linked to this email address."
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:91
+msgid "Tuedion Cookie stores visitor consent choices locally in the browser (\"cc_cookie\") and records pseudonymized audit logs with masked IP addresses and UUIDs without linking records to personal email addresses."
+msgstr ""
+
+#: includes/Admin/Pages/ConsentLogsPage.php:82
+msgid "Tuedion Cookie — Consent Audit Logs"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:38
+msgid "Tuedion Cookie — Dashboard"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:73
+msgid "Tuedion Cookie — Diagnostics & Developer Platform"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:141
+msgid "Tuedion Cookie — Experience & Live Editor"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:79
+msgid "Tuedion Cookie — Quick Setup Wizard"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:231
+msgid "Tuedion Cookie — Settings"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:410
+#: includes/Admin/Pages/CategoriesPage.php:838
+msgid "Type"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:577
+msgid "URL Passthrough"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:552
+msgid "URL to cookie disclosure, terms, or imprint page."
+msgstr ""
+
+#: includes/Diagnostics/AdminBarDebugger.php:55
+#, php-format
+msgid "UUID: %s"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:34
+#: includes/Admin/Pages/CategoriesPage.php:128
+#: includes/Diagnostics/CookieScanner.php:668
+#: includes/Diagnostics/CookieScanner.php:824
+msgid "Unauthorized permission."
+msgstr ""
+
+#: includes/Diagnostics/SupportReportExporter.php:140
+msgid "Unauthorized."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:638
+msgid "Under GDPR Art. 7(1), site operators may be required to demonstrate valid consent. By default, logging is OFF (zero database writes)."
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:760
+msgid "Uninstall Cleanup"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:200
+msgid "Unmanaged External Trackers Detected!"
+msgstr ""
+
+#: includes/Integrations/Adapters/FormsAdapter.php:87
+msgid "Update Cookie Preferences"
+msgstr ""
+
+#: includes/I18n/TranslationManager.php:154
+msgid "Uploaded JSON content is empty."
+msgstr ""
+
+#: includes/Admin/Pages/AboutPage.php:59
+msgid "Upstream License"
+msgstr ""
+
+#: includes/Admin/Pages/AboutPage.php:47
+msgid "Upstream Project"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:358
+msgid "Use these declarative hooks, helper functions, and programmatic APIs to customize consent behavior."
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:138
+msgid "User language, video embeds, and preferences."
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:280
+msgid "Verification of pre-consent default signals, tag ordering in document head, and duplicate tag prevention."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:585
+msgid "Video & map widgets automatically converted to consent placeholder cards with popup reactivation support."
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:121
+msgid "View Full Guide & Parameters"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:453
+msgid "Visibility Policy"
+msgstr ""
+
+#: includes/Admin/Pages/AboutPage.php:34
+msgid "Visit Tuedion.com"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:122
+msgid "Visitors can toggle Analytics, Marketing, and Functionality cookies individually."
+msgstr ""
+
+#: includes/Diagnostics/CacheInspector.php:41
+msgid "WP Rocket is active: Tuedion Cookie has hooked rocket_delay_js_exclusions and rocket_exclude_defer_js automatically."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:609
+msgid "WP Rocket, LiteSpeed, Autoptimize, FlyingPress, Perfmatters & Cloudflare Rocket Loader exclusions active."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:654
+#, php-format
+msgid "WP-Cron Auto-Scan: Active (%s)"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:659
+msgid "WP-Cron Auto-Scan: Off"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:560
+msgid "Wait for Update (ms)"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:185
+msgid "Warning:"
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:48
+msgid "We use Tuedion Cookie to provide an enterprise-grade consent management banner and preference center. When you visit our website, you have full granular control over which cookie categories (Strictly Necessary, Functionality, Analytics, Marketing) you wish to permit."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:641
+msgid "Website Tracker & Service Scanner"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:324
+#, php-format
+msgid "Website scan completed! Detected %d active services and %d cookies on your site."
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:629
+#: includes/Admin/Pages/CategoriesPage.php:632
+msgid "Weekly"
+msgstr ""
+
+#: includes/Admin/Pages/SettingsPage.php:700
+msgid "Weekly (Recommended)"
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:97
+msgid "Welcome to Tuedion Cookie"
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:511
+msgid "When you make material modifications to categories or tracking services, privacy regulations require re-prompting existing visitors to renew their consent."
+msgstr ""
+
+#: includes/Admin/Pages/ExperiencePage.php:249
+msgid "Wide Side Drawer (Bar Wide)"
+msgstr ""
+
+#: includes/Admin/Pages/CategoriesPage.php:563
+msgid "WooCommerce"
+msgstr ""
+
+#: includes/Admin/Pages/AboutPage.php:16
+#: includes/Admin/Pages/CategoriesPage.php:168
+#: includes/Admin/Pages/ConsentLogsPage.php:22
+#: includes/Admin/Pages/ConsentLogsPage.php:36
+#: includes/Admin/Pages/DashboardPage.php:19
+#: includes/Admin/Pages/DiagnosticsPage.php:36
+#: includes/Admin/Pages/DiagnosticsPage.php:51
+#: includes/Admin/Pages/ExperiencePage.php:22
+#: includes/Admin/Pages/SettingsPage.php:27
+#: includes/Admin/Pages/SettingsPage.php:66
+#: includes/Admin/Pages/WizardPage.php:71
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: includes/Privacy/PrivacyTools.php:50
+msgid "Your choices are saved in a local first-party cookie named \"cc_cookie\" on your device for up to 182 days. When consent logging is enabled by the site administrator, an anonymized record with masked IP address and timestamp is kept for legal audit compliance under GDPR Article 7(1)."
+msgstr ""
+
+#: includes/Admin/Pages/WizardPage.php:176
+msgid "Your initial consent management configuration is complete. You can either publish it to visitors right now, or save it as a Draft to inspect it first in the Live Preview editor."
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:945
+#, php-format
+msgid "[%s] Alert: New Cookies Detected by Tuedion Cookie Scanner"
+msgstr ""
+
+#: includes/Diagnostics/CookieScanner.php:138
+#: includes/Diagnostics/CookieScanner.php:798
+msgid "ago"
+msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:117
+msgid "managed"
+msgstr ""
+
+#: includes/Admin/Pages/DashboardPage.php:45
+#, php-format
+msgid "v%s"
+msgstr ""
+
