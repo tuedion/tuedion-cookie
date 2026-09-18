@@ -567,7 +567,7 @@ final class CookieTableBuilder
 
         $currentDomain = wp_parse_url(home_url(), PHP_URL_HOST);
         if (!is_string($currentDomain) || empty($currentDomain)) {
-            $currentDomain = $_SERVER['HTTP_HOST'] ?? 'localhost';
+            $currentDomain = isset($_SERVER['HTTP_HOST']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_HOST'])) : 'localhost';
         }
 
         $body = [];
@@ -677,7 +677,9 @@ final class CookieTableBuilder
                     $domain = $dict['domain_type'] === 'current' ? $currentDomain : $dict['domain_type'];
                     $durKey = $dict['duration'] ?? '1y';
                 } else {
-                    $desc   = (string) ($recipe['description'] ?? sprintf(__('Cookie used by %s.', 'tuedion-cookie'), $svc['label'] ?? $svcId));
+                    /* translators: %s: Service name or identifier */
+                    $fallbackDesc = sprintf(__('Cookie used by %s.', 'tuedion-cookie'), $svc['label'] ?? $svcId);
+                    $desc   = (string) ($recipe['description'] ?? $fallbackDesc);
                     $domain = $currentDomain;
                     $durKey = (string) ($recipe['duration'] ?? '1y');
                 }

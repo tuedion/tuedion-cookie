@@ -61,8 +61,8 @@ final class ConsentLogTable
     public static function drop(): void
     {
         global $wpdb;
-        $tableName = self::getTableName();
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+        $tableName = esc_sql(self::getTableName());
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name escaped and cannot be prepared in SQL.
         $wpdb->query("DROP TABLE IF EXISTS {$tableName}");
     }
 }

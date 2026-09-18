@@ -43,6 +43,7 @@ final class CookieScanner
      */
     public static function injectClientSideScanner(): void
     {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only audit query parameter check.
         if (!isset($_GET['tdcc_audit']) || !current_user_can('manage_options')) {
             return;
         }
@@ -172,13 +173,15 @@ final class CookieScanner
                 $recipe = RecipeRegistry::findRecipeForScript($handleStr, $src);
                 if ($recipe !== null) {
                     $key = $recipe['id'] ?? $handleStr;
+                    /* translators: %s: Enqueued script handle */
+                    $scriptNotice = sprintf(__('Enqueued script: "%s"', 'tuedion-cookie'), $handleStr);
                     $detected[$key] = [
                         'id'         => $key,
                         'name'       => $recipe['name'] ?? $key,
                         'category'   => $recipe['category'] ?? 'marketing',
                         'type'       => $recipe['type'] ?? 'script',
-                        'source'     => sprintf(__('Enqueued script: "%s"', 'tuedion-cookie'), $handleStr),
-                        'sources'    => [sprintf(__('Enqueued script: "%s"', 'tuedion-cookie'), $handleStr)],
+                        'source'     => $scriptNotice,
+                        'sources'    => [$scriptNotice],
                         'auto_clear' => (array) ($recipe['auto_clear'] ?? []),
                         'is_managed' => true,
                     ];
@@ -191,13 +194,15 @@ final class CookieScanner
             foreach ($wp_styles->registered as $handle => $styleObj) {
                 $src = is_object($styleObj) && isset($styleObj->src) ? (string) $styleObj->src : '';
                 if (str_contains($src, 'fonts.googleapis.com') || str_contains($src, 'fonts.gstatic.com')) {
+                    /* translators: %s: Enqueued stylesheet handle */
+                    $styleNotice = sprintf(__('Enqueued stylesheet: "%s"', 'tuedion-cookie'), (string) $handle);
                     $detected['google-fonts'] = [
                         'id'         => 'google-fonts',
                         'name'       => 'Google Fonts',
                         'category'   => 'functionality',
                         'type'       => 'style',
-                        'source'     => sprintf(__('Enqueued stylesheet: "%s"', 'tuedion-cookie'), (string) $handle),
-                        'sources'    => [sprintf(__('Enqueued stylesheet: "%s"', 'tuedion-cookie'), (string) $handle)],
+                        'source'     => $styleNotice,
+                        'sources'    => [$styleNotice],
                         'auto_clear' => [],
                         'is_managed' => false,
                     ];
@@ -349,13 +354,15 @@ final class CookieScanner
                     $recipe = RecipeRegistry::findRecipeForScript('', $src);
                     if ($recipe !== null) {
                         $key = $recipe['id'];
+                        /* translators: %s: Truncated script source URL */
+                        $scriptTagNotice = sprintf(__('Found &lt;script&gt; tag on page: "%s"', 'tuedion-cookie'), substr($src, 0, 60) . '...');
                         $services[$key] = [
                             'id'         => $key,
                             'name'       => $recipe['name'] ?? $key,
                             'category'   => $recipe['category'] ?? 'marketing',
                             'type'       => 'script',
-                            'source'     => sprintf(__('Found &lt;script&gt; tag on page: "%s"', 'tuedion-cookie'), substr($src, 0, 60) . '...'),
-                            'sources'    => [sprintf(__('Found &lt;script&gt; tag on page: "%s"', 'tuedion-cookie'), substr($src, 0, 60) . '...')],
+                            'source'     => $scriptTagNotice,
+                            'sources'    => [$scriptTagNotice],
                             'auto_clear' => (array) ($recipe['auto_clear'] ?? []),
                             'is_managed' => true,
                         ];
@@ -377,13 +384,15 @@ final class CookieScanner
                     $recipe = RecipeRegistry::findRecipeForIframe($src);
                     if ($recipe !== null) {
                         $key = $recipe['id'];
+                        /* translators: %s: Truncated iframe source URL */
+                        $iframeEmbedNotice = sprintf(__('Found &lt;iframe&gt; embed on page: "%s"', 'tuedion-cookie'), substr($src, 0, 60) . '...');
                         $services[$key] = [
                             'id'         => $key,
                             'name'       => $recipe['name'] ?? $key,
                             'category'   => $recipe['category'] ?? 'marketing',
                             'type'       => 'iframe',
-                            'source'     => sprintf(__('Found &lt;iframe&gt; embed on page: "%s"', 'tuedion-cookie'), substr($src, 0, 60) . '...'),
-                            'sources'    => [sprintf(__('Found &lt;iframe&gt; embed on page: "%s"', 'tuedion-cookie'), substr($src, 0, 60) . '...')],
+                            'source'     => $iframeEmbedNotice,
+                            'sources'    => [$iframeEmbedNotice],
                             'auto_clear' => (array) ($recipe['auto_clear'] ?? []),
                             'is_managed' => true,
                         ];
@@ -454,13 +463,16 @@ final class CookieScanner
                 $allRecipes = RecipeRegistry::getAll();
                 $recipe = $allRecipes[$key] ?? [];
 
+                /* translators: %s: Inline tracking signature note */
+                $sourceDesc = sprintf(__('Detected in inline page script: %s', 'tuedion-cookie'), $sig['note']);
+
                 $services[$key] = [
                     'id'         => $key,
                     'name'       => $sig['name'],
                     'category'   => $sig['category'],
                     'type'       => 'script',
-                    'source'     => sprintf(__('Detected in inline page script: %s', 'tuedion-cookie'), $sig['note']),
-                    'sources'    => [sprintf(__('Detected in inline page script: %s', 'tuedion-cookie'), $sig['note'])],
+                    'source'     => $sourceDesc,
+                    'sources'    => [$sourceDesc],
                     'auto_clear' => (array) ($recipe['auto_clear'] ?? []),
                     'is_managed' => true,
                 ];
@@ -486,7 +498,7 @@ final class CookieScanner
                 'name'        => 'cc_cookie',
                 'service'     => 'Tuedion Cookie',
                 'category'    => 'necessary',
-                'domain'      => sanitize_text_field((string) parse_url(home_url(), PHP_URL_HOST)),
+                'domain'      => sanitize_text_field((string) wp_parse_url(home_url(), PHP_URL_HOST)),
                 'duration'    => '182 days',
                 'description' => __('Stores visitor consent preferences and revision status.', 'tuedion-cookie'),
             ],
@@ -498,7 +510,7 @@ final class CookieScanner
                 'name'        => 'wordpress_logged_in_*',
                 'service'     => 'WordPress Core',
                 'category'    => 'necessary',
-                'domain'      => sanitize_text_field((string) parse_url(home_url(), PHP_URL_HOST)),
+                'domain'      => sanitize_text_field((string) wp_parse_url(home_url(), PHP_URL_HOST)),
                 'duration'    => 'Session',
                 'description' => __('Maintains session authentication for logged-in users.', 'tuedion-cookie'),
             ];
@@ -509,7 +521,7 @@ final class CookieScanner
                 'name'        => 'woocommerce_items_in_cart',
                 'service'     => 'WooCommerce',
                 'category'    => 'necessary',
-                'domain'      => sanitize_text_field((string) parse_url(home_url(), PHP_URL_HOST)),
+                'domain'      => sanitize_text_field((string) wp_parse_url(home_url(), PHP_URL_HOST)),
                 'duration'    => 'Session',
                 'description' => __('Helps WooCommerce determine when cart contents and session change.', 'tuedion-cookie'),
             ];
@@ -517,7 +529,7 @@ final class CookieScanner
                 'name'        => 'wp_woocommerce_session_*',
                 'service'     => 'WooCommerce',
                 'category'    => 'necessary',
-                'domain'      => sanitize_text_field((string) parse_url(home_url(), PHP_URL_HOST)),
+                'domain'      => sanitize_text_field((string) wp_parse_url(home_url(), PHP_URL_HOST)),
                 'duration'    => '2 days',
                 'description' => __('Contains a unique code for each customer to find cart data in the database.', 'tuedion-cookie'),
             ];
@@ -560,7 +572,7 @@ final class CookieScanner
             ],
         ];
 
-        $siteHost = sanitize_text_field((string) parse_url(home_url(), PHP_URL_HOST));
+        $siteHost = sanitize_text_field((string) wp_parse_url(home_url(), PHP_URL_HOST));
         $allRecipes = RecipeRegistry::getAll();
 
         foreach ($detectedServiceIds as $svcId) {
@@ -668,6 +680,7 @@ final class CookieScanner
             wp_send_json_error(['message' => __('Unauthorized permission.', 'tuedion-cookie')], 403);
         }
 
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated and decoded via json_decode below.
         $payloadStr = isset($_POST['payload']) ? wp_unslash($_POST['payload']) : '{}';
         $payload = json_decode($payloadStr, true);
 
@@ -825,9 +838,11 @@ final class CookieScanner
         }
 
         $syncedCount = self::syncDetectedServicesToSettings();
+        /* translators: %d: Number of synchronized services */
+        $syncMessage = sprintf(__('%d services synchronized to cookie preferences.', 'tuedion-cookie'), $syncedCount);
         wp_send_json_success([
             'synced'  => $syncedCount,
-            'message' => sprintf(__('%d services synchronized to cookie preferences.', 'tuedion-cookie'), $syncedCount),
+            'message' => $syncMessage,
         ]);
     }
 

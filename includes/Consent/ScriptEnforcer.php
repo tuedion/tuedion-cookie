@@ -246,6 +246,7 @@ final class ScriptEnforcer
 
         $serviceAttr = $service !== null ? sprintf(' data-service="%s"', esc_attr($service)) : '';
 
+        // phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Helpers generating consent-blocked plain text script tags.
         return sprintf(
             '<script type="text/plain" data-category="%s"%s src="%s"%s></script>',
             esc_attr($category),
@@ -253,6 +254,7 @@ final class ScriptEnforcer
             esc_url($src),
             $attrString
         );
+        // phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedScript
     }
 
     /**
@@ -277,6 +279,7 @@ final class ScriptEnforcer
 
         $serviceAttr = $service !== null ? sprintf(' data-service="%s"', esc_attr($service)) : '';
 
+        // phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Helpers generating consent-blocked plain text script tags.
         return sprintf(
             '<script type="text/plain" data-category="%s"%s%s>%s</script>',
             esc_attr($category),
@@ -284,6 +287,7 @@ final class ScriptEnforcer
             $attrString,
             $code
         );
+        // phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedScript
     }
 
     /**

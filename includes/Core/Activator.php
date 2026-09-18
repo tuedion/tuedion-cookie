@@ -19,8 +19,7 @@ final class Activator
         }
 
         if (is_multisite() && $network_wide) {
-            global $wpdb;
-            $blogIds = $wpdb->get_col("SELECT blog_id FROM {$wpdb->blogs}");
+            $blogIds = get_sites(['fields' => 'ids']);
             $originalBlogId = get_current_blog_id();
 
             if (is_array($blogIds)) {
@@ -67,6 +66,7 @@ final class Activator
         }
 
         // Avoid loop if already on wizard page
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check for activation redirect.
         $page = isset($_GET['page']) ? sanitize_key((string) $_GET['page']) : '';
         if ($page === 'tuedion-cookie-wizard') {
             delete_transient(self::REDIRECT_TRANSIENT);
@@ -74,6 +74,7 @@ final class Activator
         }
 
         // Do not redirect on multisite network activation or bulk activation
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only check for activation redirect.
         if (is_network_admin() || isset($_GET['activate-multi'])) {
             delete_transient(self::REDIRECT_TRANSIENT);
             return;

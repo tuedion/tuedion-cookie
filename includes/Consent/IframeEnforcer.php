@@ -161,7 +161,7 @@ final class IframeEnforcer
         if (preg_match('/(?:youtube(?:-nocookie)?\.com\/(?:embed\/|watch\?v=|v\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i', $src, $m)) {
             $id = $m[1];
             $params = '';
-            $query = parse_url($src, PHP_URL_QUERY);
+            $query = wp_parse_url($src, PHP_URL_QUERY);
             if (!empty($query)) {
                 $params = (string) $query;
             }
@@ -176,7 +176,7 @@ final class IframeEnforcer
         // 2. Vimeo
         if (preg_match('/(?:player\.)?vimeo\.com\/(?:video\/)?([0-9]+)/i', $src, $m)) {
             $id = $m[1];
-            $query = parse_url($src, PHP_URL_QUERY) ?? '';
+            $query = wp_parse_url($src, PHP_URL_QUERY) ?? '';
             return [
                 'service'  => 'vimeo',
                 'id'       => $id,

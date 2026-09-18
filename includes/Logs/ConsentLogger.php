@@ -43,6 +43,20 @@ final class ConsentLogger
             return;
         }
 
+        // Rate limiting per anonymized IP (max 30 refresh requests per minute)
+        $remoteIp = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '127.0.0.1';
+        $anonymizedIp = function_exists('wp_privacy_anonymize_ip')
+            ? wp_privacy_anonymize_ip($remoteIp)
+            : (string) preg_replace('/\.\d+$/', '.0', $remoteIp);
+
+        $throttleKey = 'tdcc_rn_' . md5($anonymizedIp);
+        $reqCount = (int) get_transient($throttleKey);
+        if ($reqCount > 30) {
+            wp_send_json_error(['message' => 'Rate limit exceeded'], 429);
+            return;
+        }
+        set_transient($throttleKey, $reqCount + 1, MINUTE_IN_SECONDS);
+
         wp_send_json_success([
             'nonce' => wp_create_nonce('tdcc_log_consent_nonce'),
         ]);
@@ -69,7 +83,7 @@ final class ConsentLogger
         $revision = (int) ($settings['revision'] ?? 1);
 
         // 3. Strict IP anonymization (No raw IP default)
-        $remoteIp = sanitize_text_field((string) ($_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'));
+        $remoteIp = isset($_SERVER['REMOTE_ADDR']) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'])) : '127.0.0.1';
         $anonymizedIp = function_exists('wp_privacy_anonymize_ip')
             ? wp_privacy_anonymize_ip($remoteIp)
             : (string) preg_replace('/\.\d+$/', '.0', $remoteIp);
@@ -94,8 +108,9 @@ final class ConsentLogger
         $actionType = in_array($actionRaw, $validActions, true) ? $actionRaw : 'consent';
 
         // Sanitize and allowlist categories
-        $rawCategories = isset($_POST['categories']) && is_array($_POST['categories']) ? $_POST['categories'] : [];
-        $sanitizedCategories = array_values(array_map('sanitize_key', $rawCategories));
+        $sanitizedCategories = isset($_POST['categories']) && is_array($_POST['categories'])
+            ? array_values(array_filter((array) map_deep(wp_unslash($_POST['categories']), 'sanitize_key')))
+            : [];
 
         $allowedCategories = ['necessary'];
         if (!empty($settings['categories']) && is_array($settings['categories'])) {
@@ -109,8 +124,9 @@ final class ConsentLogger
         $categories = array_slice(array_values(array_intersect($sanitizedCategories, $allowedCategories)), 0, 20);
 
         // Sanitize and allowlist services
-        $rawServices = isset($_POST['services']) && is_array($_POST['services']) ? $_POST['services'] : [];
-        $sanitizedServices = array_values(array_map('sanitize_key', $rawServices));
+        $sanitizedServices = isset($_POST['services']) && is_array($_POST['services'])
+            ? array_values(array_filter((array) map_deep(wp_unslash($_POST['services']), 'sanitize_key')))
+            : [];
 
         $allowedServices = array_keys(\Tuedion\CookieConsent\Integrations\RecipeRegistry::getAll());
         if (!empty($settings['services']) && is_array($settings['services'])) {
@@ -136,13 +152,14 @@ final class ConsentLogger
         set_transient($dupKey, true, 15);
 
         // 4. User agent privacy hash (non-reversible)
-        $rawUa = sanitize_text_field((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''));
+        $rawUa = isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '';
         $uaHash = hash('sha256', $rawUa . (defined('AUTH_SALT') ? AUTH_SALT : 'tdcc_salt'));
 
         // 5. Insert record into custom table
         global $wpdb;
         $tableName = ConsentLogTable::getTableName();
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
         $inserted = $wpdb->insert(
             $tableName,
             [
@@ -222,17 +239,17 @@ final class ConsentLogger
         // Count total matching
         $countSql = "SELECT COUNT(*) FROM {$tableName} WHERE {$whereClause}";
         if (!empty($params)) {
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
             $total = (int) $wpdb->get_var($wpdb->prepare($countSql, $params));
         } else {
-            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
             $total = (int) $wpdb->get_var($countSql);
         }
 
         // Fetch paginated items
         $dataSql = "SELECT * FROM {$tableName} WHERE {$whereClause} ORDER BY id DESC LIMIT %d OFFSET %d";
         $fetchParams = array_merge($params, [$perPage, $offset]);
-        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.NotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
         $items = (array) $wpdb->get_results($wpdb->prepare($dataSql, $fetchParams), ARRAY_A);
 
         return [

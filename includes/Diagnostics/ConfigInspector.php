@@ -48,6 +48,7 @@ final class ConfigInspector
         // Check if current language exists
         $defaultLang = $config['language']['default'] ?? 'en';
         if (!isset($translations[$defaultLang])) {
+            /* translators: %s: Language code */
             $issues[] = sprintf(__('The default language "%s" is not defined in translations.', 'tuedion-cookie'), $defaultLang);
         }
 

@@ -41,6 +41,7 @@ final class Frontend
             $shouldLoad = false;
         } elseif ($status === Schema::STATUS_DRAFT) {
             // In draft mode, only load for authorized administrators
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only preview parameter check.
             $shouldLoad = current_user_can('manage_options') || !empty($_GET['tuedion_cookie_preview']);
         } else {
             // Enabled mode
@@ -164,7 +165,7 @@ final class Frontend
 
         $inlineScript = sprintf(
             'window.tuedionCookieConfig = %s;',
-            wp_json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+            wp_json_encode($config, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP)
         );
 
         wp_add_inline_script('tuedion-cookie-bootstrap', $inlineScript, 'before');

@@ -2,7 +2,7 @@
 
 [![WordPress Version](https://img.shields.io/badge/WordPress-%3E%3D%206.2-blue.svg?style=flat-square&logo=wordpress)](https://wordpress.org)
 [![PHP Version](https://img.shields.io/badge/PHP-%3E%3D%208.2-777bb4.svg?style=flat-square&logo=php)](https://php.net)
-[![Stable Release](https://img.shields.io/badge/version-1.3.1-success.svg?style=flat-square)](https://github.com)
+[![Stable Release](https://img.shields.io/badge/version-1.3.2-success.svg?style=flat-square)](https://github.com)
 [![Accessibility](https://img.shields.io/badge/WCAG-2.2%20AA%20Compliant-green.svg?style=flat-square)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 [![Google Consent Mode](https://img.shields.io/badge/Google%20Consent%20Mode-v2%20Ready-F4B400.svg?style=flat-square&logo=google)](https://developers.google.com/tag-platform/security/guides/consent)
 [![License](https://img.shields.io/badge/License-GPLv2%20or%20later-orange.svg?style=flat-square)](https://www.gnu.org/licenses/gpl-2.0.html)
@@ -182,6 +182,9 @@ Tuedion Cookie includes ready-to-use shortcodes for your Cookie Policy and Priva
 ---
 
 ## 📝 Changelog
+
+### = 1.3.2 =
+* **Cache Busting:** Incremented runtime transient cache key to `v132`.
 
 ### = 1.3.1 =
 * **Scheduled Automated Scanner:** Integrated continuous background site crawl with daily/weekly/monthly frequency via WP-Cron.

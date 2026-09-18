@@ -205,6 +205,7 @@ final class CacheCompatibility
 
         // 3. LiteSpeed Cache
         if (defined('LSCWP_V')) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Third-party cache plugin purge action.
             do_action('litespeed_purge_all');
         }
 
@@ -248,9 +249,11 @@ final class CacheCompatibility
         }
 
         // 9. Hummingbird
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Third-party cache plugin purge action.
         do_action('wphb_clear_page_cache');
 
         // 10. Breeze (Cloudways)
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Third-party cache plugin purge action.
         do_action('breeze_clear_all_cache');
 
         // 11. FlyingPress

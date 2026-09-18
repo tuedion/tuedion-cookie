@@ -33,23 +33,30 @@ function tdcc_uninstall_single_site(): void
 
     global $wpdb;
     if (isset($wpdb) && $wpdb instanceof \wpdb) {
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_tdcc_%' OR option_name LIKE '_transient_timeout_tdcc_%'");
 
         // Drop consent logs table
-        $tableName = $wpdb->prefix . 'tuedion_consent_logs';
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+        $tableName = esc_sql($wpdb->prefix . 'tuedion_consent_logs');
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name escaped and cannot be parameterized in SQL.
         $wpdb->query("DROP TABLE IF EXISTS {$tableName}");
     }
 }
 
-$settings = get_option('tuedion_cookie_settings', []);
-$cleanOnUninstall = !empty($settings['advanced']['clean_on_uninstall']);
+/**
+ * Main uninstall routine.
+ */
+function tdcc_uninstall_plugin(): void
+{
+    $settings = get_option('tuedion_cookie_settings', []);
+    $cleanOnUninstall = !empty($settings['advanced']['clean_on_uninstall']);
 
-if ($cleanOnUninstall) {
-    global $wpdb;
+    if (!$cleanOnUninstall) {
+        return;
+    }
 
-    if (is_multisite() && isset($wpdb) && $wpdb instanceof \wpdb) {
-        $blogIds = $wpdb->get_col("SELECT blog_id FROM {$wpdb->blogs}");
+    if (is_multisite()) {
+        $blogIds = get_sites(['fields' => 'ids']);
         $originalBlogId = get_current_blog_id();
 
         if (is_array($blogIds)) {
@@ -64,3 +71,5 @@ if ($cleanOnUninstall) {
         tdcc_uninstall_single_site();
     }
 }
+
+tdcc_uninstall_plugin();

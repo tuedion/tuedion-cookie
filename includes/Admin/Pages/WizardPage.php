@@ -45,10 +45,10 @@ final class WizardPage
             exit;
         }
 
-        $layout = sanitize_text_field((string) ($_POST['wizard_layout'] ?? 'box'));
+        $layout = sanitize_text_field(wp_unslash((string) ($_POST['wizard_layout'] ?? 'box')));
         $settings['banner']['layout'] = $layout;
 
-        $action = sanitize_text_field((string) ($_POST['wizard_action'] ?? 'draft'));
+        $action = sanitize_text_field(wp_unslash((string) ($_POST['wizard_action'] ?? 'draft')));
         $settings['status'] = ($action === 'publish') ? Schema::STATUS_ENABLED : Schema::STATUS_DRAFT;
 
         Repository::updateSettings($settings);

@@ -22,7 +22,7 @@ final class ConsentLogsPage
             wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'tuedion-cookie'));
         }
 
-        $nonce = $_GET['_wpnonce'] ?? $_POST['_wpnonce'] ?? '';
+        $nonce = isset($_GET['_wpnonce']) ? sanitize_key(wp_unslash($_GET['_wpnonce'])) : (isset($_POST['_wpnonce']) ? sanitize_key(wp_unslash($_POST['_wpnonce'])) : '');
         if (!wp_verify_nonce((string) $nonce, 'tdcc_export_logs_csv_nonce')) {
             wp_die(esc_html__('Security check failed or link expired. Please refresh the page and try again.', 'tuedion-cookie'), 403);
         }
@@ -38,7 +38,7 @@ final class ConsentLogsPage
 
         // Backward-compatible fallback if accessed directly
         if (isset($_GET['action']) && $_GET['action'] === 'tdcc_export_logs_csv') {
-            $nonce = $_GET['_wpnonce'] ?? $_POST['_wpnonce'] ?? '';
+            $nonce = isset($_GET['_wpnonce']) ? sanitize_key(wp_unslash($_GET['_wpnonce'])) : (isset($_POST['_wpnonce']) ? sanitize_key(wp_unslash($_POST['_wpnonce'])) : '');
             if (wp_verify_nonce((string) $nonce, 'tdcc_export_logs_csv_nonce')) {
                 self::exportCsv();
                 exit;
@@ -55,11 +55,11 @@ final class ConsentLogsPage
         }
 
         // Filtering & Pagination
-        $page     = max(1, (int) ($_GET['paged'] ?? 1));
+        $page     = max(1, isset($_GET['paged']) ? absint(wp_unslash($_GET['paged'])) : 1);
         $perPage  = 25;
-        $search   = sanitize_text_field((string) ($_GET['s'] ?? ''));
-        $action   = sanitize_key((string) ($_GET['action_filter'] ?? ''));
-        $revision = isset($_GET['rev_filter']) && $_GET['rev_filter'] !== '' ? (int) $_GET['rev_filter'] : null;
+        $search   = isset($_GET['s']) ? sanitize_text_field(wp_unslash($_GET['s'])) : '';
+        $action   = isset($_GET['action_filter']) ? sanitize_key(wp_unslash($_GET['action_filter'])) : '';
+        $revision = isset($_GET['rev_filter']) && $_GET['rev_filter'] !== '' ? absint(wp_unslash($_GET['rev_filter'])) : null;
 
         $queryResult = ConsentLogger::queryLogs([
             'page'     => $page,
@@ -203,16 +203,17 @@ final class ConsentLogsPage
             <?php if ($totalPages > 1): ?>
                 <div class="tablenav" style="margin-top:1rem;">
                     <div class="tablenav-pages">
-                        <span class="displaying-num"><?php printf(esc_html__('%s records', 'tuedion-cookie'), number_format_i18n($total)); ?></span>
+                        <?php /* translators: %s: Formatted number of records */ ?>
+                        <span class="displaying-num"><?php echo esc_html(sprintf(esc_html__('%s records', 'tuedion-cookie'), number_format_i18n($total))); ?></span>
                         <?php
-                        echo paginate_links([
+                        echo wp_kses_post(paginate_links([
                             'base'      => add_query_arg('paged', '%#%'),
                             'format'    => '',
                             'prev_text' => '&laquo;',
                             'next_text' => '&raquo;',
                             'total'     => $totalPages,
                             'current'   => $page,
-                        ]);
+                        ]));
                         ?>
                     </div>
                 </div>
@@ -258,9 +259,9 @@ final class ConsentLogsPage
         }
 
         global $wpdb;
-        $tableName = \Tuedion\CookieConsent\Logs\ConsentLogTable::getTableName();
+        $tableName = esc_sql(\Tuedion\CookieConsent\Logs\ConsentLogTable::getTableName());
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name cannot be prepared in SQL.
         $rows = $wpdb->get_results("SELECT * FROM {$tableName} ORDER BY id DESC LIMIT 50000", ARRAY_A);
         $filename = 'tuedion-consent-logs-' . gmdate('Y-m-d') . '.csv';
 
@@ -297,6 +298,7 @@ final class ConsentLogsPage
             ]);
         }
 
+        // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose -- Streaming directly to php://output for CSV download.
         fclose($out);
         exit;
     }

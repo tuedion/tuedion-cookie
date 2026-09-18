@@ -72,6 +72,7 @@ final class Profiler
             return false;
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only debug query parameter.
         return !empty($_GET['tdcc_safe']) || !empty($_GET['tdcc_bypass']);
     }
 
@@ -84,6 +85,7 @@ final class Profiler
             return false;
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only debug query parameter.
         return self::isBypassed() || !empty($_GET['tdcc_disable_scripts']);
     }
 
@@ -96,6 +98,7 @@ final class Profiler
             return false;
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only debug query parameter.
         return self::isBypassed() || !empty($_GET['tdcc_disable_iframes']);
     }
 
@@ -108,6 +111,7 @@ final class Profiler
             return false;
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only debug query parameter.
         return self::isBypassed() || !empty($_GET['tdcc_disable_gcm']);
     }
 
@@ -120,6 +124,7 @@ final class Profiler
             return false;
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only debug query parameter.
         return self::isBypassed() || !empty($_GET['tdcc_disable_modal']);
     }
 
@@ -132,6 +137,7 @@ final class Profiler
             return false;
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only debug query parameter.
         return self::isBypassed() || !empty($_GET['tdcc_disable_trigger']);
     }
 
@@ -144,6 +150,7 @@ final class Profiler
             return false;
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only debug query parameter.
         if (!empty($_GET['tdcc_debug'])) {
             return true;
         }
@@ -247,7 +254,9 @@ final class Profiler
         $cachePlugins = !empty($summary['cache_plugins']) ? implode(', ', $summary['cache_plugins']) : 'None Detected';
         $jsonData = wp_json_encode($summary, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
-        $currentUrl = (is_ssl() ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? '') . ($_SERVER['REQUEST_URI'] ?? '');
+        $serverHost = isset($_SERVER['HTTP_HOST']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_HOST'])) : '';
+        $serverUri  = isset($_SERVER['REQUEST_URI']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])) : '';
+        $currentUrl = (is_ssl() ? 'https://' : 'http://') . $serverHost . $serverUri;
         $urlWithoutParams = strtok($currentUrl, '?') ?: $currentUrl;
 
         ?>
@@ -336,7 +345,7 @@ final class Profiler
 
         <script data-cfasync="false" data-pagespeed-no-defer data-no-defer="1" data-rocketignore="true">
             (function() {
-                var summary = <?php echo (string) $jsonData; ?>;
+                var summary = <?php echo wp_json_encode($summary); ?>;
                 console.group('🛡️ [Tuedion Cookie Pro Telemetry]');
                 console.log('⚡ Execution Time:', summary.elapsed_ms + ' ms');
                 console.log('💾 Peak PHP Memory:', summary.peak_memory_mb + ' MB');

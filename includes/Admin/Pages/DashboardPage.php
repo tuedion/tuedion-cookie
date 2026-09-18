@@ -42,12 +42,18 @@ final class DashboardPage
                 </div>
                 <div class="tdcc-header-actions">
                     <span class="tdcc-version-tag">
-                        <?php echo esc_html(sprintf(__('v%s', 'tuedion-cookie'), TUEDION_COOKIE_VERSION)); ?>
+                        <?php
+                        /* translators: %s: Plugin version */
+                        echo esc_html(sprintf(__('v%s', 'tuedion-cookie'), TUEDION_COOKIE_VERSION));
+                        ?>
                     </span>
                 </div>
             </header>
 
-            <?php if (isset($_GET['wizard_completed'])): ?>
+            <?php
+            // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only notice display trigger.
+            if (isset($_GET['wizard_completed'])):
+            ?>
                 <div class="notice notice-success is-dismissible tdcc-notice">
                     <p><?php echo esc_html__('Setup wizard completed successfully! Your settings are saved. You can inspect the experience below.', 'tuedion-cookie'); ?></p>
                 </div>
@@ -174,7 +180,12 @@ final class DashboardPage
                         </tr>
                         <tr>
                             <td><span class="dashicons dashicons-yes-alt tdcc-icon-success"></span> <strong><?php echo esc_html__('Language Resolver', 'tuedion-cookie'); ?></strong></td>
-                            <td><?php echo esc_html(sprintf(__('Current locale: %s (WPML, Polylang and Core hooks active)', 'tuedion-cookie'), \Tuedion\CookieConsent\Consent\LanguageResolver::getCurrentLanguage())); ?></td>
+                            <td>
+                                <?php
+                                /* translators: %s: Current site language code */
+                                echo esc_html(sprintf(__('Current locale: %s (WPML, Polylang and Core hooks active)', 'tuedion-cookie'), \Tuedion\CookieConsent\Consent\LanguageResolver::getCurrentLanguage()));
+                                ?>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

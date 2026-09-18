@@ -41,7 +41,6 @@ final class Plugin
 
         $this->booted = true;
 
-        $this->loadTextDomain();
         MigrationRunner::checkAndMigrate();
 
         // Register integrations and cache compatibility
@@ -85,16 +84,5 @@ final class Plugin
 
         // Register frontend consent loader
         Frontend::register();
-    }
-
-    private function loadTextDomain(): void
-    {
-        add_action('init', static function (): void {
-            load_plugin_textdomain(
-                'tuedion-cookie',
-                false,
-                dirname(plugin_basename(TUEDION_COOKIE_FILE)) . '/languages/'
-            );
-        });
     }
 }

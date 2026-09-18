@@ -36,7 +36,7 @@ final class DiagnosticsPage
             wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'tuedion-cookie'));
         }
 
-        $nonce = $_GET['_wpnonce'] ?? $_POST['_wpnonce'] ?? '';
+        $nonce = isset($_GET['_wpnonce']) ? sanitize_key(wp_unslash($_GET['_wpnonce'])) : (isset($_POST['_wpnonce']) ? sanitize_key(wp_unslash($_POST['_wpnonce'])) : '');
         if (!wp_verify_nonce((string) $nonce, 'tdcc_export_support_report_nonce')) {
             wp_die(esc_html__('Security check failed or link expired. Please refresh the page and try again.', 'tuedion-cookie'), 403);
         }
@@ -53,7 +53,7 @@ final class DiagnosticsPage
 
         // Backward-compatible fallback
         if (isset($_GET['action']) && $_GET['action'] === 'tdcc_export_support_report') {
-            $nonce = $_GET['_wpnonce'] ?? $_POST['_wpnonce'] ?? '';
+            $nonce = isset($_GET['_wpnonce']) ? sanitize_key(wp_unslash($_GET['_wpnonce'])) : (isset($_POST['_wpnonce']) ? sanitize_key(wp_unslash($_POST['_wpnonce'])) : '');
             if (wp_verify_nonce((string) $nonce, 'tdcc_export_support_report_nonce')) {
                 SupportReportExporter::streamDownload();
                 exit;
@@ -157,9 +157,22 @@ final class DiagnosticsPage
                                 <td>
                                     <?php if ($consentState['has_cookie']): ?>
                                         <?php if ($consentState['is_revision_current']): ?>
-                                            <span style="color:#16a34a;">&#10004; <?php echo esc_html__('Current (v' . $consentState['revision'] . ')', 'tuedion-cookie'); ?></span>
+                                            <span style="color:#16a34a;">&#10004; <?php
+                                                echo esc_html(sprintf(
+                                                    /* translators: %s: policy revision number */
+                                                    __('Current (v%s)', 'tuedion-cookie'),
+                                                    (string) $consentState['revision']
+                                                ));
+                                            ?></span>
                                         <?php else: ?>
-                                            <span style="color:#dc2626;">&#9888; <?php echo esc_html__('Outdated Revision (v' . $consentState['revision'] . ' vs current v' . $configReport['summary']['revision'] . ') — Banner will re-prompt', 'tuedion-cookie'); ?></span>
+                                            <span style="color:#dc2626;">&#9888; <?php
+                                                echo esc_html(sprintf(
+                                                    /* translators: 1: stored revision number, 2: current config revision number */
+                                                    __('Outdated Revision (v%1$s vs current v%2$s) — Banner will re-prompt', 'tuedion-cookie'),
+                                                    (string) $consentState['revision'],
+                                                    (string) $configReport['summary']['revision']
+                                                ));
+                                            ?></span>
                                         <?php endif; ?>
                                     <?php else: ?>
                                         —

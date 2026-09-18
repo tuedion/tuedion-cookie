@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
 
 final class Compiler
 {
-    public const TRANSIENT_KEY = 'tdcc_runtime_cfg_v131';
+    public const TRANSIENT_KEY = 'tdcc_runtime_cfg_v132';
     public const LEGACY_TRANSIENT_KEY = 'tuedion_cookie_runtime_config';
 
     /**
@@ -42,6 +42,7 @@ final class Compiler
         }
 
         if (isset($wpdb) && $wpdb instanceof \wpdb) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_tdcc_runtime_cfg_%' OR option_name LIKE '_transient_timeout_tdcc_runtime_cfg_%'");
         }
     }

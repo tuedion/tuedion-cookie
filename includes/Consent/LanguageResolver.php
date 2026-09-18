@@ -19,7 +19,9 @@ final class LanguageResolver
         $lang = null;
 
         // 1. Check WPML
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML core integration hook.
         if (has_filter('wpml_current_language')) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML core integration hook.
             $lang = apply_filters('wpml_current_language', null);
         } elseif (defined('ICL_LANGUAGE_CODE')) {
             $lang = (string) ICL_LANGUAGE_CODE;
@@ -34,7 +36,9 @@ final class LanguageResolver
         }
 
         // 3. Check TranslatePress
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- TranslatePress integration hook.
         if (empty($lang) && has_filter('trp_get_current_language')) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- TranslatePress integration hook.
             $trpLang = apply_filters('trp_get_current_language', null);
             if (!empty($trpLang)) {
                 $lang = substr((string) $trpLang, 0, 2);
@@ -78,7 +82,9 @@ final class LanguageResolver
         $languages = [];
 
         // WPML active languages
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML core integration hook.
         if (has_filter('wpml_active_languages')) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML core integration hook.
             $wpmlLangs = apply_filters('wpml_active_languages', null, 'skip_missing=0');
             if (is_array($wpmlLangs)) {
                 foreach ($wpmlLangs as $item) {
@@ -153,7 +159,9 @@ final class LanguageResolver
         }
 
         // 4. WPML detection for WP Privacy Policy page
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML core integration hook.
         if ($wpPrivacyPageId > 0 && has_filter('wpml_object_id')) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML core integration hook.
             $translatedId = apply_filters('wpml_object_id', $wpPrivacyPageId, 'page', true, $lang);
             if ($translatedId && get_post_status($translatedId) === 'publish') {
                 $url = get_permalink($translatedId);
@@ -192,7 +200,9 @@ final class LanguageResolver
                     if ($trId) {
                         $pageId = $trId;
                     }
+                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML core integration hook.
                 } elseif (has_filter('wpml_object_id')) {
+                    // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML core integration hook.
                     $trId = apply_filters('wpml_object_id', $pageId, 'page', true, $lang);
                     if ($trId) {
                         $pageId = $trId;

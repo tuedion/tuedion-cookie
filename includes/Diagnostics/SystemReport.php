@@ -44,7 +44,7 @@ final class SystemReport
             'wordpress_version'     => get_bloginfo('version'),
             'is_multisite'          => is_multisite() ? 'Yes' : 'No',
             'is_ssl'                => is_ssl() ? 'Yes' : 'No',
-            'web_server'            => sanitize_text_field($_SERVER['SERVER_SOFTWARE'] ?? 'Unknown'),
+            'web_server'            => isset($_SERVER['SERVER_SOFTWARE']) ? sanitize_text_field(wp_unslash($_SERVER['SERVER_SOFTWARE'])) : 'Unknown',
             'active_theme'          => sprintf('%s (%s)', $theme->get('Name'), $theme->get('Version')),
             'site_locale'           => get_locale(),
         ];

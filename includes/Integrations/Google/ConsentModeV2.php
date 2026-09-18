@@ -89,8 +89,8 @@ final class ConsentModeV2
         ];
 
         // Format early inline JavaScript
-        $jsonStates = (string) wp_json_encode($defaultStates, JSON_UNESCAPED_SLASHES);
-        $jsonConfig = (string) wp_json_encode($clientConfig, JSON_UNESCAPED_SLASHES);
+        $jsonStates = (string) wp_json_encode($defaultStates, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP);
+        $jsonConfig = (string) wp_json_encode($clientConfig, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP);
 
         $inlineJs = "window.dataLayer = window.dataLayer || [];\n";
         $inlineJs .= "function gtag(){dataLayer.push(arguments);}\n";
@@ -111,10 +111,12 @@ final class ConsentModeV2
         }
 
         // Output script tag with Cloudflare and PageSpeed immunity attributes
+        // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
         printf(
             "<script data-cfasync=\"false\" data-pagespeed-no-defer data-rocketignore=\"true\" id=\"tuedion-cookie-gcm-default\">\n%s</script>\n",
             $inlineJs
         );
+        // phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     /**

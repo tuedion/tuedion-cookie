@@ -34,9 +34,12 @@ final class AdminBarDebugger
         }
 
         $consent = ConsentStateInspector::inspect();
-        $statusText = $consent['has_cookie']
-            ? sprintf(__('Consent: %s', 'tuedion-cookie'), implode(', ', $consent['accepted_categories']))
-            : __('Consent: Not Set / Pending', 'tuedion-cookie');
+        if ($consent['has_cookie']) {
+            /* translators: %s: Comma-separated list of accepted categories */
+            $statusText = sprintf(__('Consent: %s', 'tuedion-cookie'), implode(', ', $consent['accepted_categories']));
+        } else {
+            $statusText = __('Consent: Not Set / Pending', 'tuedion-cookie');
+        }
 
         $rootId = 'tuedion-cookie-debug';
 
@@ -49,20 +52,24 @@ final class AdminBarDebugger
 
         // 2. Subnode: UUID
         if ($consent['has_cookie'] && !empty($consent['consent_uuid'])) {
+            /* translators: %s: Truncated consent UUID */
+            $uuidTitle = sprintf(__('UUID: %s', 'tuedion-cookie'), substr($consent['consent_uuid'], 0, 16) . '...');
             $adminBar->add_node([
                 'parent' => $rootId,
                 'id'     => $rootId . '-uuid',
-                'title'  => sprintf(__('UUID: %s', 'tuedion-cookie'), substr($consent['consent_uuid'], 0, 16) . '...'),
+                'title'  => $uuidTitle,
                 'href'   => admin_url('admin.php?page=tuedion-cookie-logs&s=' . urlencode($consent['consent_uuid'])),
             ]);
         }
 
         // 3. Subnode: Revision
         if ($consent['has_cookie']) {
+            /* translators: %d: Policy revision number */
+            $revTitle = sprintf(__('Policy Revision: v%d', 'tuedion-cookie'), $consent['revision']);
             $adminBar->add_node([
                 'parent' => $rootId,
                 'id'     => $rootId . '-revision',
-                'title'  => sprintf(__('Policy Revision: v%d', 'tuedion-cookie'), $consent['revision']),
+                'title'  => $revTitle,
                 'href'   => admin_url('admin.php?page=tuedion-cookie-diagnostics'),
             ]);
         }

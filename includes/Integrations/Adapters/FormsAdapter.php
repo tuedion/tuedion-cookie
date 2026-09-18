@@ -134,7 +134,7 @@ final class FormsAdapter
         }
 
         if ($hasCaptcha) {
-            echo self::renderCaptchaNotice();
+            echo wp_kses_post(self::renderCaptchaNotice());
         }
     }
 
@@ -175,7 +175,7 @@ final class FormsAdapter
         }
 
         if ($hasCaptcha) {
-            echo self::renderCaptchaNotice();
+            echo wp_kses_post(self::renderCaptchaNotice());
         }
     }
 }

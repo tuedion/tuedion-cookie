@@ -27,7 +27,7 @@ final class SettingsPage
             wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'tuedion-cookie'));
         }
 
-        $nonce = $_GET['_wpnonce'] ?? $_POST['_wpnonce'] ?? '';
+        $nonce = isset($_GET['_wpnonce']) ? sanitize_key(wp_unslash($_GET['_wpnonce'])) : (isset($_POST['_wpnonce']) ? sanitize_key(wp_unslash($_POST['_wpnonce'])) : '');
         if (!wp_verify_nonce((string) $nonce, 'tdcc_export_translations_nonce')) {
             wp_die(esc_html__('Security check failed or link expired. Please refresh the page and try again.', 'tuedion-cookie'), 403);
         }
@@ -56,6 +56,7 @@ final class SettingsPage
         header('Pragma: public');
         header('Content-Length: ' . strlen($exportJson));
 
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Direct JSON stream for file download.
         echo $exportJson;
         exit;
     }
@@ -68,7 +69,7 @@ final class SettingsPage
 
         // Backward-compatible direct fallback
         if (isset($_GET['action']) && $_GET['action'] === 'tdcc_export_translations') {
-            $nonce = $_GET['_wpnonce'] ?? $_POST['_wpnonce'] ?? '';
+            $nonce = isset($_GET['_wpnonce']) ? sanitize_key(wp_unslash($_GET['_wpnonce'])) : (isset($_POST['_wpnonce']) ? sanitize_key(wp_unslash($_POST['_wpnonce'])) : '');
             if (wp_verify_nonce((string) $nonce, 'tdcc_export_translations_nonce')) {
                 self::exportTranslations();
             }
@@ -79,7 +80,8 @@ final class SettingsPage
 
         // Handle JSON Import
         if (isset($_POST['tuedion_cookie_import_translations']) && check_admin_referer('tuedion_cookie_import_nonce', 'tuedion_cookie_nonce')) {
-            $rawJson = wp_unslash($_POST['translation_json'] ?? '');
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated via JSON importer below.
+            $rawJson = isset($_POST['translation_json']) ? wp_unslash($_POST['translation_json']) : '';
             $importResult = TranslationManager::importFromJson($rawJson);
             $notice = $importResult['message'];
             $noticeType = $importResult['success'] ? 'success' : 'error';
@@ -89,7 +91,7 @@ final class SettingsPage
         if (isset($_POST['tuedion_cookie_save']) && check_admin_referer('tuedion_cookie_save_settings', 'tuedion_cookie_nonce')) {
             $settings = Repository::getSettings();
 
-            $newStatus = sanitize_text_field((string) ($_POST['status'] ?? ''));
+            $newStatus = sanitize_text_field(wp_unslash((string) ($_POST['status'] ?? '')));
             if (in_array($newStatus, Schema::ALLOWED_STATUSES, true)) {
                 $settings['status'] = $newStatus;
             }
@@ -102,15 +104,16 @@ final class SettingsPage
             $settings['advanced']['debug_mode']         = !empty($_POST['debug_mode']);
 
             // Legal URLs & Titles save
-            $settings['legal']['privacy_title'] = sanitize_text_field(trim((string) ($_POST['legal_privacy_title'] ?? '')));
-            $settings['legal']['terms_title']   = sanitize_text_field(trim((string) ($_POST['legal_terms_title'] ?? '')));
-            $settings['legal']['privacy_url']   = esc_url_raw(trim((string) ($_POST['legal_privacy_url'] ?? '')));
-            $settings['legal']['terms_url']     = esc_url_raw(trim((string) ($_POST['legal_terms_url'] ?? '')));
+            $settings['legal']['privacy_title'] = sanitize_text_field(wp_unslash($_POST['legal_privacy_title'] ?? ''));
+            $settings['legal']['terms_title']   = sanitize_text_field(wp_unslash($_POST['legal_terms_title'] ?? ''));
+            $settings['legal']['privacy_url']   = esc_url_raw(wp_unslash($_POST['legal_privacy_url'] ?? ''));
+            $settings['legal']['terms_url']     = esc_url_raw(wp_unslash($_POST['legal_terms_url'] ?? ''));
 
             $submittedPrivacyTitles = [];
             if (isset($_POST['legal_privacy_titles']) && is_array($_POST['legal_privacy_titles'])) {
-                foreach ($_POST['legal_privacy_titles'] as $l => $t) {
-                    $clean = sanitize_text_field(trim((string) $t));
+                $cleanPrivacyTitles = (array) map_deep(wp_unslash($_POST['legal_privacy_titles']), 'sanitize_text_field');
+                foreach ($cleanPrivacyTitles as $l => $t) {
+                    $clean = trim((string) $t);
                     if ($clean !== '') {
                         $submittedPrivacyTitles[sanitize_key((string) $l)] = $clean;
                     }
@@ -120,8 +123,9 @@ final class SettingsPage
 
             $submittedPrivacyUrls = [];
             if (isset($_POST['legal_privacy_urls']) && is_array($_POST['legal_privacy_urls'])) {
-                foreach ($_POST['legal_privacy_urls'] as $l => $u) {
-                    $clean = esc_url_raw(trim((string) $u));
+                $cleanPrivacyUrls = (array) map_deep(wp_unslash($_POST['legal_privacy_urls']), 'esc_url_raw');
+                foreach ($cleanPrivacyUrls as $l => $u) {
+                    $clean = trim((string) $u);
                     if ($clean !== '') {
                         $submittedPrivacyUrls[sanitize_key((string) $l)] = $clean;
                     }
@@ -131,8 +135,9 @@ final class SettingsPage
 
             $submittedTermsTitles = [];
             if (isset($_POST['legal_terms_titles']) && is_array($_POST['legal_terms_titles'])) {
-                foreach ($_POST['legal_terms_titles'] as $l => $t) {
-                    $clean = sanitize_text_field(trim((string) $t));
+                $cleanTermsTitles = (array) map_deep(wp_unslash($_POST['legal_terms_titles']), 'sanitize_text_field');
+                foreach ($cleanTermsTitles as $l => $t) {
+                    $clean = trim((string) $t);
                     if ($clean !== '') {
                         $submittedTermsTitles[sanitize_key((string) $l)] = $clean;
                     }
@@ -142,8 +147,9 @@ final class SettingsPage
 
             $submittedTermsUrls = [];
             if (isset($_POST['legal_terms_urls']) && is_array($_POST['legal_terms_urls'])) {
-                foreach ($_POST['legal_terms_urls'] as $l => $u) {
-                    $clean = esc_url_raw(trim((string) $u));
+                $cleanTermsUrls = (array) map_deep(wp_unslash($_POST['legal_terms_urls']), 'esc_url_raw');
+                foreach ($cleanTermsUrls as $l => $u) {
+                    $clean = trim((string) $u);
                     if ($clean !== '') {
                         $submittedTermsUrls[sanitize_key((string) $l)] = $clean;
                     }
@@ -153,13 +159,14 @@ final class SettingsPage
 
             // Google Consent Mode v2 save
             $settings['gcm']['enabled']            = !empty($_POST['gcm_enabled']);
-            $settings['gcm']['wait_for_update']    = max(100, min(5000, (int) ($_POST['gcm_wait_for_update'] ?? 500)));
+            $settings['gcm']['wait_for_update']    = isset($_POST['gcm_wait_for_update']) ? max(100, min(5000, absint(wp_unslash($_POST['gcm_wait_for_update'])))) : 500;
             $settings['gcm']['ads_data_redaction'] = !empty($_POST['gcm_ads_data_redaction']);
             $settings['gcm']['url_passthrough']   = !empty($_POST['gcm_url_passthrough']);
 
             if (isset($_POST['gcm_mapping']) && is_array($_POST['gcm_mapping'])) {
                 $submittedMapping = [];
-                foreach ($_POST['gcm_mapping'] as $sig => $cat) {
+                $cleanMapping = (array) map_deep(wp_unslash($_POST['gcm_mapping']), 'sanitize_key');
+                foreach ($cleanMapping as $sig => $cat) {
                     $submittedMapping[sanitize_key((string) $sig)] = sanitize_key((string) $cat);
                 }
                 $settings['gcm']['mapping'] = $submittedMapping;
@@ -167,15 +174,15 @@ final class SettingsPage
 
             // Consent Logging save
             $settings['logging']['enabled']        = !empty($_POST['logging_enabled']);
-            $settings['logging']['retention_days'] = max(7, min(730, (int) ($_POST['logging_retention_days'] ?? 90)));
+            $settings['logging']['retention_days'] = isset($_POST['logging_retention_days']) ? max(7, min(730, absint(wp_unslash($_POST['logging_retention_days'])))) : 90;
 
             // Scheduled Scanner save
             $settings['scanner']['cron_enabled'] = !empty($_POST['scanner_cron_enabled']);
-            $scannerSchedule = (string) ($_POST['scanner_schedule'] ?? 'weekly');
+            $scannerSchedule = sanitize_key(wp_unslash((string) ($_POST['scanner_schedule'] ?? 'weekly')));
             if (in_array($scannerSchedule, ['daily', 'weekly', 'monthly'], true)) {
                 $settings['scanner']['schedule'] = $scannerSchedule;
             }
-            $settings['scanner']['alert_email'] = sanitize_email((string) ($_POST['scanner_alert_email'] ?? ''));
+            $settings['scanner']['alert_email'] = sanitize_email(wp_unslash((string) ($_POST['scanner_alert_email'] ?? '')));
 
             Repository::updateSettings($settings);
             \Tuedion\CookieConsent\Settings\Compiler::clearCache();

@@ -1,15 +1,15 @@
 === Tuedion Cookie ===
 Contributors: tuedion
 Donate link: https://tuedion.com
-Tags: cookie, consent, gdpr, privacy, cookieconsent, google consent mode
+Tags: cookie, consent, gdpr, privacy, cookieconsent
 Requires at least: 6.2
-Tested up to: 6.7
+Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A professional WordPress integration of Orest Bida's CookieConsent library by Tuedion, featuring Google Consent Mode v2, script & iframe enforcement, persistent privacy trigger, and live preview.
+Fast, local-first cookie consent with Google Consent Mode v2, script & iframe blocking, WCAG accessible UI, and live preview.
 
 == Description ==
 
@@ -61,6 +61,10 @@ Yes. GTM integration is supported either by managing tags with Google Consent Mo
 5. **Diagnostics & Developer Hub:** Runtime configuration inspector, script tracker inventory, and cache hints.
 
 == Changelog ==
+
+= 1.3.2 =
+* Bug Fixed.
+
 
 = 1.3.1 =
 * Scheduled Automated Scanner: Integrated continuous background site crawl with daily/weekly/monthly frequency via WP-Cron.
@@ -161,4 +165,20 @@ Yes. GTM integration is supported either by managing tags with Google Consent Mo
 * Ecosystem adapters for WooCommerce, Elementor, Contact Form 7, WPForms, Gravity Forms, and Fluent Forms.
 * Universal caching compatibility across 12 WordPress performance plugins and Cloudflare Rocket Loader.
 * Diagnostics platform featuring Config Inspector, Script Tracker Inventory, and Support Report Exporter.
+
+== Copyright & Credits ==
+
+This plugin incorporates and bundles open-source software under separate copyright and license conditions:
+
+* CookieConsent (vanilla-cookieconsent) v3.1.0
+  * Author: Orest Bida
+  * Source: https://github.com/orestbida/cookieconsent
+  * License: MIT License (https://opensource.org/licenses/MIT)
+  * Copyright (c) 2024 Orest Bida
+
+* Iframemanager v1.2.5
+  * Author: Orest Bida
+  * Source: https://github.com/orestbida/iframemanager
+  * License: MIT License (https://opensource.org/licenses/MIT)
+  * Copyright (c) Orest Bida
 

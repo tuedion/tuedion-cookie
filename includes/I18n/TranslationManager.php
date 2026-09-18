@@ -31,6 +31,7 @@ final class TranslationManager
 
         // 1. WPML Detection
         if (defined('ICL_SITEPRESS_VERSION')) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WPML core integration hook.
             $wpmlLangs = apply_filters('wpml_active_languages', null, 'skip_missing=0');
             if (is_array($wpmlLangs)) {
                 foreach ($wpmlLangs as $code => $info) {
@@ -300,6 +301,7 @@ final class TranslationManager
 
         return [
             'success' => true,
+            /* translators: %d: Number of imported language translations */
             'message' => sprintf(__('Successfully imported %d language translation(s).', 'tuedion-cookie'), $count),
             'imported_count' => $count,
         ];

@@ -19,8 +19,7 @@ final class Deactivator
     public static function deactivate(bool $network_wide = false): void
     {
         if (is_multisite() && $network_wide) {
-            global $wpdb;
-            $blogIds = $wpdb->get_col("SELECT blog_id FROM {$wpdb->blogs}");
+            $blogIds = get_sites(['fields' => 'ids']);
             $originalBlogId = get_current_blog_id();
 
             if (is_array($blogIds)) {

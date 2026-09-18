@@ -46,12 +46,13 @@ final class LogCleaner
         $cutoffDate = gmdate('Y-m-d H:i:s', time() - ($retentionDays * DAY_IN_SECONDS));
 
         global $wpdb;
-        $tableName = ConsentLogTable::getTableName();
+        $tableName = esc_sql(ConsentLogTable::getTableName());
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name escaped and cannot be parameterized in SQL.
         $deleted = $wpdb->query(
             $wpdb->prepare("DELETE FROM {$tableName} WHERE created_at < %s", $cutoffDate)
         );
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
         return (int) $deleted;
     }
@@ -64,9 +65,9 @@ final class LogCleaner
     public static function purgeAllLogs(): bool
     {
         global $wpdb;
-        $tableName = ConsentLogTable::getTableName();
+        $tableName = esc_sql(ConsentLogTable::getTableName());
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name escaped and cannot be parameterized in SQL.
         $result = $wpdb->query("TRUNCATE TABLE {$tableName}");
 
         return $result !== false;
@@ -80,13 +81,14 @@ final class LogCleaner
     public static function getLogStats(): array
     {
         global $wpdb;
-        $tableName = ConsentLogTable::getTableName();
+        $tableName = esc_sql(ConsentLogTable::getTableName());
 
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- Table name escaped and cannot be parameterized in SQL.
         $row = $wpdb->get_row(
             "SELECT COUNT(*) as total, MIN(created_at) as oldest, MAX(created_at) as newest FROM {$tableName}",
             ARRAY_A
         );
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
 
         return [
             'total_count' => (int) ($row['total'] ?? 0),

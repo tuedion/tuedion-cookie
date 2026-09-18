@@ -45,23 +45,25 @@ final class ExperiencePage
             }
 
             // Banner options
-            $settings['banner']['layout']               = sanitize_text_field((string) ($_POST['banner_layout'] ?? 'box'));
-            $settings['banner']['position']             = sanitize_text_field((string) ($_POST['banner_position'] ?? 'bottom-right'));
+            $settings['banner']['layout']               = sanitize_text_field(wp_unslash((string) ($_POST['banner_layout'] ?? 'box')));
+            $settings['banner']['position']             = sanitize_text_field(wp_unslash((string) ($_POST['banner_position'] ?? 'bottom-right')));
             $settings['banner']['equal_weight_buttons'] = !empty($_POST['equal_weight_buttons']);
             $settings['banner']['show_reject_button']   = !empty($_POST['show_reject_button']);
             $settings['banner']['show_manage_button']   = !empty($_POST['show_manage_button']);
 
             // Preferences options
-            $settings['preferences']['layout']   = sanitize_text_field((string) ($_POST['pref_layout'] ?? 'box'));
-            $settings['preferences']['position'] = sanitize_text_field((string) ($_POST['pref_position'] ?? 'right'));
+            $settings['preferences']['layout']   = sanitize_text_field(wp_unslash((string) ($_POST['pref_layout'] ?? 'box')));
+            $settings['preferences']['position'] = sanitize_text_field(wp_unslash((string) ($_POST['pref_position'] ?? 'right')));
 
             // Theme options (robust hex text vs color picker sync)
             $rawTheme = [
-                'preset' => sanitize_text_field((string) ($_POST['theme_preset'] ?? 'light')),
+                'preset' => sanitize_text_field(wp_unslash((string) ($_POST['theme_preset'] ?? 'light'))),
             ];
             foreach (ThemeManager::COLOR_TOKENS as $token => $defaultHex) {
-                $hexVal   = trim((string) ($_POST[$token . '_hex'] ?? ''));
-                $colorVal = trim((string) ($_POST[$token] ?? ''));
+                $rawHex   = isset($_POST[$token . '_hex']) ? sanitize_text_field(wp_unslash($_POST[$token . '_hex'])) : '';
+                $rawCol   = isset($_POST[$token]) ? sanitize_text_field(wp_unslash($_POST[$token])) : '';
+                $hexVal   = trim($rawHex);
+                $colorVal = trim($rawCol);
 
                 if ($hexVal !== '' && $hexVal[0] !== '#') {
                     $hexVal = '#' . $hexVal;
@@ -86,29 +88,29 @@ final class ExperiencePage
 
             // Trigger options
             $settings['trigger']['enabled']           = !empty($_POST['trigger_enabled']);
-            $settings['trigger']['mode']              = sanitize_text_field((string) ($_POST['trigger_mode'] ?? 'both'));
-            $settings['trigger']['position']          = sanitize_text_field((string) ($_POST['trigger_position'] ?? 'bottom-left'));
-            $settings['trigger']['offset_x']          = max(0, min(300, (int) ($_POST['trigger_offset_x'] ?? 20)));
-            $settings['trigger']['offset_y']          = max(0, min(300, (int) ($_POST['trigger_offset_y'] ?? 20)));
-            $settings['trigger']['mobile_position']   = sanitize_text_field((string) ($_POST['trigger_mobile_position'] ?? 'bottom-left'));
-            $settings['trigger']['mobile_offset_x']   = max(0, min(300, (int) ($_POST['trigger_mobile_offset_x'] ?? 16)));
-            $settings['trigger']['mobile_offset_y']   = max(0, min(300, (int) ($_POST['trigger_mobile_offset_y'] ?? 16)));
-            $settings['trigger']['visibility_policy'] = sanitize_text_field((string) ($_POST['trigger_visibility_policy'] ?? 'after_choice'));
-            $settings['trigger']['path_exclusions']   = sanitize_textarea_field((string) ($_POST['trigger_path_exclusions'] ?? ''));
-            $settings['trigger']['aria_label']        = sanitize_text_field((string) ($_POST['trigger_aria_label'] ?? ''));
+            $settings['trigger']['mode']              = sanitize_text_field(wp_unslash((string) ($_POST['trigger_mode'] ?? 'both')));
+            $settings['trigger']['position']          = sanitize_text_field(wp_unslash((string) ($_POST['trigger_position'] ?? 'bottom-left')));
+            $settings['trigger']['offset_x']          = isset($_POST['trigger_offset_x']) ? max(0, min(300, absint(wp_unslash($_POST['trigger_offset_x'])))) : 20;
+            $settings['trigger']['offset_y']          = isset($_POST['trigger_offset_y']) ? max(0, min(300, absint(wp_unslash($_POST['trigger_offset_y'])))) : 20;
+            $settings['trigger']['mobile_position']   = sanitize_text_field(wp_unslash((string) ($_POST['trigger_mobile_position'] ?? 'bottom-left')));
+            $settings['trigger']['mobile_offset_x']   = isset($_POST['trigger_mobile_offset_x']) ? max(0, min(300, absint(wp_unslash($_POST['trigger_mobile_offset_x'])))) : 16;
+            $settings['trigger']['mobile_offset_y']   = isset($_POST['trigger_mobile_offset_y']) ? max(0, min(300, absint(wp_unslash($_POST['trigger_mobile_offset_y'])))) : 16;
+            $settings['trigger']['visibility_policy'] = sanitize_text_field(wp_unslash((string) ($_POST['trigger_visibility_policy'] ?? 'after_choice')));
+            $settings['trigger']['path_exclusions']   = sanitize_textarea_field(wp_unslash((string) ($_POST['trigger_path_exclusions'] ?? '')));
+            $settings['trigger']['aria_label']        = sanitize_text_field(wp_unslash((string) ($_POST['trigger_aria_label'] ?? '')));
 
             // Legal Policy options (Tab 5)
             if (isset($_POST['legal_privacy_title'])) {
-                $settings['legal']['privacy_title'] = sanitize_text_field(trim((string) $_POST['legal_privacy_title']));
+                $settings['legal']['privacy_title'] = sanitize_text_field(wp_unslash($_POST['legal_privacy_title']));
             }
             if (isset($_POST['legal_privacy_url'])) {
-                $settings['legal']['privacy_url'] = esc_url_raw(trim((string) $_POST['legal_privacy_url']));
+                $settings['legal']['privacy_url'] = esc_url_raw(wp_unslash($_POST['legal_privacy_url']));
             }
             if (isset($_POST['legal_terms_title'])) {
-                $settings['legal']['terms_title'] = sanitize_text_field(trim((string) $_POST['legal_terms_title']));
+                $settings['legal']['terms_title'] = sanitize_text_field(wp_unslash($_POST['legal_terms_title']));
             }
             if (isset($_POST['legal_terms_url'])) {
-                $settings['legal']['terms_url'] = esc_url_raw(trim((string) $_POST['legal_terms_url']));
+                $settings['legal']['terms_url'] = esc_url_raw(wp_unslash($_POST['legal_terms_url']));
             }
 
             // Validate and Save
@@ -143,7 +145,10 @@ final class ExperiencePage
                         <?php echo esc_html($status === Schema::STATUS_ENABLED ? __('Active (Published)', 'tuedion-cookie') : __('Draft Mode', 'tuedion-cookie')); ?>
                     </span>
                     <span class="tdcc-version-tag">
-                        <?php echo esc_html(sprintf(__('Revision %d', 'tuedion-cookie'), $revision)); ?>
+                        <?php
+                        /* translators: %d: Revision number */
+                        echo esc_html(sprintf(__('Revision %d', 'tuedion-cookie'), $revision));
+                        ?>
                     </span>
                 </div>
             </header>
@@ -514,7 +519,12 @@ final class ExperiencePage
                         <p>
                             <label for="bump_revision" class="tdcc-bump-label">
                                 <input type="checkbox" name="bump_revision" id="bump_revision" value="1">
-                                <strong><?php echo esc_html(sprintf(__('Increment revision to %d on next save (Prompt existing visitors again)', 'tuedion-cookie'), $revision + 1)); ?></strong>
+                                <strong>
+                                    <?php
+                                    /* translators: %d: Next revision number */
+                                    echo esc_html(sprintf(__('Increment revision to %d on next save (Prompt existing visitors again)', 'tuedion-cookie'), $revision + 1));
+                                    ?>
+                                </strong>
                             </label>
                         </p>
 

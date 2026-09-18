@@ -1,7 +1,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Tuedion Cookie 1.3.1\n"
+"Project-Id-Version: Tuedion Cookie 1.3.2\n"
 "Report-Msgid-Bugs-To: https://tuedion.com\n"
 "POT-Creation-Date: 2026-09-17 14:05+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -51,7 +51,7 @@ msgstr "+ Tercihlere Ekle"
 msgid "1. Base Surfaces & Typography"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:361
+#: includes/Admin/Pages/DiagnosticsPage.php:374
 msgid "1. Register Custom Service Recipe via PHP:"
 msgstr ""
 
@@ -59,7 +59,7 @@ msgstr ""
 msgid "12 Engines Supported"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:330
+#: includes/Admin/Pages/DiagnosticsPage.php:343
 msgid "12 performance plugins are actively monitored to prevent delayed JavaScript execution or script merging from breaking cookie consent."
 msgstr ""
 
@@ -67,15 +67,15 @@ msgstr ""
 msgid "2. Interactive Buttons & Controls"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:374
+#: includes/Admin/Pages/DiagnosticsPage.php:387
 msgid "2. Map Enqueued Script to Category via Filter:"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:382
+#: includes/Admin/Pages/DiagnosticsPage.php:395
 msgid "3. Map Embedded Iframe to Category via Filter:"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:390
+#: includes/Admin/Pages/DiagnosticsPage.php:403
 msgid "4. JavaScript Client-side Event Bridge Listeners:"
 msgstr ""
 
@@ -272,7 +272,7 @@ msgstr ""
 msgid "Audit Viewer"
 msgstr "Denetim Görüntüleyici"
 
-#: includes/Admin/Pages/DiagnosticsPage.php:228
+#: includes/Admin/Pages/DiagnosticsPage.php:241
 msgid "Audit of all scripts registered in the WordPress execution pipeline and their consent enforcement status."
 msgstr ""
 
@@ -385,7 +385,7 @@ msgstr ""
 msgid "Cache & Optimization Hints"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:328
+#: includes/Admin/Pages/DiagnosticsPage.php:341
 msgid "Cache Engine Compatibility & Minification Hints"
 msgstr ""
 
@@ -470,7 +470,7 @@ msgstr ""
 msgid "Classic Box (Standard)"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:235
+#: includes/Admin/Pages/DiagnosticsPage.php:248
 msgid "Classification"
 msgstr ""
 
@@ -494,7 +494,7 @@ msgstr ""
 msgid "Cloudflare CDN detected: Ensure Rocket Loader does not alter consent scripts. Tuedion Cookie applies data-cfasync=\"false\" to all consent tags."
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:177
+#: includes/Admin/Pages/DiagnosticsPage.php:190
 msgid "Compiled Runtime Configuration (window.tuedionCookieConfig)"
 msgstr ""
 
@@ -681,7 +681,7 @@ msgstr "Kopyalandı!"
 msgid "Copy"
 msgstr "Kopyala"
 
-#: includes/Admin/Pages/DiagnosticsPage.php:255
+#: includes/Admin/Pages/DiagnosticsPage.php:268
 msgid "Core / Library (Exempt)"
 msgstr ""
 
@@ -692,6 +692,11 @@ msgstr ""
 #: includes/Settings/ThemeManager.php:76
 msgid "Corporate Navy"
 msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:163
+#, php-format
+msgid "Current (v%s)"
+msgstr "Güncel (v%s)"
 
 #: includes/Admin/Pages/ExperiencePage.php:509
 msgid "Current Published Revision:"
@@ -755,7 +760,7 @@ msgstr ""
 msgid "Default Category"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:294
+#: includes/Admin/Pages/DiagnosticsPage.php:307
 msgid "Default Pre-Consent State"
 msgstr ""
 
@@ -853,7 +858,7 @@ msgstr ""
 msgid "Developer Hooks & API"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:356
+#: includes/Admin/Pages/DiagnosticsPage.php:369
 msgid "Developer Platform & Custom Recipe API"
 msgstr ""
 
@@ -926,7 +931,7 @@ msgstr ""
 msgid "Drawer Position"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:285
+#: includes/Admin/Pages/DiagnosticsPage.php:298
 msgid "Duplicate Site Kit Risk:"
 msgstr ""
 
@@ -978,11 +983,11 @@ msgstr ""
 msgid "Enabled (Active on frontend)"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:236
+#: includes/Admin/Pages/DiagnosticsPage.php:249
 msgid "Enforced Category"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:226
+#: includes/Admin/Pages/DiagnosticsPage.php:239
 msgid "Enqueued Scripts Inventory"
 msgstr ""
 
@@ -1022,7 +1027,7 @@ msgstr ""
 msgid "Example:"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:341
+#: includes/Admin/Pages/DiagnosticsPage.php:354
 msgid "Exclusion Identifier Patterns Registered:"
 msgstr ""
 
@@ -1110,7 +1115,7 @@ msgstr ""
 msgid "Functionality:"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:292
+#: includes/Admin/Pages/DiagnosticsPage.php:305
 msgid "GCM v2 Signal"
 msgstr ""
 
@@ -1150,7 +1155,7 @@ msgstr ""
 msgid "Google Consent Mode v2"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:278
+#: includes/Admin/Pages/DiagnosticsPage.php:291
 msgid "Google Consent Mode v2 & Google Site Kit Diagnostics"
 msgstr ""
 
@@ -1186,7 +1191,7 @@ msgstr ""
 msgid "HTML Attribute Alternative:"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:207
+#: includes/Admin/Pages/DiagnosticsPage.php:220
 msgid "Handle"
 msgstr ""
 
@@ -1410,7 +1415,7 @@ msgstr "Çerez Tercihlerini Yönet"
 msgid "Managed Services"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:245
+#: includes/Admin/Pages/DiagnosticsPage.php:258
 msgid "Managed by Recipe"
 msgstr ""
 
@@ -1422,7 +1427,7 @@ msgstr "Manuel Tarayıcı"
 msgid "Map the 7 standardized Google signals to your plugin consent categories."
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:293
+#: includes/Admin/Pages/DiagnosticsPage.php:306
 msgid "Mapped Category"
 msgstr ""
 
@@ -1590,6 +1595,11 @@ msgstr ""
 #: includes/Admin/Pages/SettingsPage.php:507
 msgid "Optional language code override."
 msgstr ""
+
+#: includes/Admin/Pages/DiagnosticsPage.php:171
+#, php-format
+msgid "Outdated Revision (v%1$s vs current v%2$s) — Banner will re-prompt"
+msgstr "Eski Revizyon (v%1$s / güncel v%2$s) — Başlık tekrar gösterilecek"
 
 #: includes/Admin/Pages/SettingsPage.php:462
 msgid "Outputs an all-in-one compliance section: categorized tables (Name, Domain, Lifespan/Duration, Purpose) for all active cookies and a \"Change your consent\" modal opener button."
@@ -1872,7 +1882,7 @@ msgstr ""
 msgid "Script Enforcement"
 msgstr "Komut Dosyası Engelleme"
 
-#: includes/Admin/Pages/DiagnosticsPage.php:234
+#: includes/Admin/Pages/DiagnosticsPage.php:247
 msgid "Script Handle"
 msgstr ""
 
@@ -1880,7 +1890,7 @@ msgstr ""
 msgid "Script Inventory & Trackers"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:208
+#: includes/Admin/Pages/DiagnosticsPage.php:221
 msgid "Script URL"
 msgstr ""
 
@@ -2039,7 +2049,7 @@ msgstr ""
 msgid "SiteGround Optimizer is active: JS combine and minify exclusions are hooked."
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:237
+#: includes/Admin/Pages/DiagnosticsPage.php:250
 msgid "Source URL / Path"
 msgstr ""
 
@@ -2093,7 +2103,7 @@ msgstr ""
 msgid "Successfully imported %d language translation(s)."
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:209
+#: includes/Admin/Pages/DiagnosticsPage.php:222
 msgid "Suggested Category"
 msgstr ""
 
@@ -2151,7 +2161,7 @@ msgstr ""
 msgid "The default language \"%s\" is not defined in translations."
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:202
+#: includes/Admin/Pages/DiagnosticsPage.php:215
 msgid "The following third-party scripts originate from known tracking/advertising domains but have not been mapped to any consent recipe. Visitors may be tracked before consent unless these scripts are assigned to a category."
 msgstr ""
 
@@ -2159,7 +2169,7 @@ msgstr ""
 msgid "Theme & Styling"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:265
+#: includes/Admin/Pages/DiagnosticsPage.php:278
 msgid "Theme / Plugin UI"
 msgstr ""
 
@@ -2171,7 +2181,7 @@ msgstr ""
 msgid "These URLs are embedded in the consent modal footer and legal notices."
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:343
+#: includes/Admin/Pages/DiagnosticsPage.php:356
 msgid "These strings are injected into delay/defer/combine exclusion filters across all active optimizers:"
 msgstr ""
 
@@ -2179,7 +2189,7 @@ msgstr ""
 msgid "Third-party session"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:179
+#: includes/Admin/Pages/DiagnosticsPage.php:192
 msgid "This JSON payload is injected into the document head and consumed by Orest Bida vanilla-cookieconsent v3.1.0."
 msgstr ""
 
@@ -2207,7 +2217,7 @@ msgstr ""
 msgid "Time Google tags wait for consent state update before firing default ping (recommended: 500ms)."
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:317
+#: includes/Admin/Pages/DiagnosticsPage.php:330
 msgid "Timing & Ingestion Rule:"
 msgstr ""
 
@@ -2285,7 +2295,7 @@ msgstr ""
 msgid "Tuedion Cookie automatically interfaces with the active WordPress ecosystem to protect core site functions, avoid broken checkouts or forms, and govern third-party trackers declaratively."
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:319
+#: includes/Admin/Pages/DiagnosticsPage.php:332
 msgid "Tuedion Cookie hooks GCM v2 default signals at wp_head priority 0. This guarantees that Google tags (gtag.js / GTM) will always read default \"denied\" states before transmitting hits."
 msgstr ""
 
@@ -2380,7 +2390,7 @@ msgstr ""
 msgid "Uninstall Cleanup"
 msgstr "Kaldırma Temizliği"
 
-#: includes/Admin/Pages/DiagnosticsPage.php:200
+#: includes/Admin/Pages/DiagnosticsPage.php:213
 msgid "Unmanaged External Trackers Detected!"
 msgstr ""
 
@@ -2400,7 +2410,7 @@ msgstr ""
 msgid "Upstream Project"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:358
+#: includes/Admin/Pages/DiagnosticsPage.php:371
 msgid "Use these declarative hooks, helper functions, and programmatic APIs to customize consent behavior."
 msgstr ""
 
@@ -2408,7 +2418,7 @@ msgstr ""
 msgid "User language, video embeds, and preferences."
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:280
+#: includes/Admin/Pages/DiagnosticsPage.php:293
 msgid "Verification of pre-consent default signals, tag ordering in document head, and duplicate tag prevention."
 msgstr ""
 
@@ -2453,7 +2463,7 @@ msgstr ""
 msgid "Wait for Update (ms)"
 msgstr ""
 
-#: includes/Admin/Pages/DiagnosticsPage.php:185
+#: includes/Admin/Pages/DiagnosticsPage.php:198
 msgid "Warning:"
 msgstr ""
 

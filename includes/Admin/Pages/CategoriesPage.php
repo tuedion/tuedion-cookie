@@ -68,6 +68,7 @@ final class CategoriesPage
             if (($es['id'] ?? '') === $presetKey) {
                 wp_send_json_success([
                     'already_exists' => true,
+                    /* translators: %s: Service name */
                     'message'        => sprintf(esc_html__('Service "%s" is already configured.', 'tuedion-cookie'), $recipe['name'] ?? $presetKey),
                     'service'        => $es,
                     'preset_key'     => $presetKey,
@@ -108,8 +109,11 @@ final class CategoriesPage
             'tuedion_delete_service'
         );
 
+        /* translators: %s: Service name */
+        $addedMsg = sprintf(esc_html__('Service "%s" added to your cookie preferences.', 'tuedion-cookie'), $newService['label']);
+
         wp_send_json_success([
-            'message'        => sprintf(esc_html__('Service "%s" added to your cookie preferences.', 'tuedion-cookie'), $newService['label']),
+            'message'        => $addedMsg,
             'service'        => $newService,
             'preset_key'     => $presetKey,
             'delete_url'     => $deleteUrl,
@@ -173,9 +177,9 @@ final class CategoriesPage
 
         // 1. Handle Add / Edit Category
         if (isset($_POST['tuedion_save_category']) && check_admin_referer('tuedion_category_action', 'tuedion_category_nonce')) {
-            $catId = sanitize_key((string) ($_POST['cat_id'] ?? ''));
-            $catLabel = sanitize_text_field((string) ($_POST['cat_label'] ?? ''));
-            $catDesc = Validator::sanitizeHtml((string) ($_POST['cat_description'] ?? ''));
+            $catId = sanitize_key(wp_unslash((string) ($_POST['cat_id'] ?? '')));
+            $catLabel = sanitize_text_field(wp_unslash((string) ($_POST['cat_label'] ?? '')));
+            $catDesc = wp_kses_post(wp_unslash((string) ($_POST['cat_description'] ?? '')));
             $isReadOnly = !empty($_POST['cat_read_only']) || $catId === 'necessary';
             $isEnabled = $isReadOnly || !empty($_POST['cat_enabled']);
 
@@ -260,10 +264,10 @@ final class CategoriesPage
 
         // 3. Handle Add / Edit Service
         if (isset($_POST['tuedion_save_service']) && check_admin_referer('tuedion_service_action', 'tuedion_service_nonce')) {
-            $svcId = sanitize_key((string) ($_POST['svc_id'] ?? ''));
-            $svcLabel = sanitize_text_field((string) ($_POST['svc_label'] ?? ''));
-            $svcCategory = sanitize_key((string) ($_POST['svc_category'] ?? ''));
-            $rawCookies = sanitize_text_field((string) ($_POST['svc_cookies'] ?? ''));
+            $svcId = sanitize_key(wp_unslash((string) ($_POST['svc_id'] ?? '')));
+            $svcLabel = sanitize_text_field(wp_unslash((string) ($_POST['svc_label'] ?? '')));
+            $svcCategory = sanitize_key(wp_unslash((string) ($_POST['svc_category'] ?? '')));
+            $rawCookies = sanitize_text_field(wp_unslash((string) ($_POST['svc_cookies'] ?? '')));
             $cookiesList = array_values(array_filter(array_map('trim', explode(',', $rawCookies))));
 
             if (!empty($svcId) && !empty($svcLabel) && !empty($svcCategory)) {
@@ -321,7 +325,8 @@ final class CategoriesPage
             $svcCount = (int) ($scanResult['stats']['detected_services_count'] ?? 0);
             $cookieCount = (int) ($scanResult['stats']['detected_cookies_count'] ?? 0);
             $notice = sprintf(
-                esc_html__('Website scan completed! Detected %d active services and %d cookies on your site.', 'tuedion-cookie'),
+                /* translators: 1: Number of services, 2: Number of cookies */
+                esc_html__('Website scan completed! Detected %1$d active services and %2$d cookies on your site.', 'tuedion-cookie'),
                 $svcCount,
                 $cookieCount
             );
@@ -332,6 +337,7 @@ final class CategoriesPage
         if (isset($_POST['tuedion_sync_detected_services']) && check_admin_referer('tuedion_sync_action', 'tuedion_sync_nonce')) {
             $syncedCount = CookieScanner::syncDetectedServicesToSettings();
             $notice = sprintf(
+                /* translators: %d: Number of synchronized services */
                 esc_html__('%d detected services have been synchronized to your active cookie preferences!', 'tuedion-cookie'),
                 $syncedCount
             );
@@ -340,7 +346,7 @@ final class CategoriesPage
 
         // 7. Handle 1-Click Add Preset/Detected Service
         if (isset($_POST['tuedion_add_preset_service']) && check_admin_referer('tuedion_add_preset_action', 'tuedion_add_preset_nonce')) {
-            $presetKey = sanitize_key((string) ($_POST['preset_key'] ?? ''));
+            $presetKey = sanitize_key(wp_unslash((string) ($_POST['preset_key'] ?? '')));
             $allRecipes = RecipeRegistry::getAll();
             if (isset($allRecipes[$presetKey])) {
                 $recipe = $allRecipes[$presetKey];
@@ -370,6 +376,7 @@ final class CategoriesPage
                     $settings['services'] = $existingServices;
                     Repository::updateSettings($settings);
                     Compiler::clearCache();
+                    /* translators: %s: Service name */
                     $notice = sprintf(esc_html__('Service "%s" added to your cookie preferences.', 'tuedion-cookie'), $recipe['name']);
                     $noticeType = 'success';
                 }
@@ -642,7 +649,10 @@ final class CategoriesPage
                                 </h3>
                                 <p>
                                     <?php if (!empty($lastScanDate)): ?>
-                                        <?php echo esc_html(sprintf(__('Last scan: %s (%s)', 'tuedion-cookie'), $lastScanDate, $lastScanHuman)); ?>
+                                        <?php
+                                        /* translators: 1: Scan date, 2: Human readable relative time */
+                                        echo esc_html(sprintf(__('Last scan: %1$s (%2$s)', 'tuedion-cookie'), $lastScanDate, $lastScanHuman));
+                                        ?>
                                     <?php else: ?>
                                         <?php echo esc_html__('No scan executed yet. Run a site scan to detect active services and cookies.', 'tuedion-cookie'); ?>
                                     <?php endif; ?>
@@ -651,7 +661,10 @@ final class CategoriesPage
                                     <?php if ($cronEnabled): ?>
                                         <span class="tdcc-badge" style="display:inline-flex; align-items:center; gap:5px; font-weight:600; font-size:11px; padding:3px 8px; border-radius:4px; background:#dcfce7; color:#15803d; border:1px solid #86efac;">
                                             <span class="dashicons dashicons-backup" style="font-size:13px; width:13px; height:13px; line-height:13px;"></span>
-                                            <?php echo esc_html(sprintf(__('WP-Cron Auto-Scan: Active (%s)', 'tuedion-cookie'), $cronScheduleLabel)); ?>
+                                            <?php
+                                            /* translators: %s: Cron schedule frequency label */
+                                            echo esc_html(sprintf(__('WP-Cron Auto-Scan: Active (%s)', 'tuedion-cookie'), $cronScheduleLabel));
+                                            ?>
                                         </span>
                                     <?php else: ?>
                                         <span class="tdcc-badge" style="display:inline-flex; align-items:center; gap:5px; font-weight:600; font-size:11px; padding:3px 8px; border-radius:4px; background:#f1f5f9; color:#64748b; border:1px solid #cbd5e1;">

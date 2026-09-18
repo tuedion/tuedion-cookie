@@ -326,6 +326,7 @@ final class RecipeRegistry
                 ],
                 'domains'          => [
                     'google.com/recaptcha/',
+                    // phpcs:ignore PluginCheck.CodeAnalysis.Offloading.OffloadedContent -- Tracker detection pattern, not enqueued assets.
                     'gstatic.com/recaptcha/',
                 ],
                 'auto_clear'       => [
@@ -358,6 +359,7 @@ final class RecipeRegistry
                     'cloudflare-turnstile',
                 ],
                 'domains'          => [
+                    // phpcs:ignore PluginCheck.CodeAnalysis.Offloading.OffloadedContent -- Tracker detection pattern, not enqueued assets.
                     'challenges.cloudflare.com/turnstile',
                 ],
                 'auto_clear'       => [],

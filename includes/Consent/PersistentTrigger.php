@@ -26,8 +26,8 @@ final class PersistentTrigger
             return false;
         }
 
-        $currentUri = (string) ($_SERVER['REQUEST_URI'] ?? '/');
-        $currentPath = parse_url($currentUri, PHP_URL_PATH) ?: '/';
+        $currentUri = isset($_SERVER['REQUEST_URI']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])) : '/';
+        $currentPath = wp_parse_url($currentUri, PHP_URL_PATH) ?: '/';
 
         $lines = explode("\n", str_replace("\r", "", $exclusions));
         foreach ($lines as $line) {

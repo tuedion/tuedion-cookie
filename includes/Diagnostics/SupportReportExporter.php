@@ -73,7 +73,7 @@ final class SupportReportExporter
                 'schema_version'         => get_option(Schema::SCHEMA_VERSION_OPTION, '0.0.0'),
                 'wordpress_version'      => get_bloginfo('version'),
                 'php_version'            => PHP_VERSION,
-                'server_software'        => sanitize_text_field((string) ($_SERVER['SERVER_SOFTWARE'] ?? 'unknown')),
+                'server_software'        => isset($_SERVER['SERVER_SOFTWARE']) ? sanitize_text_field(wp_unslash($_SERVER['SERVER_SOFTWARE'])) : 'unknown',
                 'php_memory_limit'       => ini_get('memory_limit'),
                 'php_max_execution_time' => ini_get('max_execution_time'),
                 'multisite'              => is_multisite(),
@@ -157,6 +157,7 @@ final class SupportReportExporter
         header('Pragma: public');
         header('Content-Length: ' . strlen($json));
 
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Direct JSON stream for file download.
         echo $json;
         exit;
     }
