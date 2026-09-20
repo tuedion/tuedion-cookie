@@ -1450,6 +1450,7 @@ body.toplevel_page_tuedion-cookie .update-nag,
     100% { transform: scale(1); }
 }
 
+.tdcc-spin,
 .tdcc-add-preset-btn .dashicons.dashicons-spin,
 #tdcc-sync-detected-btn .dashicons.dashicons-spin {
     animation: tdccSpin 1s linear infinite;
@@ -1458,4 +1459,5 @@ body.toplevel_page_tuedion-cookie .update-nag,
 @keyframes tdccSpin {
     100% { transform: rotate(360deg); }
 }
+
 

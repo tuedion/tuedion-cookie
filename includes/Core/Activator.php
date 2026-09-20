@@ -99,9 +99,6 @@ final class Activator
             wp_safe_redirect($wizardUrl);
             exit;
         }
-
-        echo '<script>window.location.href = ' . wp_json_encode($wizardUrl) . ';</script>';
-        exit;
     }
 }
 

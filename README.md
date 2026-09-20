@@ -2,7 +2,7 @@
 
 [![WordPress Version](https://img.shields.io/badge/WordPress-%3E%3D%206.2-blue.svg?style=flat-square&logo=wordpress)](https://wordpress.org)
 [![PHP Version](https://img.shields.io/badge/PHP-%3E%3D%208.2-777bb4.svg?style=flat-square&logo=php)](https://php.net)
-[![Stable Release](https://img.shields.io/badge/version-1.3.2-success.svg?style=flat-square)](https://github.com)
+[![Stable Release](https://img.shields.io/badge/version-1.3.3-success.svg?style=flat-square)](https://github.com/tuedion/tuedion-cookie)
 [![Accessibility](https://img.shields.io/badge/WCAG-2.2%20AA%20Compliant-green.svg?style=flat-square)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 [![Google Consent Mode](https://img.shields.io/badge/Google%20Consent%20Mode-v2%20Ready-F4B400.svg?style=flat-square&logo=google)](https://developers.google.com/tag-platform/security/guides/consent)
 [![License](https://img.shields.io/badge/License-GPLv2%20or%20later-orange.svg?style=flat-square)](https://www.gnu.org/licenses/gpl-2.0.html)
@@ -182,6 +182,14 @@ Tuedion Cookie includes ready-to-use shortcodes for your Cookie Policy and Priva
 ---
 
 ## 📝 Changelog
+
+### = 1.3.3 =
+* **Security & Isolation:** Hardened Cookie Scanner to extract non-sensitive cookie names only; isolated WordPress authentication and session cookies.
+* **postMessage Validation:** Enforced strict `window.location.origin` target and receiver verification, eliminating wildcard targets.
+* **AJAX Hardening:** Added strict HTTP method verification, 200KB payload limit, and granular type-based sanitization for scanner data.
+* **WordPress Standards:** Replaced inline scripts, styles, and redirects with WordPress Enqueue API and `wp_safe_redirect()`.
+* **Enforcer & Registry Hardening:** Implemented strict attribute whitelist in `ScriptEnforcer` and host-aware domain matching in `RecipeRegistry`.
+* **Transparency:** Added detailed offline signature disclosures in documentation.
 
 ### = 1.3.2 =
 * **Cache Busting:** Incremented runtime transient cache key to `v132`.

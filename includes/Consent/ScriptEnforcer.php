@@ -51,6 +51,22 @@ final class ScriptEnforcer
         'wc-add-to-cart',
     ];
 
+    /**
+     * Strict whitelist of permitted HTML attributes for dynamically generated script tags.
+     */
+    private const ALLOWED_ATTRIBUTES = [
+        'async',
+        'defer',
+        'crossorigin',
+        'referrerpolicy',
+        'id',
+        'class',
+        'integrity',
+        'data-type',
+        'fetchpriority',
+        'nonce',
+    ];
+
     public static function register(): void
     {
         add_filter('script_loader_tag', [self::class, 'enforceScriptTag'], 99, 3);
@@ -237,10 +253,15 @@ final class ScriptEnforcer
     {
         $attrString = '';
         foreach ($attributes as $key => $val) {
+            $keyLower = strtolower(trim((string) $key));
+            if (!in_array($keyLower, self::ALLOWED_ATTRIBUTES, true)) {
+                continue;
+            }
+
             if ($val === true) {
-                $attrString .= ' ' . esc_attr($key);
+                $attrString .= ' ' . esc_attr($keyLower);
             } elseif ($val !== false && $val !== null) {
-                $attrString .= sprintf(' %s="%s"', esc_attr($key), esc_attr((string) $val));
+                $attrString .= sprintf(' %s="%s"', esc_attr($keyLower), esc_attr((string) $val));
             }
         }
 
@@ -270,14 +291,22 @@ final class ScriptEnforcer
     {
         $attrString = '';
         foreach ($attributes as $key => $val) {
+            $keyLower = strtolower(trim((string) $key));
+            if (!in_array($keyLower, self::ALLOWED_ATTRIBUTES, true)) {
+                continue;
+            }
+
             if ($val === true) {
-                $attrString .= ' ' . esc_attr($key);
+                $attrString .= ' ' . esc_attr($keyLower);
             } elseif ($val !== false && $val !== null) {
-                $attrString .= sprintf(' %s="%s"', esc_attr($key), esc_attr((string) $val));
+                $attrString .= sprintf(' %s="%s"', esc_attr($keyLower), esc_attr((string) $val));
             }
         }
 
         $serviceAttr = $service !== null ? sprintf(' data-service="%s"', esc_attr($service)) : '';
+
+        // Prevent premature tag breakout
+        $safeCode = str_replace('</script>', '<\/script>', $code);
 
         // phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Helpers generating consent-blocked plain text script tags.
         return sprintf(
@@ -285,7 +314,7 @@ final class ScriptEnforcer
             esc_attr($category),
             $serviceAttr,
             $attrString,
-            $code
+            $safeCode
         );
         // phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedScript
     }

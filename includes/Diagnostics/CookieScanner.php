@@ -28,9 +28,9 @@ final class CookieScanner
     {
         add_action('wp_ajax_tdcc_run_cookie_scan', [self::class, 'handleAjaxScan']);
         add_action('wp_ajax_tdcc_sync_scanned_services', [self::class, 'handleAjaxSync']);
-        
-        // Frontend Client-Side Scanner Hook
-        add_action('wp_footer', [self::class, 'injectClientSideScanner'], 9999);
+
+        // Frontend Client-Side Scanner Asset Hook
+        add_action('wp_enqueue_scripts', [self::class, 'enqueueClientSideScanner']);
 
         // WP-Cron Scheduled Scanning & Notifications
         add_filter('cron_schedules', [self::class, 'registerCronIntervals']);
@@ -39,33 +39,25 @@ final class CookieScanner
     }
 
     /**
-     * Injects the Client-Side extraction script on the frontend when ?tdcc_audit=1 is active.
+     * Enqueue the sandboxed Client-Side scanner script on frontend when ?tdcc_audit=1 is requested by an admin.
      */
-    public static function injectClientSideScanner(): void
+    public static function enqueueClientSideScanner(): void
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only audit query parameter check.
         if (!isset($_GET['tdcc_audit']) || !current_user_can('manage_options')) {
             return;
         }
 
-        ?>
-        <script>
-        (function() {
-            window.addEventListener('load', function() {
-                setTimeout(function() {
-                    const data = {
-                        type: 'tdcc_scan_result',
-                        url: window.location.href,
-                        cookies: document.cookie,
-                        scripts: Array.from(document.querySelectorAll('script')).map(s => s.src || s.innerHTML).filter(Boolean),
-                        iframes: Array.from(document.querySelectorAll('iframe')).map(i => i.src).filter(Boolean)
-                    };
-                    window.parent.postMessage(data, '*');
-                }, 2000); // 2 second delay to ensure asynchronous trackers load
-            });
-        })();
-        </script>
-        <?php
+        $scriptPath = TUEDION_COOKIE_PATH . 'assets/public/js/scanner-client.js';
+        $ver = file_exists($scriptPath) ? (string) filemtime($scriptPath) : TUEDION_COOKIE_VERSION;
+
+        wp_enqueue_script(
+            'tdcc-scanner-client',
+            TUEDION_COOKIE_URL . 'assets/public/js/scanner-client.js',
+            [],
+            $ver,
+            true
+        );
     }
 
     /**
@@ -504,17 +496,7 @@ final class CookieScanner
             ],
         ];
 
-        // Authentication session cookies only apply to authenticated user sessions
-        if (is_user_logged_in()) {
-            $standardCookies[] = [
-                'name'        => 'wordpress_logged_in_*',
-                'service'     => 'WordPress Core',
-                'category'    => 'necessary',
-                'domain'      => sanitize_text_field((string) wp_parse_url(home_url(), PHP_URL_HOST)),
-                'duration'    => 'Session',
-                'description' => __('Maintains session authentication for logged-in users.', 'tuedion-cookie'),
-            ];
-        }
+
 
         if (in_array('woocommerce', $detectedServiceIds, true) || class_exists('WooCommerce')) {
             $standardCookies[] = [
@@ -598,19 +580,42 @@ final class CookieScanner
             }
         }
 
-        // 3. Any extra cookies caught directly in HTTP response headers
+        // 3. Any extra cookies caught directly in HTTP response headers or client scan
+        $blockedCookiePrefixes = [
+            'wordpress_',
+            'wordpress_logged_in_',
+            'wordpress_sec_',
+            'wp-settings-',
+            'wp-settings-time-',
+            'wordpress_test_cookie',
+        ];
+
         foreach ($rawHttpCookies as $rawName) {
-            if (isset($seen[$rawName])) {
+            $rawClean = sanitize_text_field(trim((string) $rawName));
+            if ($rawClean === '') {
                 continue;
             }
-            $seen[$rawName] = true;
+
+            $isBlocked = false;
+            foreach ($blockedCookiePrefixes as $prefix) {
+                if (str_starts_with($rawClean, $prefix)) {
+                    $isBlocked = true;
+                    break;
+                }
+            }
+
+            if ($isBlocked || isset($seen[$rawClean])) {
+                continue;
+            }
+
+            $seen[$rawClean] = true;
             $cookies[] = [
-                'name'        => $rawName,
-                'service'     => __('Detected HTTP Cookie', 'tuedion-cookie'),
+                'name'        => $rawClean,
+                'service'     => __('Detected Cookie', 'tuedion-cookie'),
                 'category'    => 'necessary',
                 'domain'      => $siteHost,
                 'duration'    => 'Session',
-                'description' => __('Set directly via server HTTP response headers.', 'tuedion-cookie'),
+                'description' => __('Detected active on site during scanner audit.', 'tuedion-cookie'),
             ];
         }
 
@@ -670,22 +675,31 @@ final class CookieScanner
     }
 
     /**
-     * AJAX endpoint to trigger real-time scan.
+     * AJAX endpoint to trigger real-time scan with strict validation.
      */
     public static function handleAjaxScan(): void
     {
+        if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] !== 'POST') {
+            wp_send_json_error(['message' => __('Method not allowed.', 'tuedion-cookie')], 405);
+        }
+
         check_ajax_referer('tuedion_scanner_action', 'nonce');
-        
+
         if (!current_user_can('manage_options')) {
             wp_send_json_error(['message' => __('Unauthorized permission.', 'tuedion-cookie')], 403);
         }
 
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated and decoded via json_decode below.
-        $payloadStr = isset($_POST['payload']) ? wp_unslash($_POST['payload']) : '{}';
-        $payload = json_decode($payloadStr, true);
+        $payloadRaw = isset($_POST['payload']) ? wp_unslash((string) $_POST['payload']) : '';
 
-        if (!is_array($payload)) {
-            wp_send_json_error(['message' => 'Invalid JSON payload received from client scanner.']);
+        // Restrict maximum payload size to prevent memory exhaustion / DoS
+        if (strlen($payloadRaw) > 200000) {
+            wp_send_json_error(['message' => __('Payload size exceeds allowed limit.', 'tuedion-cookie')], 413);
+        }
+
+        $payload = json_decode($payloadRaw, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE || !is_array($payload)) {
+            wp_send_json_error(['message' => __('Invalid JSON payload received from client scanner.', 'tuedion-cookie')], 400);
         }
 
         $results = self::processClientScan($payload);
@@ -693,13 +707,16 @@ final class CookieScanner
     }
 
     /**
-     * Process the massive JSON payload sent from the client-side scanner.
+     * Process and sanitize the validated JSON payload sent from the client-side scanner.
+     *
+     * @param array<string, mixed> $payload
+     * @return array<string, mixed>
      */
     private static function processClientScan(array $payload): array
     {
         $detectedServices = [];
-        $scannedUrls = [home_url('/')]; // We can extract actual URLs from payload later
-        $rawCookiesStr = [];
+        $scannedUrls = [home_url('/')];
+        $rawCookiesList = [];
         $rawScripts = [];
         $rawIframes = [];
 
@@ -719,33 +736,84 @@ final class CookieScanner
             }
         }
 
-        // 3. Process Client-Side Arrays
+        // Sensitive cookie prefixes to strictly filter out on server-side as well
+        $blockedCookiePrefixes = [
+            'wordpress_',
+            'wordpress_logged_in_',
+            'wordpress_sec_',
+            'wp-settings-',
+            'wp-settings-time-',
+            'wordpress_test_cookie',
+        ];
+
+        // 3. Process Client-Side Cookies (Names only - strictly sanitize)
         $clientCookies = (array) ($payload['cookies'] ?? []);
-        foreach ($clientCookies as $cString) {
-            if (is_string($cString) && !empty($cString)) {
-                $rawCookiesStr[] = $cString;
+        foreach ($clientCookies as $cItem) {
+            $cName = '';
+            if (is_string($cItem)) {
+                $cName = trim(explode('=', $cItem)[0]);
+            } elseif (is_array($cItem) && isset($cItem['name']) && is_string($cItem['name'])) {
+                $cName = trim($cItem['name']);
+            }
+
+            if ($cName === '') {
+                continue;
+            }
+
+            $cNameClean = sanitize_text_field($cName);
+            if ($cNameClean === '') {
+                continue;
+            }
+
+            $isBlocked = false;
+            foreach ($blockedCookiePrefixes as $prefix) {
+                if (str_starts_with($cNameClean, $prefix)) {
+                    $isBlocked = true;
+                    break;
+                }
+            }
+
+            if (!$isBlocked && !in_array($cNameClean, $rawCookiesList, true)) {
+                $rawCookiesList[] = $cNameClean;
             }
         }
 
+        // 4. Process Client-Side Scripts (URLs or lightweight signature tokens)
         $clientScripts = (array) ($payload['scripts'] ?? []);
-        foreach ($clientScripts as $sString) {
-            if (is_string($sString) && !empty($sString)) {
-                $rawScripts[] = $sString;
+        foreach ($clientScripts as $sItem) {
+            if (is_string($sItem) && !empty($sItem)) {
+                $rawScripts[] = [
+                    'type'  => str_starts_with($sItem, 'http') ? 'src' : 'inline',
+                    'value' => $sItem,
+                ];
+            } elseif (is_array($sItem) && isset($sItem['value']) && is_string($sItem['value'])) {
+                $rawScripts[] = [
+                    'type'  => ($sItem['type'] ?? '') === 'src' ? 'src' : 'inline',
+                    'value' => $sItem['value'],
+                ];
             }
         }
 
+        // 5. Process Client-Side Iframes (Sanitized URLs)
         $clientIframes = (array) ($payload['iframes'] ?? []);
         foreach ($clientIframes as $iString) {
             if (is_string($iString) && !empty($iString)) {
-                $rawIframes[] = $iString;
+                $cleanIframeUrl = esc_url_raw($iString);
+                if ($cleanIframeUrl !== '') {
+                    $rawIframes[] = $cleanIframeUrl;
+                }
             }
         }
 
-        // 4. Match Client Scripts
-        foreach ($rawScripts as $scriptSource) {
-            if (str_starts_with($scriptSource, 'http')) {
-                // External Script
-                $recipe = RecipeRegistry::findRecipeForScript('', $scriptSource);
+        // 6. Match Client Scripts against Recipe Registry
+        foreach ($rawScripts as $scriptItem) {
+            $scriptVal = (string) $scriptItem['value'];
+            if ($scriptItem['type'] === 'src') {
+                $cleanUrl = esc_url_raw($scriptVal);
+                if ($cleanUrl === '') {
+                    continue;
+                }
+                $recipe = RecipeRegistry::findRecipeForScript('', $cleanUrl);
                 if ($recipe !== null) {
                     $key = $recipe['id'];
                     $detectedServices[$key] = [
@@ -753,19 +821,20 @@ final class CookieScanner
                         'name'       => $recipe['name'] ?? $key,
                         'category'   => $recipe['category'] ?? 'marketing',
                         'type'       => 'script',
-                        'source'     => 'Client Scan (JS): ' . substr($scriptSource, 0, 60),
-                        'sources'    => ['Client Scan (JS): ' . substr($scriptSource, 0, 60)],
+                        'source'     => 'Client Scan (JS): ' . substr($cleanUrl, 0, 60),
+                        'sources'    => ['Client Scan (JS): ' . substr($cleanUrl, 0, 60)],
                         'auto_clear' => (array) ($recipe['auto_clear'] ?? []),
                         'is_managed' => true,
                     ];
                 }
             } else {
-                // Inline Script
-                self::detectInlineTrackingSignatures($scriptSource, $detectedServices);
+                // Inline Script - strictly cap length and strip tags before regex
+                $safeSnippet = substr(wp_strip_all_tags($scriptVal), 0, 300);
+                self::detectInlineTrackingSignatures($safeSnippet, $detectedServices);
             }
         }
 
-        // 5. Match Client Iframes
+        // 7. Match Client Iframes against Recipe Registry
         foreach ($rawIframes as $iframeSrc) {
             $recipe = RecipeRegistry::findRecipeForIframe($iframeSrc);
             if ($recipe !== null) {
@@ -783,22 +852,8 @@ final class CookieScanner
             }
         }
 
-        // 6. Extract Cookies from document.cookie strings
-        $httpCookies = [];
-        foreach ($rawCookiesStr as $cString) {
-            $parts = explode(';', $cString);
-            foreach ($parts as $cookiePair) {
-                $cookiePair = trim($cookiePair);
-                if (empty($cookiePair)) continue;
-                $cName = explode('=', $cookiePair)[0];
-                if (!empty($cName) && !in_array($cName, $httpCookies, true)) {
-                    $httpCookies[] = sanitize_text_field($cName);
-                }
-            }
-        }
-
-        // 7. Enrich Detected Cookies Catalog
-        $detectedCookies = self::buildCookiesCatalog(array_keys($detectedServices), $httpCookies);
+        // 8. Enrich Detected Cookies Catalog
+        $detectedCookies = self::buildCookiesCatalog(array_keys($detectedServices), $rawCookiesList);
 
         // 8. Build Stats & Summary
         $allRecipes = RecipeRegistry::getAll();

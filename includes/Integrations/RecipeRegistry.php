@@ -10,6 +10,10 @@ if (!defined('ABSPATH')) {
 
 /**
  * Registry of well-known third-party scripts, media iframes, and their autoClear cookies.
+ *
+ * NOTE: This registry does NOT initiate any external HTTP requests, remote API calls, or load
+ * third-party scripts. It acts strictly as an offline dictionary of known script handles,
+ * domain signatures, and iframe embed patterns to detect and BLOCK them until explicit consent is granted.
  */
 final class RecipeRegistry
 {
@@ -488,6 +492,8 @@ final class RecipeRegistry
         $recipes = self::getAll();
         $srcLower = strtolower($src);
         $handleLower = strtolower($handle);
+        $srcHost = strtolower((string) wp_parse_url($src, PHP_URL_HOST));
+        $srcPath = strtolower((string) wp_parse_url($src, PHP_URL_PATH));
 
         foreach ($recipes as $id => $recipe) {
             if (($recipe['type'] ?? '') !== 'script') {
@@ -505,10 +511,36 @@ final class RecipeRegistry
                 }
             }
 
-            // Check URL domains/substrings
+            // Check URL domains/patterns with host-aware verification
             if (!empty($recipe['domains']) && is_array($recipe['domains'])) {
                 foreach ($recipe['domains'] as $domain) {
-                    if (str_contains($srcLower, strtolower($domain))) {
+                    $domainLower = strtolower($domain);
+
+                    if ($srcHost !== '') {
+                        if (str_contains($domainLower, '/')) {
+                            [$expectedHost, $expectedPath] = explode('/', $domainLower, 2);
+                            $hostMatches = ($srcHost === $expectedHost || str_ends_with($srcHost, '.' . $expectedHost));
+                            if ($hostMatches && str_contains($srcPath, $expectedPath)) {
+                                $recipe['id'] = $id;
+                                $recipe['category'] = self::resolveServiceCategory($id, (string) ($recipe['category'] ?? 'analytics'));
+                                return $recipe;
+                            }
+                        } elseif (str_contains($domainLower, '.')) {
+                            // Standard domain pattern (e.g. connect.facebook.net)
+                            if ($srcHost === $domainLower || str_ends_with($srcHost, '.' . $domainLower)) {
+                                $recipe['id'] = $id;
+                                $recipe['category'] = self::resolveServiceCategory($id, (string) ($recipe['category'] ?? 'analytics'));
+                                return $recipe;
+                            }
+                        } else {
+                            // Filename-only script pattern (e.g. matomo.js)
+                            if (str_ends_with($srcPath, $domainLower)) {
+                                $recipe['id'] = $id;
+                                $recipe['category'] = self::resolveServiceCategory($id, (string) ($recipe['category'] ?? 'analytics'));
+                                return $recipe;
+                            }
+                        }
+                    } elseif (str_contains($srcLower, $domainLower)) {
                         $recipe['id'] = $id;
                         $recipe['category'] = self::resolveServiceCategory($id, (string) ($recipe['category'] ?? 'analytics'));
                         return $recipe;
@@ -547,7 +579,7 @@ final class RecipeRegistry
     }
 
     /**
-     * Find a recipe matching an iframe src URL.
+     * Find a recipe matching an iframe src URL with host-aware validation.
      *
      * @param string $src
      * @return array<string, mixed>|null
@@ -556,6 +588,8 @@ final class RecipeRegistry
     {
         $recipes = self::getAll();
         $srcLower = strtolower($src);
+        $srcHost = strtolower((string) wp_parse_url($src, PHP_URL_HOST));
+        $srcPath = strtolower((string) wp_parse_url($src, PHP_URL_PATH));
 
         foreach ($recipes as $id => $recipe) {
             if (($recipe['type'] ?? '') !== 'iframe') {
@@ -564,7 +598,25 @@ final class RecipeRegistry
 
             if (!empty($recipe['patterns']) && is_array($recipe['patterns'])) {
                 foreach ($recipe['patterns'] as $pattern) {
-                    if (str_contains($srcLower, strtolower($pattern))) {
+                    $patternLower = strtolower($pattern);
+
+                    if ($srcHost !== '') {
+                        if (str_contains($patternLower, '/')) {
+                            [$expectedHost, $expectedPath] = explode('/', $patternLower, 2);
+                            $hostMatches = ($srcHost === $expectedHost || str_ends_with($srcHost, '.' . $expectedHost));
+                            if ($hostMatches && str_contains($srcPath, $expectedPath)) {
+                                $recipe['id'] = $id;
+                                $recipe['category'] = self::resolveServiceCategory($id, (string) ($recipe['category'] ?? 'marketing'));
+                                return $recipe;
+                            }
+                        } else {
+                            if ($srcHost === $patternLower || str_ends_with($srcHost, '.' . $patternLower)) {
+                                $recipe['id'] = $id;
+                                $recipe['category'] = self::resolveServiceCategory($id, (string) ($recipe['category'] ?? 'marketing'));
+                                return $recipe;
+                            }
+                        }
+                    } elseif (str_contains($srcLower, $patternLower)) {
                         $recipe['id'] = $id;
                         $recipe['category'] = self::resolveServiceCategory($id, (string) ($recipe['category'] ?? 'marketing'));
                         return $recipe;

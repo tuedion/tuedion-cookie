@@ -5,7 +5,7 @@ Tags: cookie, consent, gdpr, privacy, cookieconsent
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,6 +52,39 @@ You can use the shortcode `[tuedion_cookie_policy_link]` or add the attribute `d
 = Does it work with Google Tag Manager? =
 Yes. GTM integration is supported either by managing tags with Google Consent Mode v2 built-in checks, or by listening for the custom event `tuedion_consent_update`.
 
+== Third-Party Services ==
+
+Tuedion Cookie does NOT transmit personal visitor data to external cloud services. The plugin operates 100% locally on your WordPress server.
+
+To empower site administrators to enforce GDPR/ePrivacy compliance, the plugin maintains an offline catalogue of detection signatures ("recipes") to identify and block third-party services installed on your site until visitors grant explicit consent:
+
+* **Google Analytics & Google Tag Manager** (Google LLC)
+  - Purpose: Pre-consent script blocking and Google Consent Mode v2 signal coordination.
+  - Terms of Service: https://marketingplatform.google.com/about/analytics/terms/us/
+  - Privacy Policy: https://policies.google.com/privacy
+
+* **Meta Pixel** (Meta Platforms, Inc.)
+  - Purpose: Pre-consent blocking of Meta advertising scripts and pixel events.
+  - Terms of Service: https://www.facebook.com/legal/terms
+  - Privacy Policy: https://www.facebook.com/privacy/policy/
+
+* **Microsoft Clarity** (Microsoft Corporation)
+  - Purpose: Pre-consent blocking of session replay and heatmap tracking.
+  - Terms of Use: https://clarity.microsoft.com/terms
+  - Privacy Statement: https://privacy.microsoft.com/privacystatement
+
+* **Hotjar** (Hotjar Ltd)
+  - Purpose: Pre-consent blocking of user behavior analytics scripts.
+  - Terms of Service: https://www.hotjar.com/legal/policies/terms-of-service/
+  - Privacy Policy: https://www.hotjar.com/legal/policies/privacy/
+
+* **YouTube & Vimeo**
+  - Purpose: Blocking embedded iframes and presenting local placeholder cards until media consent is granted.
+  - YouTube Terms: https://www.youtube.com/t/terms
+  - Vimeo Terms: https://vimeo.com/terms
+
+Note: Tuedion Cookie does NOT inject or initiate any of the above external services on its own. It only monitors and enforces consent on scripts and embeds that already exist on your site.
+
 == Screenshots ==
 
 1. **Dashboard & Quick Status:** Overview of consent settings, revision status, and quick links.
@@ -61,6 +94,14 @@ Yes. GTM integration is supported either by managing tags with Google Consent Mo
 5. **Diagnostics & Developer Hub:** Runtime configuration inspector, script tracker inventory, and cache hints.
 
 == Changelog ==
+
+= 1.3.3 =
+* Security: Hardened Cookie Scanner to extract non-sensitive cookie names only and isolate WordPress session/auth cookies.
+* Security: Enforced strict origin verification on postMessage events and audit frame listeners.
+* Security: Added comprehensive AJAX payload sanitization, HTTP POST validation, and payload size bounds.
+* Standards: Migrated inline scripts and styles to modular assets via WordPress Enqueue API and replaced JS redirects with wp_safe_redirect().
+* Hardening: Strengthened ScriptEnforcer attribute whitelist and RecipeRegistry domain matching against query string spoofing.
+* Compliance: Documented local offline detection signatures in readme.
 
 = 1.3.2 =
 * Bug Fixed.

@@ -41,8 +41,7 @@ final class WizardPage
                 wp_safe_redirect(admin_url('admin.php?page=tuedion-cookie-wizard'));
                 exit;
             }
-            echo '<script>window.location.href = ' . wp_json_encode(admin_url('admin.php?page=tuedion-cookie-wizard')) . ';</script>';
-            exit;
+            return;
         }
 
         $layout = sanitize_text_field(wp_unslash((string) ($_POST['wizard_layout'] ?? 'box')));
@@ -60,9 +59,7 @@ final class WizardPage
             wp_safe_redirect($redirectUrl);
             exit;
         }
-
-        echo '<script>window.location.href = ' . wp_json_encode($redirectUrl) . ';</script>';
-        exit;
+        return;
     }
 
     public static function render(): void
@@ -70,9 +67,6 @@ final class WizardPage
         if (!current_user_can('manage_options')) {
             wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'tuedion-cookie'));
         }
-
-        // Fallback check if submission reached render stage
-        self::handleSubmission();
         ?>
         <div class="wrap tdcc-admin-wrap tdcc-wizard-wrap">
             <header class="tdcc-header">

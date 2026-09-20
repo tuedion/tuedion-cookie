@@ -69,5 +69,46 @@ final class Assets
                 'addToPreferences'  => esc_html__('+ Add to Preferences', 'tuedion-cookie'),
             ],
         ]);
+
+        if (str_contains($hookSuffix, 'tuedion-cookie-categories')) {
+            $scannerJsPath = TUEDION_COOKIE_PATH . 'assets/admin/js/cookie-scanner.js';
+            $scannerVer = file_exists($scannerJsPath)
+                ? (string) filemtime($scannerJsPath)
+                : TUEDION_COOKIE_VERSION;
+
+            wp_enqueue_script(
+                'tuedion-cookie-scanner',
+                TUEDION_COOKIE_URL . 'assets/admin/js/cookie-scanner.js',
+                ['tuedion-cookie-admin'],
+                $scannerVer,
+                true
+            );
+
+            $urlsToScan = [
+                home_url('/?tdcc_audit=1'),
+            ];
+
+            if (class_exists('WooCommerce')) {
+                $shopId = get_option('woocommerce_shop_page_id');
+                if ($shopId) {
+                    $shopPermalink = (string) get_permalink($shopId);
+                    $separator = str_contains($shopPermalink, '?') ? '&' : '?';
+                    $urlsToScan[] = $shopPermalink . $separator . 'tdcc_audit=1';
+                }
+            }
+
+            wp_localize_script('tuedion-cookie-scanner', 'tdccScannerConfig', [
+                'ajaxUrl'    => admin_url('admin-ajax.php'),
+                'nonce'      => wp_create_nonce('tuedion_scanner_action'),
+                'urlsToScan' => $urlsToScan,
+                'strings'    => [
+                    'scanningPages'    => esc_html__('Scanning pages...', 'tuedion-cookie'),
+                    'analyzingResults' => esc_html__('Analyzing results...', 'tuedion-cookie'),
+                    'timeoutError'     => esc_html__('Scan timed out. Please try again.', 'tuedion-cookie'),
+                    'networkError'     => esc_html__('Network error during scan processing.', 'tuedion-cookie'),
+                    'genericError'     => esc_html__('Error occurred during scan.', 'tuedion-cookie'),
+                ],
+            ]);
+        }
     }
 }
