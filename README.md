@@ -321,4 +321,6 @@ Tuedion Cookie includes ready-to-use shortcodes for your Cookie Policy and Priva
 
 - **Tuedion Cookie** is licensed under the [GNU General Public License v2.0 or later](LICENSE).
 - Powered by [Orest Bida's CookieConsent](https://github.com/orestbida/cookieconsent) (MIT License) and [IframeManager](https://github.com/orestbida/iframemanager) (MIT License).
+- Cookie definitions dataset provided by [Open Cookie Database](https://github.com/jkwakman/Open-Cookie-Database) by Jan Kwakman and contributors (Apache License 2.0).
+- Detailed third-party notices and full license texts available in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 - Designed and maintained by [Tuedion](https://tuedion.com).

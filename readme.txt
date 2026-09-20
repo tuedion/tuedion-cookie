@@ -251,3 +251,9 @@ This plugin incorporates and bundles open-source software under separate copyrig
   * License: MIT License (https://opensource.org/licenses/MIT)
   * Copyright (c) Orest Bida
 
+* Open Cookie Database
+  * Author: Jan Kwakman and contributors
+  * Source: https://github.com/jkwakman/Open-Cookie-Database
+  * License: Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+  * Bundled files: data/cookies/open-cookie-database.json, data/cookies/metadata.json
+
