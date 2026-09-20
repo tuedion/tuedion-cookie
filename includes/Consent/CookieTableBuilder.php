@@ -213,13 +213,19 @@ final class CookieTableBuilder
     /**
      * Resolve localized duration string from key.
      */
-    public static function resolveDuration(string $durationKey, string $lang): string
+    public static function resolveDuration(?string $durationKey, string $lang): string
     {
         $lang = strtolower($lang);
-        if (isset(self::DURATIONS[$durationKey])) {
-            return self::DURATIONS[$durationKey][$lang] ?? self::DURATIONS[$durationKey]['en'] ?? $durationKey;
+        $key = strtolower(trim((string) $durationKey));
+        if ($key === '' || $key === 'undefined') {
+            $key = 'session';
         }
-        return $durationKey;
+        if (isset(self::DURATIONS[$key])) {
+            return self::DURATIONS[$key][$lang] ?? self::DURATIONS[$key]['en'] ?? $key;
+        }
+        return ($durationKey !== null && $durationKey !== '' && $durationKey !== 'undefined')
+            ? (string) $durationKey
+            : (self::DURATIONS['session'][$lang] ?? 'Session');
     }
 
     /**
@@ -227,8 +233,38 @@ final class CookieTableBuilder
      *
      * @var array<string, array{domain_type: string, duration: string, desc: array<string, string>}>
      */
-    private const COOKIE_DICTIONARY = [
+    public const COOKIE_DICTIONARY = [
         // 1. Core Platform & Necessary
+        '_GRECAPTCHA' => [
+            'domain_type' => 'current',
+            'duration'    => '180d',
+            'desc' => [
+                'en' => 'Google reCAPTCHA bot prevention and form security.',
+                'tr' => 'Google reCAPTCHA bot koruması ve form güvenliği.',
+                'de' => 'Google reCAPTCHA Bot-Schutz und Formularsicherheit.',
+                'fr' => 'Protection contre les robots et sécurité des formulaires Google reCAPTCHA.',
+                'es' => 'Protección contra bots y seguridad de formularios de Google reCAPTCHA.',
+                'it' => 'Protezione bot e sicurezza dei moduli di Google reCAPTCHA.',
+                'nl' => 'Google reCAPTCHA bot-preventie en formulierbeveiliging.',
+                'ar' => 'حماية من الروبوتات وأمان النماذج عبر Google reCAPTCHA.',
+                'ru' => 'Защита от ботов и безопасность форм Google reCAPTCHA.',
+            ],
+        ],
+        '_grecaptcha' => [
+            'domain_type' => 'current',
+            'duration'    => '180d',
+            'desc' => [
+                'en' => 'Google reCAPTCHA bot prevention and form security.',
+                'tr' => 'Google reCAPTCHA bot koruması ve form güvenliği.',
+                'de' => 'Google reCAPTCHA Bot-Schutz und Formularsicherheit.',
+                'fr' => 'Protection contre les robots et sécurité des formulaires Google reCAPTCHA.',
+                'es' => 'Protección contra bots y seguridad de formularios de Google reCAPTCHA.',
+                'it' => 'Protezione bot e sicurezza dei moduli di Google reCAPTCHA.',
+                'nl' => 'Google reCAPTCHA bot-preventie en formulierbeveiliging.',
+                'ar' => 'حماية من الروبوتات وأمان النماذج عبر Google reCAPTCHA.',
+                'ru' => 'Защита от ботов и безопасность форм Google reCAPTCHA.',
+            ],
+        ],
         'cc_cookie' => [
             'domain_type' => 'current',
             'duration'    => '180d',
@@ -242,36 +278,6 @@ final class CookieTableBuilder
                 'nl' => 'Bewaart de keuzes van de gebruiker voor cookie-toestemming.',
                 'ar' => 'يخزن خيارات موافقة المستخدم على ملفات تعريف الارتباط.',
                 'ru' => 'Сохраняет выбор согласия пользователя на использование файлов cookie.',
-            ],
-        ],
-        'wordpress_logged_in_*' => [
-            'domain_type' => 'current',
-            'duration'    => 'session',
-            'desc' => [
-                'en' => 'WordPress session state for authenticated user authentication.',
-                'tr' => 'Giriş yapmış kullanıcılar için WordPress oturum doğrulamasını sağlar.',
-                'de' => 'WordPress-Sitzungsstatus für authentifizierte Benutzer.',
-                'fr' => 'État de session WordPress pour les utilisateurs authentifiés.',
-                'es' => 'Estado de sesión de WordPress para autenticación de usuarios.',
-                'it' => 'Stato della sessione di WordPress per l\'autenticazione.',
-                'nl' => 'WordPress-sessiestatus voor geverifieerde gebruikers.',
-                'ar' => 'حالة جلسة ووردبريس لمصادقة المستخدم.',
-                'ru' => 'Сессия WordPress для аутентификации пользователя.',
-            ],
-        ],
-        'wp-settings-*' => [
-            'domain_type' => 'current',
-            'duration'    => '1y',
-            'desc' => [
-                'en' => 'Customizes user view of admin interface and main site UI state.',
-                'tr' => 'Kullanıcı arayüzü ve görünüm tercihlerini saklar.',
-                'de' => 'Speichert individuelle Einstellungen für die Benutzeroberfläche.',
-                'fr' => 'Personnalise l\'affichage de l\'interface pour l\'utilisateur.',
-                'es' => 'Personaliza las preferencias de la interfaz de usuario.',
-                'it' => 'Personalizza la visualizzazione dell\'interfaccia utente.',
-                'nl' => 'Onthoudt weergavevoorkeuren van de gebruiker.',
-                'ar' => 'يخصص تفضيلات واجهة المستخدم.',
-                'ru' => 'Сохраняет настройки пользовательского интерфейса.',
             ],
         ],
         'woocommerce_items_in_cart' => [
@@ -579,11 +585,7 @@ final class CookieTableBuilder
         if ($categoryId === 'necessary') {
             $coreNecessary = ['cc_cookie'];
 
-            // Authentication & admin UI state cookies must NEVER be declared to guest / unauthenticated visitors
-            if (is_user_logged_in() || $includeAll) {
-                $coreNecessary[] = 'wordpress_logged_in_*';
-                $coreNecessary[] = 'wp-settings-*';
-            }
+            // Strictly Necessary platform cookies (Architecture Rule #19: admin session cookies are never declared to visitors)
 
             if (WooCommerceAdapter::isActive() || class_exists('WooCommerce')) {
                 $coreNecessary[] = 'woocommerce_items_in_cart';
@@ -668,6 +670,12 @@ final class CookieTableBuilder
                 if ($cleanName === '' || isset($seen[$cleanName])) {
                     continue;
                 }
+
+                // WordPress authentication & admin session cookies must NEVER be declared in public visitor cookie tables (Architecture Rule #19)
+                if (str_starts_with($cleanName, 'wordpress_') || str_starts_with($cleanName, 'wp-settings-')) {
+                    continue;
+                }
+
                 $seen[$cleanName] = true;
 
                 // Lookup in multilingual dictionary
@@ -716,8 +724,8 @@ final class CookieTableBuilder
                 continue;
             }
 
-            // Never leak logged-in session cookies to guest / unauthenticated visitors, even if present in scan history
-            if (($name === 'wordpress_logged_in_*' || str_starts_with($name, 'wordpress_logged_in') || str_starts_with($name, 'wp-settings-')) && !is_user_logged_in() && !$includeAll) {
+            // WordPress authentication & admin session cookies must NEVER be declared in public visitor cookie tables (Architecture Rule #19)
+            if (str_starts_with($name, 'wordpress_') || str_starts_with($name, 'wp-settings-')) {
                 continue;
             }
 
@@ -743,6 +751,12 @@ final class CookieTableBuilder
             ];
         }
 
+        // Enforce strict Architecture Rule #19: No admin/auth cookies in public tables
+        $body = array_values(array_filter($body, static function (array $row): bool {
+            $rowName = strtolower(trim((string) ($row['name'] ?? '')));
+            return $rowName !== '' && !str_starts_with($rowName, 'wordpress_') && !str_starts_with($rowName, 'wp-settings-');
+        }));
+
         // ---------------------------------------------------------------------
         // 4. ZERO-GHOST VERIFICATION: Return null if category has no active cookies
         // ---------------------------------------------------------------------
@@ -758,6 +772,16 @@ final class CookieTableBuilder
          * @param string $langCode
          */
         $body = (array) apply_filters('tuedion_cookie_table_body', $body, $categoryId, $langCode);
+
+        // Re-enforce strict Architecture Rule #19 and Zero-Ghost after external filters
+        $body = array_values(array_filter($body, static function (array $row): bool {
+            $rowName = strtolower(trim((string) ($row['name'] ?? '')));
+            return $rowName !== '' && !str_starts_with($rowName, 'wordpress_') && !str_starts_with($rowName, 'wp-settings-');
+        }));
+
+        if (empty($body)) {
+            return null;
+        }
 
         $caption = ($lang === 'tr')
             ? 'Bu kategoride kullanılan çerezlerin listesi'

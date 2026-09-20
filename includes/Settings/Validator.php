@@ -370,10 +370,23 @@ final class Validator
             }
             $alertEmail = sanitize_email((string) ($rawScanner['alert_email'] ?? ''));
 
+            $sanitizedTargets = ['home'];
+            if (!empty($rawScanner['scan_targets']) && is_array($rawScanner['scan_targets'])) {
+                foreach ($rawScanner['scan_targets'] as $target) {
+                    $cleanTarget = sanitize_key((string) $target);
+                    if ($cleanTarget !== '' && !in_array($cleanTarget, $sanitizedTargets, true)) {
+                        $sanitizedTargets[] = $cleanTarget;
+                    }
+                }
+            } else {
+                $sanitizedTargets = ['home', 'page', 'post'];
+            }
+
             $sanitized['scanner'] = [
                 'cron_enabled' => !empty($rawScanner['cron_enabled']),
                 'schedule'     => $schedule,
                 'alert_email'  => $alertEmail,
+                'scan_targets' => $sanitizedTargets,
             ];
         }
 

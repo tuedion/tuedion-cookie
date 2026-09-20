@@ -146,6 +146,7 @@ final class Defaults
                 'cron_enabled' => false,
                 'schedule'     => 'weekly',
                 'alert_email'  => '',
+                'scan_targets' => ['home', 'page', 'post'],
             ],
         ];
     }

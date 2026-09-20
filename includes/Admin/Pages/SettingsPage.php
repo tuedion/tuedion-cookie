@@ -87,6 +87,15 @@ final class SettingsPage
             $noticeType = $importResult['success'] ? 'success' : 'error';
         }
 
+        // Handle Reset Custom Translations to Defaults
+        if (isset($_POST['tuedion_cookie_reset_translations']) && check_admin_referer('tuedion_cookie_import_nonce', 'tuedion_cookie_nonce')) {
+            delete_option(TranslationManager::CUSTOM_TRANSLATIONS_OPTION);
+            Compiler::clearCache();
+            \Tuedion\CookieConsent\Integrations\CacheCompatibility::purgeAllCaches();
+            $notice = esc_html__('Custom translation overrides removed. Built-in language packs restored.', 'tuedion-cookie');
+            $noticeType = 'success';
+        }
+
         // Handle Settings Save
         if (isset($_POST['tuedion_cookie_save']) && check_admin_referer('tuedion_cookie_save_settings', 'tuedion_cookie_nonce')) {
             $settings = Repository::getSettings();
@@ -184,6 +193,14 @@ final class SettingsPage
             }
             $settings['scanner']['alert_email'] = sanitize_email(wp_unslash((string) ($_POST['scanner_alert_email'] ?? '')));
 
+            $submittedScanTargets = isset($_POST['scanner_scan_targets']) && is_array($_POST['scanner_scan_targets'])
+                ? array_map('sanitize_key', (array) wp_unslash($_POST['scanner_scan_targets']))
+                : ['home', 'page', 'post'];
+            if (!in_array('home', $submittedScanTargets, true)) {
+                array_unshift($submittedScanTargets, 'home');
+            }
+            $settings['scanner']['scan_targets'] = array_values(array_unique($submittedScanTargets));
+
             Repository::updateSettings($settings);
             \Tuedion\CookieConsent\Settings\Compiler::clearCache();
             $notice = esc_html__('Settings updated successfully.', 'tuedion-cookie');
@@ -225,6 +242,8 @@ final class SettingsPage
         $scannerCronEnabled = !empty($scannerConfig['cron_enabled']);
         $scannerSchedule = (string) ($scannerConfig['schedule'] ?? 'weekly');
         $scannerAlertEmail = (string) ($scannerConfig['alert_email'] ?? '');
+        $scannerScanTargets = (array) ($scannerConfig['scan_targets'] ?? ['home', 'page', 'post']);
+        $availablePostTypes = \Tuedion\CookieConsent\Diagnostics\CookieScanner::getAvailablePostTypes();
 
         $categories = $settings['categories'] ?? [];
         $siteKitDiagnostics = SiteKitDetector::getDiagnostics();
@@ -251,18 +270,18 @@ final class SettingsPage
             <?php endif; ?>
 
             <!-- Quick Navigation Jump Bar -->
-            <nav class="tdcc-settings-nav" style="display:flex; flex-wrap:wrap; gap:8px; margin: 0 0 20px 0; padding: 12px 16px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+            <nav class="tdcc-settings-nav">
                 <a href="#tdcc-general-card" class="button button-small"><?php echo esc_html__('General', 'tuedion-cookie'); ?></a>
                 <a href="#tdcc-i18n-card" class="button button-small"><?php echo esc_html__('Languages & i18n', 'tuedion-cookie'); ?></a>
                 <a href="#tdcc-legal-card" class="button button-small"><?php echo esc_html__('Legal Documents', 'tuedion-cookie'); ?></a>
-                <a href="#tdcc-shortcodes-card" class="button button-small" style="background:#fef3c7; border-color:#fcd34d; color:#92400e; font-weight:600;">
-                    <span class="dashicons dashicons-shortcode" style="font-size:14px; width:14px; height:14px; line-height:14px; vertical-align:text-top;"></span>
+                <a href="#tdcc-shortcodes-card" class="button button-small tdcc-nav-btn-highlight-warn">
+                    <span class="dashicons dashicons-shortcode tdcc-nav-btn-icon"></span>
                     <?php echo esc_html__('Shortcodes', 'tuedion-cookie'); ?>
                 </a>
                 <a href="#tdcc-gcm-card" class="button button-small"><?php echo esc_html__('Google Consent Mode v2', 'tuedion-cookie'); ?></a>
                 <a href="#tdcc-logging-card" class="button button-small"><?php echo esc_html__('Consent Records (Audit)', 'tuedion-cookie'); ?></a>
-                <a href="#tdcc-scanner-card" class="button button-small" style="background:#eff6ff; border-color:#93c5fd; color:#1d4ed8; font-weight:600;">
-                    <span class="dashicons dashicons-search" style="font-size:14px; width:14px; height:14px; line-height:14px; vertical-align:text-top;"></span>
+                <a href="#tdcc-scanner-card" class="button button-small tdcc-nav-btn-highlight-info">
+                    <span class="dashicons dashicons-search tdcc-nav-btn-icon"></span>
                     <?php echo esc_html__('Scheduled Scanner', 'tuedion-cookie'); ?>
                 </a>
                 <a href="#tdcc-advanced-card" class="button button-small"><?php echo esc_html__('Advanced & Scripts', 'tuedion-cookie'); ?></a>
@@ -681,7 +700,7 @@ final class SettingsPage
 
                 <!-- Scheduled Automated Cookie Scanner (Enterprise Compliance) -->
                 <div class="tdcc-card" id="tdcc-scanner-card">
-                    <a id="tdcc-scanner-settings" style="position:relative; top:-20px;"></a>
+                    <div id="tdcc-scanner-settings" class="tdcc-anchor-target"></div>
                     <h2><?php echo esc_html__('Scheduled Cookie Scanner & Drift Detection', 'tuedion-cookie'); ?></h2>
                     <p class="description">
                         <?php echo esc_html__('Enterprise CMPs require continuous auditing to catch unauthorized cookie drift or new trackers installed by plugins or marketing tags.', 'tuedion-cookie'); ?>
@@ -717,6 +736,40 @@ final class SettingsPage
                                 <td>
                                     <input type="email" name="scanner_alert_email" id="tdcc-scanner-alert-email" value="<?php echo esc_attr($scannerAlertEmail); ?>" class="regular-text" placeholder="<?php echo esc_attr((string) get_option('admin_email')); ?>">
                                     <p class="description"><?php echo esc_html__('Receive instant email notification if newly introduced or unclassified cookies are discovered. Leave blank to use site admin email.', 'tuedion-cookie'); ?></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    <label><?php echo esc_html__('Scan Scope & Content Types', 'tuedion-cookie'); ?></label>
+                                </th>
+                                <td>
+                                    <div class="tdcc-scope-checkbox-list">
+                                        <?php foreach ($availablePostTypes as $ptKey => $ptInfo):
+                                            $isHome = ($ptKey === 'home');
+                                            $isChecked = $isHome || in_array($ptKey, $scannerScanTargets, true);
+                                        ?>
+                                            <label class="tdcc-scope-item <?php echo $isHome ? 'is-required' : ''; ?>">
+                                                <?php if ($isHome): ?>
+                                                    <input type="checkbox" checked="checked" disabled="disabled">
+                                                    <input type="hidden" name="scanner_scan_targets[]" value="home">
+                                                <?php else: ?>
+                                                    <input type="checkbox" name="scanner_scan_targets[]" value="<?php echo esc_attr($ptKey); ?>" <?php checked($isChecked); ?>>
+                                                <?php endif; ?>
+                                                <span class="dashicons <?php echo esc_attr($ptInfo['icon'] ?? 'dashicons-admin-post'); ?>"></span>
+                                                <strong><?php echo esc_html($ptInfo['label']); ?></strong>
+                                                <?php if (!$isHome && isset($ptInfo['count'])): ?>
+                                                    <?php
+                                                    /* translators: %d: Number of published posts or items */
+                                                    $itemCountText = sprintf(__('%d items', 'tuedion-cookie'), $ptInfo['count']);
+                                                    ?>
+                                                    <span class="tdcc-count-badge"><?php echo esc_html($itemCountText); ?></span>
+                                                <?php endif; ?>
+                                            </label>
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <p class="description">
+                                        <?php echo esc_html__('Select which content types (built-in and custom post types) the background crawler audits. The homepage is always scanned.', 'tuedion-cookie'); ?>
+                                    </p>
                                 </td>
                             </tr>
                             <tr>
@@ -804,8 +857,9 @@ final class SettingsPage
                     <p>
                         <textarea name="translation_json" rows="6" class="large-text code" placeholder='{"de": {"consentModal": {"title": "..."}}}'></textarea>
                     </p>
-                    <p>
+                    <p class="tdcc-translations-actions">
                         <input type="submit" name="tuedion_cookie_import_translations" class="button button-secondary" value="<?php echo esc_attr__('Import JSON Translations', 'tuedion-cookie'); ?>">
+                        <input type="submit" name="tuedion_cookie_reset_translations" class="button button-secondary tdcc-btn-reset-translations" value="<?php echo esc_attr__('Reset Custom Translations to Defaults', 'tuedion-cookie'); ?>">
                     </p>
                 </form>
             </div>

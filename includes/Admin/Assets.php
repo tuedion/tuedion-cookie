@@ -84,29 +84,28 @@ final class Assets
                 true
             );
 
-            $urlsToScan = [
-                home_url('/?tdcc_audit=1'),
-            ];
-
-            if (class_exists('WooCommerce')) {
-                $shopId = get_option('woocommerce_shop_page_id');
-                if ($shopId) {
-                    $shopPermalink = (string) get_permalink($shopId);
-                    $separator = str_contains($shopPermalink, '?') ? '&' : '?';
-                    $urlsToScan[] = $shopPermalink . $separator . 'tdcc_audit=1';
-                }
-            }
+            $configuredTargets = (array) ($settings['scanner']['scan_targets'] ?? ['home', 'page', 'post']);
+            $availableTypes = \Tuedion\CookieConsent\Diagnostics\CookieScanner::getAvailablePostTypes();
+            $resolvedTargets = \Tuedion\CookieConsent\Diagnostics\CookieScanner::resolveTargetUrls($configuredTargets, 'tdcc_audit=1');
 
             wp_localize_script('tuedion-cookie-scanner', 'tdccScannerConfig', [
-                'ajaxUrl'    => admin_url('admin-ajax.php'),
-                'nonce'      => wp_create_nonce('tuedion_scanner_action'),
-                'urlsToScan' => $urlsToScan,
-                'strings'    => [
-                    'scanningPages'    => esc_html__('Scanning pages...', 'tuedion-cookie'),
-                    'analyzingResults' => esc_html__('Analyzing results...', 'tuedion-cookie'),
-                    'timeoutError'     => esc_html__('Scan timed out. Please try again.', 'tuedion-cookie'),
-                    'networkError'     => esc_html__('Network error during scan processing.', 'tuedion-cookie'),
-                    'genericError'     => esc_html__('Error occurred during scan.', 'tuedion-cookie'),
+                'ajaxUrl'        => admin_url('admin-ajax.php'),
+                'nonce'          => wp_create_nonce('tuedion_scanner_action'),
+                'configuredKeys' => $configuredTargets,
+                'availableTypes' => $availableTypes,
+                'resolvedTargets'=> $resolvedTargets,
+                'strings'        => [
+                    'scanningPages'     => esc_html__('Scanning pages...', 'tuedion-cookie'),
+                    'analyzingResults'  => esc_html__('Analyzing results...', 'tuedion-cookie'),
+                    'scanComplete'      => esc_html__('Scan complete! Updating preferences...', 'tuedion-cookie'),
+                    'timeoutError'      => esc_html__('Scan timed out. Please try again.', 'tuedion-cookie'),
+                    'networkError'      => esc_html__('Network error during scan processing.', 'tuedion-cookie'),
+                    'genericError'      => esc_html__('Error occurred during scan.', 'tuedion-cookie'),
+                    'noTargetsSelected' => esc_html__('Please select at least one page or post type to scan.', 'tuedion-cookie'),
+                    'confirmReset'      => esc_html__('Are you sure you want to clear all discovered cookies, scanned services, and scan history?', 'tuedion-cookie'),
+                    'resetSuccess'      => esc_html__('All scan findings, cookies, and history cleared successfully.', 'tuedion-cookie'),
+                    'clearingScan'      => esc_html__('Clearing scan results...', 'tuedion-cookie'),
+                    'resetError'        => esc_html__('Failed to clear scan results.', 'tuedion-cookie'),
                 ],
             ]);
         }

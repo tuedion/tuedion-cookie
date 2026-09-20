@@ -156,7 +156,9 @@ final class CategoriesPage
 
         $settings['services'] = array_values($filteredServices);
         Repository::updateSettings($settings);
+        \Tuedion\CookieConsent\I18n\TranslationManager::purgeCustomCookieTables();
         Compiler::clearCache();
+        \Tuedion\CookieConsent\Integrations\CacheCompatibility::purgeAllCaches();
 
         wp_send_json_success([
             'message'        => esc_html__('Service removed from cookie preferences.', 'tuedion-cookie'),
@@ -315,7 +317,9 @@ final class CategoriesPage
             $settings = Repository::getSettings();
             $settings['services'] = array_values(array_filter($settings['services'], fn($s) => $s['id'] !== $delSvcId));
             Repository::updateSettings($settings);
+            \Tuedion\CookieConsent\I18n\TranslationManager::purgeCustomCookieTables();
             Compiler::clearCache();
+            \Tuedion\CookieConsent\Integrations\CacheCompatibility::purgeAllCaches();
             $notice = esc_html__('Service deleted successfully.', 'tuedion-cookie');
         }
 
@@ -618,7 +622,7 @@ final class CategoriesPage
                     </div>
                 </div>
 
-                <!-- Scanner & Service Directory Section -->
+                <!-- Scanner v3 Professional Console -->
                 <?php
                 $scanResults = CookieScanner::getResults();
                 $detectedServices = (array) ($scanResults['detected_services'] ?? []);
@@ -626,6 +630,7 @@ final class CategoriesPage
                 $scanStats = (array) ($scanResults['stats'] ?? []);
                 $lastScanDate = (string) ($scanResults['last_scan_date'] ?? '');
                 $lastScanHuman = (string) ($scanResults['last_scan_human'] ?? '');
+                $lastScanMode = (string) ($scanResults['mode'] ?? 'quick');
                 $configuredServiceIds = array_column($services, 'id');
                 $detectedCount = count($detectedServices);
                 $scannerConfig = (array) ($settings['scanner'] ?? Defaults::get()['scanner']);
@@ -637,7 +642,52 @@ final class CategoriesPage
                     'monthly' => __('Monthly', 'tuedion-cookie'),
                 ];
                 $cronScheduleLabel = $scheduleLabels[$cronSchedule] ?? __('Weekly', 'tuedion-cookie');
+                $availablePostTypes = CookieScanner::getAvailablePostTypes();
+                $configuredScanTargets = (array) ($scannerConfig['scan_targets'] ?? ['home', 'page', 'post']);
+
+                // Scanner v3 Intelligence Layer Data
+                $unknownDetector = new \Tuedion\CookieConsent\Scanner\Detection\UnknownResourceDetector();
+                $unknownResources = $unknownDetector->getAll();
+                $unknownCount = count($unknownResources);
+
+                $scanHistory = \Tuedion\CookieConsent\Scanner\ScanRepository::getHistory(10);
+                $latestScan = \Tuedion\CookieConsent\Scanner\ScanRepository::getLatestScan();
+                $latestDiff = $latestScan ? $latestScan->diff : ($scanResults['diff'] ?? []);
+
+                $changeWatcher = new \Tuedion\CookieConsent\Scanner\Smart\ChangeWatcher();
+                $hasStructuralChanges = $changeWatcher->hasChanges();
+                $pendingChange = $changeWatcher->getPendingChange();
                 ?>
+
+                <?php if ($hasStructuralChanges && $pendingChange): ?>
+                    <div class="tdcc-notice-banner tdcc-notice-warning" id="tdcc-drift-banner">
+                        <div class="tdcc-notice-content">
+                            <span class="dashicons dashicons-warning tdcc-notice-icon"></span>
+                            <div>
+                                <strong><?php echo esc_html__('Structural Site Changes Detected:', 'tuedion-cookie'); ?></strong>
+                                <?php
+                                $cType = (string) ($pendingChange['type'] ?? '');
+                                if ($cType === 'plugin_activated') {
+                                    /* translators: %s: Plugin file */
+                                    echo esc_html(sprintf(__('A WordPress plugin (%s) was recently activated.', 'tuedion-cookie'), $pendingChange['context']['plugin'] ?? ''));
+                                } elseif ($cType === 'plugin_deactivated') {
+                                    /* translators: %s: Plugin file */
+                                    echo esc_html(sprintf(__('A WordPress plugin (%s) was recently deactivated.', 'tuedion-cookie'), $pendingChange['context']['plugin'] ?? ''));
+                                } elseif ($cType === 'theme_switched') {
+                                    /* translators: %s: Theme name */
+                                    echo esc_html(sprintf(__('The active theme was switched to "%s".', 'tuedion-cookie'), $pendingChange['context']['theme'] ?? ''));
+                                } else {
+                                    echo esc_html__('Plugins or theme configurations have recently changed.', 'tuedion-cookie');
+                                }
+                                ?>
+                                <span class="tdcc-notice-sub"><?php echo esc_html__('We recommend running a Smart Scan to detect any newly introduced cookies or third-party tracking scripts.', 'tuedion-cookie'); ?></span>
+                            </div>
+                        </div>
+                        <button type="button" class="button button-small button-secondary tdcc-client-scan-btn" data-mode="smart" data-nonce="<?php echo esc_attr(wp_create_nonce('tuedion_scanner_action')); ?>">
+                            <?php echo esc_html__('Run Smart Scan Now', 'tuedion-cookie'); ?>
+                        </button>
+                    </div>
+                <?php endif; ?>
 
                 <div class="tdcc-scanner-hero">
                     <div class="tdcc-scanner-header">
@@ -645,35 +695,43 @@ final class CategoriesPage
                             <span class="dashicons dashicons-search"></span>
                             <div>
                                 <h3>
-                                    <?php echo esc_html__('Website Tracker & Service Scanner', 'tuedion-cookie'); ?>
+                                    <?php echo esc_html__('Website Tracker & Service Scanner v3', 'tuedion-cookie'); ?>
                                 </h3>
                                 <p>
                                     <?php if (!empty($lastScanDate)): ?>
                                         <?php
-                                        /* translators: 1: Scan date, 2: Human readable relative time */
-                                        echo esc_html(sprintf(__('Last scan: %1$s (%2$s)', 'tuedion-cookie'), $lastScanDate, $lastScanHuman));
+                                        /* translators: 1: Scan date, 2: Human readable relative time, 3: Scan mode */
+                                        echo esc_html(sprintf(__('Last scan: %1$s (%2$s) via %3$s Scan', 'tuedion-cookie'), $lastScanDate, $lastScanHuman, ucfirst($lastScanMode)));
                                         ?>
                                     <?php else: ?>
                                         <?php echo esc_html__('No scan executed yet. Run a site scan to detect active services and cookies.', 'tuedion-cookie'); ?>
                                     <?php endif; ?>
                                 </p>
-                                <div style="margin-top:6px; display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                                <div class="tdcc-scanner-badges">
                                     <?php if ($cronEnabled): ?>
-                                        <span class="tdcc-badge" style="display:inline-flex; align-items:center; gap:5px; font-weight:600; font-size:11px; padding:3px 8px; border-radius:4px; background:#dcfce7; color:#15803d; border:1px solid #86efac;">
-                                            <span class="dashicons dashicons-backup" style="font-size:13px; width:13px; height:13px; line-height:13px;"></span>
+                                        <span class="tdcc-badge tdcc-badge-inline tdcc-badge-cron-on">
+                                            <span class="dashicons dashicons-backup"></span>
                                             <?php
                                             /* translators: %s: Cron schedule frequency label */
                                             echo esc_html(sprintf(__('WP-Cron Auto-Scan: Active (%s)', 'tuedion-cookie'), $cronScheduleLabel));
                                             ?>
                                         </span>
                                     <?php else: ?>
-                                        <span class="tdcc-badge" style="display:inline-flex; align-items:center; gap:5px; font-weight:600; font-size:11px; padding:3px 8px; border-radius:4px; background:#f1f5f9; color:#64748b; border:1px solid #cbd5e1;">
-                                            <span class="dashicons dashicons-backup" style="font-size:13px; width:13px; height:13px; line-height:13px;"></span>
+                                        <span class="tdcc-badge tdcc-badge-inline tdcc-badge-cron-off">
+                                            <span class="dashicons dashicons-backup"></span>
                                             <?php echo esc_html__('WP-Cron Auto-Scan: Off', 'tuedion-cookie'); ?>
                                         </span>
                                     <?php endif; ?>
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=tuedion-cookie-settings#tdcc-scanner-settings')); ?>" style="font-size:12px; text-decoration:none; font-weight:600; color:#2563eb; display:inline-flex; align-items:center; gap:3px;">
-                                        <span class="dashicons dashicons-admin-generic" style="font-size:13px; width:13px; height:13px; line-height:13px;"></span>
+                                    <span class="tdcc-badge tdcc-badge-inline tdcc-badge-database">
+                                        <span class="dashicons dashicons-database"></span>
+                                        <?php
+                                        $dbMeta = \Tuedion\CookieConsent\Database\CookieDatabase::getMetadata();
+                                        /* translators: 1: Record count, 2: Version date */
+                                        echo esc_html(sprintf(__('Open Cookie DB: %1$d patterns (%2$s)', 'tuedion-cookie'), $dbMeta['records_count'] ?? 0, $dbMeta['version'] ?? 'bundled'));
+                                        ?>
+                                    </span>
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=tuedion-cookie-settings#tdcc-scanner-settings')); ?>" class="tdcc-scanner-badge-link">
+                                        <span class="dashicons dashicons-admin-generic"></span>
                                         <?php echo esc_html__('Configure Scheduled Scans & Email Alerts', 'tuedion-cookie'); ?> &rarr;
                                     </a>
                                 </div>
@@ -681,9 +739,19 @@ final class CategoriesPage
                         </div>
 
                         <div class="tdcc-scanner-actions">
-                            <button type="button" class="button button-primary tdcc-client-scan-btn" data-nonce="<?php echo esc_attr(wp_create_nonce('tuedion_scanner_action')); ?>">
+                            <button type="button" class="button button-primary tdcc-client-scan-btn" id="tdcc-primary-scan-btn" data-nonce="<?php echo esc_attr(wp_create_nonce('tuedion_scanner_action')); ?>">
                                 <span class="dashicons dashicons-update"></span>
                                 <?php echo esc_html__('Scan Website Now', 'tuedion-cookie'); ?>
+                            </button>
+
+                            <button type="button" class="button button-secondary" id="tdcc-update-cookie-db-btn" data-nonce="<?php echo esc_attr(wp_create_nonce('tuedion_scanner_action')); ?>" title="<?php echo esc_attr__('Fetch latest open cookie definitions from Open Cookie Database', 'tuedion-cookie'); ?>">
+                                <span class="dashicons dashicons-cloud"></span>
+                                <?php echo esc_html__('Update Cookie DB', 'tuedion-cookie'); ?>
+                            </button>
+
+                            <button type="button" class="button button-secondary tdcc-btn-danger" id="tdcc-reset-scan-btn" data-nonce="<?php echo esc_attr(wp_create_nonce('tuedion_scanner_action')); ?>" title="<?php echo esc_attr__('Reset all scanned services, discovered cookies, and history', 'tuedion-cookie'); ?>">
+                                <span class="dashicons dashicons-trash"></span>
+                                <?php echo esc_html__('Clear Scan Results', 'tuedion-cookie'); ?>
                             </button>
 
                             <?php if ($detectedCount > 0): ?>
@@ -698,10 +766,204 @@ final class CategoriesPage
                         </div>
                     </div>
 
+                    <!-- 3 Scan Modes Selector Cards -->
+                    <div class="tdcc-scan-modes-wrap">
+                        <div class="tdcc-modes-header">
+                            <strong><?php echo esc_html__('Select Scan Mode:', 'tuedion-cookie'); ?></strong>
+                        </div>
+                        <div class="tdcc-scan-modes-grid" id="tdcc-scan-modes-container">
+                            <div class="tdcc-mode-card is-active" data-mode="quick">
+                                <div class="tdcc-mode-radio">
+                                    <input type="radio" name="active_scan_mode" id="tdcc-mode-radio-quick" value="quick" checked>
+                                </div>
+                                <div class="tdcc-mode-content">
+                                    <div class="tdcc-mode-title-row">
+                                        <span class="dashicons dashicons-clock tdcc-mode-icon"></span>
+                                        <span class="tdcc-mode-name"><?php echo esc_html__('Quick Scan', 'tuedion-cookie'); ?></span>
+                                        <span class="tdcc-mode-pill"><?php echo esc_html__('Fast Sampling', 'tuedion-cookie'); ?></span>
+                                    </div>
+                                    <p class="tdcc-mode-desc">
+                                        <?php echo esc_html__('Audits representative pages and selected custom post types via intelligent WordPress sampling.', 'tuedion-cookie'); ?>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="tdcc-mode-card" data-mode="smart">
+                                <div class="tdcc-mode-radio">
+                                    <input type="radio" name="active_scan_mode" id="tdcc-mode-radio-smart" value="smart">
+                                </div>
+                                <div class="tdcc-mode-content">
+                                    <div class="tdcc-mode-title-row">
+                                        <span class="dashicons dashicons-networking tdcc-mode-icon"></span>
+                                        <span class="tdcc-mode-name"><?php echo esc_html__('Smart Scan', 'tuedion-cookie'); ?></span>
+                                        <span class="tdcc-mode-pill tdcc-pill-smart"><?php echo esc_html__('Recommended', 'tuedion-cookie'); ?></span>
+                                    </div>
+                                    <p class="tdcc-mode-desc">
+                                        <?php echo esc_html__('Discovers URLs from XML Sitemaps, Navigation Menus, and WooCommerce/WordPress critical pages.', 'tuedion-cookie'); ?>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="tdcc-mode-card" data-mode="full">
+                                <div class="tdcc-mode-radio">
+                                    <input type="radio" name="active_scan_mode" id="tdcc-mode-radio-full" value="full">
+                                </div>
+                                <div class="tdcc-mode-content">
+                                    <div class="tdcc-mode-title-row">
+                                        <span class="dashicons dashicons-admin-site-alt3 tdcc-mode-icon"></span>
+                                        <span class="tdcc-mode-name"><?php echo esc_html__('Full Website Scan', 'tuedion-cookie'); ?></span>
+                                        <span class="tdcc-mode-pill tdcc-pill-full"><?php echo esc_html__('Browser Runtime', 'tuedion-cookie'); ?></span>
+                                    </div>
+                                    <p class="tdcc-mode-desc">
+                                        <?php echo esc_html__('Deep runtime audit with simulated scroll, delayed tracker detection, and network beacon interception.', 'tuedion-cookie'); ?>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Configuration Drawer per Mode -->
+                    <div class="tdcc-mode-settings-drawer">
+                        <!-- Quick Scan Settings Panel -->
+                        <div class="tdcc-mode-panel is-active" id="tdcc-panel-mode-quick">
+                            <div class="tdcc-panel-options-row">
+                                <div class="tdcc-option-group">
+                                    <label for="tdcc-quick-strategy"><strong><?php echo esc_html__('Sampling Strategy:', 'tuedion-cookie'); ?></strong></label>
+                                    <select id="tdcc-quick-strategy" name="quick_strategy" class="tdcc-custom-select">
+                                        <option value="representative" selected><?php echo esc_html__('Representative Sample (Default)', 'tuedion-cookie'); ?></option>
+                                        <option value="recently_modified"><?php echo esc_html__('Recently Modified Pages', 'tuedion-cookie'); ?></option>
+                                        <option value="recently_published"><?php echo esc_html__('Recently Published Pages', 'tuedion-cookie'); ?></option>
+                                        <option value="random"><?php echo esc_html__('Random Uniform Sample', 'tuedion-cookie'); ?></option>
+                                    </select>
+                                </div>
+                                <div class="tdcc-option-group">
+                                    <label for="tdcc-quick-sample-size"><strong><?php echo esc_html__('Sample Size per Type:', 'tuedion-cookie'); ?></strong></label>
+                                    <select id="tdcc-quick-sample-size" name="quick_sample_size" class="tdcc-custom-select">
+                                        <option value="1" selected>1 <?php echo esc_html__('page per type', 'tuedion-cookie'); ?></option>
+                                        <option value="2">2 <?php echo esc_html__('pages per type', 'tuedion-cookie'); ?></option>
+                                        <option value="3">3 <?php echo esc_html__('pages per type', 'tuedion-cookie'); ?></option>
+                                        <option value="5">5 <?php echo esc_html__('pages per type', 'tuedion-cookie'); ?></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="tdcc-scanner-scope-bar">
+                                <div class="tdcc-scope-title">
+                                    <span class="dashicons dashicons-category"></span>
+                                    <strong><?php echo esc_html__('Target Post Types:', 'tuedion-cookie'); ?></strong>
+                                    <span class="tdcc-scope-hint"><?php echo esc_html__('Check post types to include in sampling', 'tuedion-cookie'); ?></span>
+                                </div>
+                                <div class="tdcc-scope-chips" id="tdcc-scanner-scope-items">
+                                    <?php foreach ($availablePostTypes as $ptKey => $ptInfo):
+                                        $isHome = ($ptKey === 'home');
+                                        $isChecked = $isHome || in_array($ptKey, $configuredScanTargets, true);
+                                    ?>
+                                        <label class="tdcc-scope-chip <?php echo $isChecked ? 'is-checked' : ''; ?> <?php echo $isHome ? 'is-required' : ''; ?>">
+                                            <input type="checkbox" name="scan_scope[]" value="<?php echo esc_attr($ptKey); ?>" <?php checked($isChecked); ?> <?php disabled($isHome); ?>>
+                                            <span class="tdcc-chip-icon dashicons <?php echo esc_attr($ptInfo['icon'] ?? 'dashicons-admin-post'); ?>"></span>
+                                            <span class="tdcc-chip-label"><?php echo esc_html($ptInfo['label']); ?></span>
+                                            <?php if (!$isHome && isset($ptInfo['count'])): ?>
+                                                <?php
+                                                /* translators: %d: Number of published posts */
+                                                $publishedCountTitle = sprintf(__('%d published', 'tuedion-cookie'), $ptInfo['count']);
+                                                ?>
+                                                <span class="tdcc-chip-count" title="<?php echo esc_attr($publishedCountTitle); ?>"><?php echo esc_html((string) $ptInfo['count']); ?></span>
+                                            <?php endif; ?>
+                                        </label>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Smart Scan Settings Panel -->
+                        <div class="tdcc-mode-panel" id="tdcc-panel-mode-smart">
+                            <div class="tdcc-panel-options-row">
+                                <div class="tdcc-option-group">
+                                    <strong><?php echo esc_html__('URL Discovery Sources:', 'tuedion-cookie'); ?></strong>
+                                    <div class="tdcc-checkbox-group">
+                                        <label>
+                                            <input type="checkbox" id="tdcc-smart-sitemap" name="smart_sitemap" value="1" checked>
+                                            <?php echo esc_html__('XML Sitemaps (/wp-sitemap.xml)', 'tuedion-cookie'); ?>
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" id="tdcc-smart-menus" name="smart_menus" value="1" checked>
+                                            <?php echo esc_html__('WordPress Navigation Menus', 'tuedion-cookie'); ?>
+                                        </label>
+                                        <label>
+                                            <input type="checkbox" id="tdcc-smart-critical" name="smart_critical" value="1" checked>
+                                            <?php echo esc_html__('Critical Pages (Shop, Privacy, Front Page)', 'tuedion-cookie'); ?>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="tdcc-option-group">
+                                    <label for="tdcc-smart-max-urls"><strong><?php echo esc_html__('Max Discovered URLs:', 'tuedion-cookie'); ?></strong></label>
+                                    <select id="tdcc-smart-max-urls" name="smart_max_urls" class="tdcc-custom-select">
+                                        <option value="15">15 <?php echo esc_html__('URLs', 'tuedion-cookie'); ?></option>
+                                        <option value="30" selected>30 <?php echo esc_html__('URLs (Recommended)', 'tuedion-cookie'); ?></option>
+                                        <option value="50">50 <?php echo esc_html__('URLs', 'tuedion-cookie'); ?></option>
+                                        <option value="100">100 <?php echo esc_html__('URLs', 'tuedion-cookie'); ?></option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="tdcc-panel-filters-row">
+                                <div class="tdcc-filter-col">
+                                    <label for="tdcc-smart-exclude"><strong><?php echo esc_html__('Exclude URL Patterns (One per line):', 'tuedion-cookie'); ?></strong></label>
+                                    <textarea id="tdcc-smart-exclude" name="smart_exclude" rows="2" class="large-text code" placeholder="/private/*&#10;/members/*"></textarea>
+                                </div>
+                                <div class="tdcc-filter-col">
+                                    <label for="tdcc-smart-include"><strong><?php echo esc_html__('Include Only Patterns (Optional):', 'tuedion-cookie'); ?></strong></label>
+                                    <textarea id="tdcc-smart-include" name="smart_include" rows="2" class="large-text code" placeholder="/shop/*&#10;/blog/*"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Full Website Scan Settings Panel -->
+                        <div class="tdcc-mode-panel" id="tdcc-panel-mode-full">
+                            <div class="tdcc-panel-options-row">
+                                <div class="tdcc-option-group">
+                                    <label for="tdcc-full-delay"><strong><?php echo esc_html__('Delayed Tracker Wait Time:', 'tuedion-cookie'); ?></strong></label>
+                                    <select id="tdcc-full-delay" name="full_delay" class="tdcc-custom-select">
+                                        <option value="1500">1.5 <?php echo esc_html__('seconds', 'tuedion-cookie'); ?></option>
+                                        <option value="2500" selected>2.5 <?php echo esc_html__('seconds (GTM & Meta Beacons)', 'tuedion-cookie'); ?></option>
+                                        <option value="4000">4.0 <?php echo esc_html__('seconds (Heavy scripts)', 'tuedion-cookie'); ?></option>
+                                    </select>
+                                </div>
+                                <div class="tdcc-option-group">
+                                    <strong><?php echo esc_html__('Runtime Interactions:', 'tuedion-cookie'); ?></strong>
+                                    <div class="tdcc-checkbox-group">
+                                        <label>
+                                            <input type="checkbox" id="tdcc-full-scroll" name="full_scroll" value="1" checked>
+                                            <?php echo esc_html__('Simulate Smooth Scroll to trigger lazy-loaded iframes and scripts', 'tuedion-cookie'); ?>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Scanner Multi-Step Progress Bar -->
+                    <div class="tdcc-scanner-progress" id="tdcc-scanner-progress" aria-hidden="true">
+                        <div class="tdcc-progress-header">
+                            <div class="tdcc-progress-status">
+                                <span class="dashicons dashicons-update tdcc-spin"></span>
+                                <span class="tdcc-progress-label" id="tdcc-progress-label"><?php echo esc_html__('Initializing scan audit...', 'tuedion-cookie'); ?></span>
+                            </div>
+                            <div class="tdcc-progress-percent" id="tdcc-progress-percent">0%</div>
+                        </div>
+                        <div class="tdcc-progress-track">
+                            <div class="tdcc-progress-bar" id="tdcc-progress-bar"></div>
+                        </div>
+                        <div class="tdcc-progress-meta">
+                            <span class="tdcc-progress-step" id="tdcc-progress-step"><?php echo esc_html__('Planning crawl targets...', 'tuedion-cookie'); ?></span>
+                            <span class="tdcc-progress-url" id="tdcc-progress-url"></span>
+                        </div>
+                    </div>
+
                     <!-- Metrics -->
                     <div class="tdcc-scanner-metrics">
                         <div class="tdcc-scanner-stat">
-                            <div class="tdcc-scanner-stat-num is-active">
+                            <div class="tdcc-scanner-stat-num is-active" id="tdcc-metric-services">
                                 <?php echo esc_html((string) $detectedCount); ?>
                             </div>
                             <div class="tdcc-scanner-stat-label">
@@ -710,11 +972,20 @@ final class CategoriesPage
                         </div>
 
                         <div class="tdcc-scanner-stat">
-                            <div class="tdcc-scanner-stat-num is-discovered">
+                            <div class="tdcc-scanner-stat-num is-discovered" id="tdcc-metric-cookies">
                                 <?php echo esc_html((string) count($detectedCookies)); ?>
                             </div>
                             <div class="tdcc-scanner-stat-label">
                                 <?php echo esc_html__('Discovered Cookies', 'tuedion-cookie'); ?>
+                            </div>
+                        </div>
+
+                        <div class="tdcc-scanner-stat">
+                            <div class="tdcc-scanner-stat-num <?php echo $unknownCount > 0 ? 'is-warning' : 'is-neutral'; ?>" id="tdcc-metric-unknowns">
+                                <?php echo esc_html((string) $unknownCount); ?>
+                            </div>
+                            <div class="tdcc-scanner-stat-label">
+                                <?php echo esc_html__('Unknown Resources', 'tuedion-cookie'); ?>
                             </div>
                         </div>
 
@@ -729,19 +1000,13 @@ final class CategoriesPage
                     </div>
                 </div>
 
-                <!-- Navigation Tabs: Detected vs Catalogue vs Discovered Cookies -->
+                <!-- 5 Consolidated Navigation Tabs -->
                 <div class="tdcc-catalogue-nav">
                     <div class="tdcc-nav-pills">
                         <button type="button" class="tdcc-nav-pill is-active" data-target="pane-detected">
                             <span class="dashicons dashicons-yes"></span>
-                            <?php echo esc_html__('Detected on This Site', 'tuedion-cookie'); ?>
+                            <?php echo esc_html__('Detected Services', 'tuedion-cookie'); ?>
                             <span class="count"><?php echo esc_html((string) $detectedCount); ?></span>
-                        </button>
-
-                        <button type="button" class="tdcc-nav-pill" data-target="pane-catalogue">
-                            <span class="dashicons dashicons-category"></span>
-                            <?php echo esc_html__('All Supported Presets', 'tuedion-cookie'); ?>
-                            <span class="count"><?php echo esc_html((string) count($allRecipes)); ?></span>
                         </button>
 
                         <button type="button" class="tdcc-nav-pill" data-target="pane-cookies">
@@ -749,24 +1014,38 @@ final class CategoriesPage
                             <?php echo esc_html__('Discovered Cookies', 'tuedion-cookie'); ?>
                             <span class="count"><?php echo esc_html((string) count($detectedCookies)); ?></span>
                         </button>
+
+                        <button type="button" class="tdcc-nav-pill <?php echo $unknownCount > 0 ? 'has-badge-alert' : ''; ?>" data-target="pane-unknowns">
+                            <span class="dashicons dashicons-flag"></span>
+                            <?php echo esc_html__('Unknown Resources', 'tuedion-cookie'); ?>
+                            <span class="count"><?php echo esc_html((string) $unknownCount); ?></span>
+                        </button>
+
+                        <button type="button" class="tdcc-nav-pill" data-target="pane-history">
+                            <span class="dashicons dashicons-backup"></span>
+                            <?php echo esc_html__('Scan History & Diffs', 'tuedion-cookie'); ?>
+                            <span class="count"><?php echo esc_html((string) count($scanHistory)); ?></span>
+                        </button>
+
+                        <button type="button" class="tdcc-nav-pill" data-target="pane-catalogue">
+                            <span class="dashicons dashicons-category"></span>
+                            <?php echo esc_html__('All Supported Presets', 'tuedion-cookie'); ?>
+                            <span class="count"><?php echo esc_html((string) count($allRecipes)); ?></span>
+                        </button>
                     </div>
 
                     <div class="tdcc-search-wrap">
-                        <input type="search" id="tdcc-preset-search" placeholder="<?php echo esc_attr__('Search services or cookies...', 'tuedion-cookie'); ?>" class="regular-text tdcc-search-input">
+                        <input type="search" id="tdcc-preset-search" placeholder="<?php echo esc_attr__('Search services, cookies, domains...', 'tuedion-cookie'); ?>" class="regular-text tdcc-search-input">
                     </div>
                 </div>
 
-                <!-- Pane 1: Detected on This Site (DEFAULT) -->
+                <!-- Pane 1: Detected Services on This Site -->
                 <div id="pane-detected" class="tdcc-catalogue-pane is-active">
                     <?php if (empty($detectedServices)): ?>
                         <div class="tdcc-scanner-empty">
                             <span class="dashicons dashicons-search"></span>
-                            <h4>
-                                <?php echo esc_html__('No Active Services Detected Yet', 'tuedion-cookie'); ?>
-                            </h4>
-                            <p>
-                                <?php echo esc_html__('Run a real-time crawl to scan your pages, enqueued scripts, and embedded iframes (e.g. YouTube, Vimeo, Google Maps, GA4).', 'tuedion-cookie'); ?>
-                            </p>
+                            <h4><?php echo esc_html__('No Active Services Detected Yet', 'tuedion-cookie'); ?></h4>
+                            <p><?php echo esc_html__('Run a real-time crawl to scan your pages, enqueued scripts, and embedded iframes (e.g. YouTube, Vimeo, Google Maps, GA4).', 'tuedion-cookie'); ?></p>
                             <button type="button" class="button button-primary tdcc-client-scan-btn" data-nonce="<?php echo esc_attr(wp_create_nonce('tuedion_scanner_action')); ?>">
                                 <?php echo esc_html__('Run First Website Scan', 'tuedion-cookie'); ?>
                             </button>
@@ -777,7 +1056,7 @@ final class CategoriesPage
                                 <tr>
                                     <th scope="col"><?php echo esc_html__('Active Service', 'tuedion-cookie'); ?></th>
                                     <th scope="col"><?php echo esc_html__('Category', 'tuedion-cookie'); ?></th>
-                                    <th scope="col"><?php echo esc_html__('Detection Origin / Source', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('Detection Origin / Evidence', 'tuedion-cookie'); ?></th>
                                     <th scope="col"><?php echo esc_html__('Cookie Patterns', 'tuedion-cookie'); ?></th>
                                     <th scope="col"><?php echo esc_html__('Preferences Status', 'tuedion-cookie'); ?></th>
                                 </tr>
@@ -793,20 +1072,39 @@ final class CategoriesPage
                                             <span class="tdcc-badge tdcc-badge-type">
                                                 <?php echo esc_html(strtoupper($ds['type'] ?? 'SCRIPT')); ?>
                                             </span>
+                                            <?php if (!empty($ds['confidence_label'])): ?>
+                                                <?php
+                                                /* translators: %d: Confidence score percentage */
+                                                $confidenceTitle = sprintf(__('Confidence score: %d%%', 'tuedion-cookie'), $ds['confidence_score'] ?? 100);
+                                                ?>
+                                                <span class="tdcc-confidence-badge <?php echo esc_attr($ds['badge_class'] ?? 'tdcc-badge-confirmed'); ?>" title="<?php echo esc_attr($confidenceTitle); ?>">
+                                                    <?php echo esc_html($ds['confidence_label']); ?> (<?php echo esc_html((string) ($ds['confidence_score'] ?? 100)); ?>%)
+                                                </span>
+                                            <?php endif; ?>
                                         </td>
                                         <td>
                                             <code><?php echo esc_html($ds['category'] ?? 'marketing'); ?></code>
                                         </td>
                                         <td class="tdcc-source-cell">
-                                            <?php
-                                            $sources = (array) ($ds['sources'] ?? [$ds['source'] ?? '']);
-                                            foreach ($sources as $srcLine):
-                                            ?>
-                                                <div class="tdcc-source-line">
-                                                    <span class="dashicons dashicons-yes"></span>
-                                                    <span><?php echo wp_kses_post($srcLine); ?></span>
-                                                </div>
-                                            <?php endforeach; ?>
+                                            <?php if (!empty($ds['evidence']) && is_array($ds['evidence'])): ?>
+                                                <?php foreach ($ds['evidence'] as $ev): ?>
+                                                    <div class="tdcc-source-line tdcc-evidence-line">
+                                                        <span class="dashicons dashicons-yes-alt"></span>
+                                                        <strong><?php echo esc_html(ucfirst(str_replace('_', ' ', (string) ($ev['type'] ?? 'signal')))); ?>:</strong>
+                                                        <span><?php echo esc_html((string) ($ev['value'] ?? '')); ?></span>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            <?php else: ?>
+                                                <?php
+                                                $sources = (array) ($ds['sources'] ?? [$ds['source'] ?? '']);
+                                                foreach ($sources as $srcLine):
+                                                ?>
+                                                    <div class="tdcc-source-line">
+                                                        <span class="dashicons dashicons-yes"></span>
+                                                        <span><?php echo wp_kses_post($srcLine); ?></span>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
                                         </td>
                                         <td>
                                             <?php
@@ -841,7 +1139,215 @@ final class CategoriesPage
                     <?php endif; ?>
                 </div>
 
-                <!-- Pane 2: All Supported Presets (22) -->
+                <!-- Pane 2: Discovered Cookies Inventory Table -->
+                <div id="pane-cookies" class="tdcc-catalogue-pane">
+                    <?php if (empty($detectedCookies)): ?>
+                        <p class="tdcc-empty-notice">
+                            <?php echo esc_html__('No cookies mapped yet. Run a site scan to discover active cookies.', 'tuedion-cookie'); ?>
+                        </p>
+                    <?php else: ?>
+                        <div class="tdcc-pane-actions-bar">
+                            <span class="tdcc-pane-count-info">
+                                <?php
+                                /* translators: %d: Discovered cookie count */
+                                echo esc_html(sprintf(__('Found %d cookies across scanned pages.', 'tuedion-cookie'), count($detectedCookies)));
+                                ?>
+                            </span>
+                            <button type="button" class="button button-secondary button-small tdcc-btn-danger tdcc-trigger-reset-scan" data-nonce="<?php echo esc_attr(wp_create_nonce('tuedion_scanner_action')); ?>" title="<?php echo esc_attr__('Clear all discovered cookie records', 'tuedion-cookie'); ?>">
+                                <span class="dashicons dashicons-trash"></span>
+                                <?php echo esc_html__('Clear All Discovered Cookies', 'tuedion-cookie'); ?>
+                            </button>
+                        </div>
+                        <table class="widefat striped tdcc-searchable-table" role="presentation">
+                            <thead>
+                                <tr>
+                                    <th scope="col"><?php echo esc_html__('Cookie Identifier', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('Provider / Service', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('Category', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('Domain', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('Duration', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('Description / Purpose', 'tuedion-cookie'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($detectedCookies as $c): ?>
+                                    <tr>
+                                        <td>
+                                            <strong class="tdcc-cookie-name"><?php echo esc_html($c['name']); ?></strong>
+                                            <?php if (!empty($c['source']) && $c['source'] === 'database'): ?>
+                                                <span class="tdcc-badge-db" title="<?php echo esc_attr__('Verified via Open Cookie Database', 'tuedion-cookie'); ?>">
+                                                    <?php echo esc_html__('Open Cookie DB', 'tuedion-cookie'); ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td><?php echo esc_html($c['service']); ?></td>
+                                        <td><code><?php echo esc_html($c['category']); ?></code></td>
+                                        <td><code><?php echo esc_html($c['domain']); ?></code></td>
+                                        <td><?php echo esc_html($c['duration']); ?></td>
+                                        <td class="tdcc-desc-cell">
+                                            <?php echo esc_html($c['description']); ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Pane 3: Unknown Resources Management -->
+                <div id="pane-unknowns" class="tdcc-catalogue-pane">
+                    <?php if (empty($unknownResources)): ?>
+                        <div class="tdcc-scanner-empty">
+                            <span class="dashicons dashicons-shield-alt"></span>
+                            <h4><?php echo esc_html__('No Unknown Resources Detected', 'tuedion-cookie'); ?></h4>
+                            <p><?php echo esc_html__('All external scripts, iframes, pixels, and cookies found on this site match recognized entries in the Service Registry and Open Cookie Database.', 'tuedion-cookie'); ?></p>
+                        </div>
+                    <?php else: ?>
+                        <div class="tdcc-pane-top-actions">
+                            <p class="tdcc-pane-intro">
+                                <?php echo esc_html__('The following resources were detected during scans but do not match known global service recipes. You can convert them into custom services or mark them as ignored.', 'tuedion-cookie'); ?>
+                            </p>
+                            <button type="button" class="button button-small button-link-delete" id="tdcc-clear-unknowns-btn" data-nonce="<?php echo esc_attr(wp_create_nonce('tuedion_scanner_action')); ?>">
+                                <?php echo esc_html__('Clear All Unknown Resources', 'tuedion-cookie'); ?>
+                            </button>
+                        </div>
+                        <table class="widefat striped tdcc-searchable-table" role="presentation">
+                            <thead>
+                                <tr>
+                                    <th scope="col"><?php echo esc_html__('Type', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('Resource Identifier / Domain', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('First Found On', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('Status', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('Actions', 'tuedion-cookie'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($unknownResources as $u):
+                                    $uId = (string) $u['id'];
+                                    $uStatus = (string) ($u['status'] ?? 'pending');
+                                    $uType = (string) ($u['type'] ?? 'script');
+                                ?>
+                                    <tr data-unknown-row="<?php echo esc_attr($uId); ?>">
+                                        <td>
+                                            <span class="tdcc-badge tdcc-badge-type tdcc-badge-<?php echo esc_attr($uType); ?>">
+                                                <?php echo esc_html(strtoupper($uType)); ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <strong><?php echo esc_html($u['domain'] ?? ''); ?></strong>
+                                            <br><code class="tdcc-code-url"><?php echo esc_html($u['identifier'] ?? ''); ?></code>
+                                        </td>
+                                        <td>
+                                            <?php if (!empty($u['first_found_url'])): ?>
+                                                <a href="<?php echo esc_url($u['first_found_url']); ?>" target="_blank" rel="noopener noreferrer" class="tdcc-url-link">
+                                                    <?php echo esc_html(wp_parse_url($u['first_found_url'], PHP_URL_PATH) ?: '/'); ?>
+                                                    <span class="dashicons dashicons-external"></span>
+                                                </a>
+                                            <?php else: ?>
+                                                &mdash;
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <?php if ($uStatus === 'ignored'): ?>
+                                                <span class="tdcc-badge tdcc-badge-not-detected"><?php echo esc_html__('Ignored', 'tuedion-cookie'); ?></span>
+                                            <?php elseif ($uStatus === 'classified'): ?>
+                                                <span class="tdcc-badge tdcc-badge-enabled"><?php echo esc_html__('Classified', 'tuedion-cookie'); ?></span>
+                                            <?php else: ?>
+                                                <span class="tdcc-badge tdcc-badge-type"><?php echo esc_html__('Pending Review', 'tuedion-cookie'); ?></span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="tdcc-action-cell">
+                                            <div class="tdcc-action-btn-group">
+                                                <button type="button" class="button button-small button-secondary tdcc-categorize-unknown-btn" data-id="<?php echo esc_attr($uId); ?>" data-domain="<?php echo esc_attr($u['domain'] ?? ''); ?>">
+                                                    <?php echo esc_html__('+ Add Service', 'tuedion-cookie'); ?>
+                                                </button>
+                                                <?php if ($uStatus === 'ignored'): ?>
+                                                    <button type="button" class="button button-small button-link tdcc-unignore-unknown-btn" data-id="<?php echo esc_attr($uId); ?>">
+                                                        <?php echo esc_html__('Restore', 'tuedion-cookie'); ?>
+                                                    </button>
+                                                <?php else: ?>
+                                                    <button type="button" class="button button-small button-link tdcc-ignore-unknown-btn" data-id="<?php echo esc_attr($uId); ?>">
+                                                        <?php echo esc_html__('Ignore', 'tuedion-cookie'); ?>
+                                                    </button>
+                                                <?php endif; ?>
+                                                <button type="button" class="button button-small button-link-delete tdcc-delete-unknown-btn" data-id="<?php echo esc_attr($uId); ?>" title="<?php echo esc_attr__('Delete Record', 'tuedion-cookie'); ?>">
+                                                    <span class="dashicons dashicons-trash"></span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Pane 4: Scan History & Diffs -->
+                <div id="pane-history" class="tdcc-catalogue-pane">
+                    <?php if (empty($scanHistory)): ?>
+                        <div class="tdcc-scanner-empty">
+                            <span class="dashicons dashicons-backup"></span>
+                            <h4><?php echo esc_html__('No Scan History Recorded Yet', 'tuedion-cookie'); ?></h4>
+                            <p><?php echo esc_html__('Run your first website scan to begin logging execution duration, drift summaries, and discovered trackers.', 'tuedion-cookie'); ?></p>
+                        </div>
+                    <?php else: ?>
+                        <table class="widefat striped tdcc-searchable-table" role="presentation">
+                            <thead>
+                                <tr>
+                                    <th scope="col"><?php echo esc_html__('Scan Run ID & Mode', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('Timestamp', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('Duration', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('Pages Crawled', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('Findings (Services / Cookies / Unknowns)', 'tuedion-cookie'); ?></th>
+                                    <th scope="col"><?php echo esc_html__('Diff & Drift Summary', 'tuedion-cookie'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($scanHistory as $h): ?>
+                                    <tr>
+                                        <td>
+                                            <code class="tdcc-code-id"><?php echo esc_html((string) ($h['id'] ?? 'scan_run')); ?></code>
+                                            <span class="tdcc-badge tdcc-badge-mode-<?php echo esc_attr((string) ($h['mode'] ?? 'quick')); ?>">
+                                                <?php echo esc_html(strtoupper((string) ($h['mode'] ?? 'quick'))); ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <strong><?php echo esc_html((string) ($h['completed_at'] ?? $h['started_at'] ?? '')); ?></strong>
+                                        </td>
+                                        <td>
+                                            <?php echo esc_html((string) ($h['duration_seconds'] ?? 0)); ?>s
+                                        </td>
+                                        <td>
+                                            <?php echo esc_html((string) ($h['urls_scanned'] ?? 1)); ?> <?php echo esc_html__('pages', 'tuedion-cookie'); ?>
+                                        </td>
+                                        <td>
+                                            <span class="tdcc-stat-chip is-active" title="<?php echo esc_attr__('Active Services', 'tuedion-cookie'); ?>">
+                                                <?php echo esc_html((string) ($h['services_count'] ?? 0)); ?> <?php echo esc_html__('Services', 'tuedion-cookie'); ?>
+                                            </span>
+                                            <span class="tdcc-stat-chip is-discovered" title="<?php echo esc_attr__('Discovered Cookies', 'tuedion-cookie'); ?>">
+                                                <?php echo esc_html((string) ($h['cookies_count'] ?? 0)); ?> <?php echo esc_html__('Cookies', 'tuedion-cookie'); ?>
+                                            </span>
+                                            <span class="tdcc-stat-chip is-neutral" title="<?php echo esc_attr__('Unknown Resources', 'tuedion-cookie'); ?>">
+                                                <?php echo esc_html((string) ($h['unknown_count'] ?? 0)); ?> <?php echo esc_html__('Unknowns', 'tuedion-cookie'); ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <?php if (!empty($h['diff_summary'])): ?>
+                                                <span class="tdcc-diff-summary <?php echo !empty($h['has_changes']) ? 'has-changes' : 'no-changes'; ?>">
+                                                    <?php echo esc_html((string) $h['diff_summary']); ?>
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="tdcc-diff-summary no-changes"><?php echo esc_html__('Baseline scan', 'tuedion-cookie'); ?></span>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Pane 5: All Supported Presets (22) -->
                 <div id="pane-catalogue" class="tdcc-catalogue-pane">
                     <table class="widefat striped tdcc-searchable-table" role="presentation">
                         <thead>
@@ -917,44 +1423,6 @@ final class CategoriesPage
                             <?php endforeach; ?>
                         </tbody>
                     </table>
-                </div>
-
-                <!-- Pane 3: Discovered Cookies Inventory Table -->
-                <div id="pane-cookies" class="tdcc-catalogue-pane">
-                    <?php if (empty($detectedCookies)): ?>
-                        <p class="tdcc-empty-notice">
-                            <?php echo esc_html__('No cookies mapped yet. Run a site scan to discover active cookies.', 'tuedion-cookie'); ?>
-                        </p>
-                    <?php else: ?>
-                        <table class="widefat striped tdcc-searchable-table" role="presentation">
-                            <thead>
-                                <tr>
-                                    <th scope="col"><?php echo esc_html__('Cookie Identifier', 'tuedion-cookie'); ?></th>
-                                    <th scope="col"><?php echo esc_html__('Provider / Service', 'tuedion-cookie'); ?></th>
-                                    <th scope="col"><?php echo esc_html__('Category', 'tuedion-cookie'); ?></th>
-                                    <th scope="col"><?php echo esc_html__('Domain', 'tuedion-cookie'); ?></th>
-                                    <th scope="col"><?php echo esc_html__('Duration', 'tuedion-cookie'); ?></th>
-                                    <th scope="col"><?php echo esc_html__('Description / Purpose', 'tuedion-cookie'); ?></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($detectedCookies as $c): ?>
-                                    <tr>
-                                        <td>
-                                            <strong class="tdcc-cookie-name"><?php echo esc_html($c['name']); ?></strong>
-                                        </td>
-                                        <td><?php echo esc_html($c['service']); ?></td>
-                                        <td><code><?php echo esc_html($c['category']); ?></code></td>
-                                        <td><code><?php echo esc_html($c['domain']); ?></code></td>
-                                        <td><?php echo esc_html($c['duration']); ?></td>
-                                        <td class="tdcc-desc-cell">
-                                            <?php echo esc_html($c['description']); ?>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    <?php endif; ?>
                 </div>
             </div>
         </div>

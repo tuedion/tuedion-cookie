@@ -5,7 +5,7 @@ Tags: cookie, consent, gdpr, privacy, cookieconsent
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.3.3
+Stable tag: 1.4.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,13 @@ To empower site administrators to enforce GDPR/ePrivacy compliance, the plugin m
   - YouTube Terms: https://www.youtube.com/t/terms
   - Vimeo Terms: https://vimeo.com/terms
 
+* **Open Cookie Database** (GitHub / Jan Kwakman)
+  - Purpose: Site administrators can optionally click "Update Cookie DB" in the admin scanner to download the latest community-curated cookie definitions and classification patterns.
+  - Data Transmitted: No visitor, site, or administrator personal data is transmitted. Only a standard HTTP GET request is performed to fetch the public JSON file.
+  - Endpoint: https://raw.githubusercontent.com/jkwakman/Open-Cookie-Database/master/open-cookie-database.json
+  - Repository: https://github.com/jkwakman/Open-Cookie-Database
+  - License: Apache-2.0 License
+
 Note: Tuedion Cookie does NOT inject or initiate any of the above external services on its own. It only monitors and enforces consent on scripts and embeds that already exist on your site.
 
 == Screenshots ==
@@ -95,13 +102,34 @@ Note: Tuedion Cookie does NOT inject or initiate any of the above external servi
 
 == Changelog ==
 
+= 1.4.2 =
+* Feature: Introduced Smart Scan with automated XML sitemap discovery and dynamic navigation link crawling.
+* Feature: Added Full Website Scan mode with real-time multi-phase progress tracking.
+* Performance: Optimized database queries when auditing large catalogs of posts and custom post types.
+* Enhancement: Improved cookie expiration (duration) accuracy in public declaration tables across all languages.
+* Security: Hardened internal crawler network requests and admin scan endpoints.
+* Compatibility: Fully verified and updated for WordPress 6.x and VIP coding standards.
+
+= 1.4.1 =
+* Privacy: Ensured WordPress authentication and administrator UI cookies (wordpress_logged_in_*, wp-settings-*) are excluded from public visitor cookie tables.
+* Feature: Added dynamic Custom Post Type (CPT) and Page scan scope selector with chips and multi-step progress bar.
+* Feature: Added configurable scan scope for WP-Cron background crawler.
+* Performance: Updated runtime configuration cache for instant asset synchronization.
+
+= 1.4.0 =
+* Feature: Scanner v2 Architecture decoupling Cookie Database, Service Registry (40+ global services), and Multi-Factor Confidence Scoring (Confirmed, Very Likely, Probable, Possible, Weak).
+* Feature: Integrated offline Open Cookie Database with exact and wildcard matching, with fail-safe manual admin-triggered remote updater.
+* Feature: Expanded client-side scanner to safely audit HTML5 localStorage and sessionStorage key names.
+* UI: Added confidence badges, evidence breakdown trails, Open Cookie Database statistics, and verified cookie markers.
+* Cache Busting: Incremented runtime transient cache keys to v140.
+
 = 1.3.3 =
 * Security: Hardened Cookie Scanner to extract non-sensitive cookie names only and isolate WordPress session/auth cookies.
 * Security: Enforced strict origin verification on postMessage events and audit frame listeners.
 * Security: Added comprehensive AJAX payload sanitization, HTTP POST validation, and payload size bounds.
 * Standards: Migrated inline scripts and styles to modular assets via WordPress Enqueue API and replaced JS redirects with wp_safe_redirect().
 * Hardening: Strengthened ScriptEnforcer attribute whitelist and RecipeRegistry domain matching against query string spoofing.
-* Compliance: Documented local offline detection signatures in readme.
+* Compliance: Documented local offline detection signatures and Open Cookie Database endpoint in readme.
 
 = 1.3.2 =
 * Bug Fixed.

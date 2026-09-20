@@ -120,15 +120,36 @@ final class TranslationManager
         $categories = $settings['categories'] ?? [];
         $allPacks = LanguagePacks::getAll($categories);
 
-        // Merge custom translations if present
+        // Merge custom translations if present (cleanse static cookieTable first)
         $custom = get_option(self::CUSTOM_TRANSLATIONS_OPTION, []);
         if (is_array($custom)) {
             foreach ($custom as $code => $dict) {
                 if (is_array($dict)) {
+                    if (isset($dict['preferencesModal']['sections']) && is_array($dict['preferencesModal']['sections'])) {
+                        foreach ($dict['preferencesModal']['sections'] as &$sec) {
+                            if (is_array($sec) && isset($sec['cookieTable'])) {
+                                unset($sec['cookieTable']);
+                            }
+                        }
+                        unset($sec);
+                    }
                     $allPacks[$code] = array_replace_recursive($allPacks[$code] ?? [], $dict);
                 }
             }
         }
+
+        // Strip static cookieTable from export payload to ensure pure UI translation strings
+        foreach ($allPacks as $pCode => &$pack) {
+            if (isset($pack['preferencesModal']['sections']) && is_array($pack['preferencesModal']['sections'])) {
+                foreach ($pack['preferencesModal']['sections'] as &$sec) {
+                    if (is_array($sec) && isset($sec['cookieTable'])) {
+                        unset($sec['cookieTable']);
+                    }
+                }
+                unset($sec);
+            }
+        }
+        unset($pack);
 
         $payload = [
             'generator' => 'Tuedion Cookie v' . TUEDION_COOKIE_VERSION,
@@ -139,6 +160,44 @@ final class TranslationManager
         ];
 
         return (string) wp_json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * Purge all static cookieTable snapshots stored in custom translations.
+     * Prevents static ghost cookies from clobbering dynamic CMP tables.
+     *
+     * @return bool True if custom translations were modified and updated.
+     */
+    public static function purgeCustomCookieTables(): bool
+    {
+        $customTranslations = get_option(self::CUSTOM_TRANSLATIONS_OPTION, []);
+        if (!is_array($customTranslations) || empty($customTranslations)) {
+            return false;
+        }
+
+        $modified = false;
+        foreach ($customTranslations as $code => &$pack) {
+            if (!is_array($pack)) {
+                continue;
+            }
+            if (isset($pack['preferencesModal']['sections']) && is_array($pack['preferencesModal']['sections'])) {
+                foreach ($pack['preferencesModal']['sections'] as &$sec) {
+                    if (is_array($sec) && isset($sec['cookieTable'])) {
+                        unset($sec['cookieTable']);
+                        $modified = true;
+                    }
+                }
+                unset($sec);
+            }
+        }
+        unset($pack);
+
+        if ($modified) {
+            update_option(self::CUSTOM_TRANSLATIONS_OPTION, $customTranslations, false);
+            Compiler::clearCache();
+        }
+
+        return $modified;
     }
 
     /**
@@ -232,41 +291,12 @@ final class TranslationManager
                         $cleanSections = [];
                         foreach ($v as $sec) {
                             if (is_array($sec)) {
+                                // Only import UI translation strings; never static cookieTable dumps
                                 $cleanSec = [
                                     'title'          => sanitize_text_field((string) ($sec['title'] ?? '')),
                                     'description'    => wp_kses_post((string) ($sec['description'] ?? '')),
                                     'linkedCategory' => sanitize_key((string) ($sec['linkedCategory'] ?? '')),
                                 ];
-
-                                if (isset($sec['cookieTable']) && is_array($sec['cookieTable'])) {
-                                    $rawTable = $sec['cookieTable'];
-                                    $cleanTable = [
-                                        'caption' => sanitize_text_field((string) ($rawTable['caption'] ?? '')),
-                                        'headers' => [],
-                                        'body'    => [],
-                                    ];
-
-                                    if (isset($rawTable['headers']) && is_array($rawTable['headers'])) {
-                                        foreach ($rawTable['headers'] as $hk => $hv) {
-                                            $cleanTable['headers'][sanitize_key((string) $hk)] = sanitize_text_field((string) $hv);
-                                        }
-                                    }
-
-                                    if (isset($rawTable['body']) && is_array($rawTable['body'])) {
-                                        foreach ($rawTable['body'] as $row) {
-                                            if (is_array($row)) {
-                                                $cleanRow = [];
-                                                foreach ($row as $rk => $rv) {
-                                                    $cleanRow[sanitize_key((string) $rk)] = sanitize_text_field((string) $rv);
-                                                }
-                                                $cleanTable['body'][] = $cleanRow;
-                                            }
-                                        }
-                                    }
-
-                                    $cleanSec['cookieTable'] = $cleanTable;
-                                }
-
                                 $cleanSections[] = $cleanSec;
                             }
                         }

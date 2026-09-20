@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tuedion\CookieConsent\Settings;
 
+use Tuedion\CookieConsent\Consent\CookieTableBuilder;
 use Tuedion\CookieConsent\Consent\LanguageResolver;
+use Tuedion\CookieConsent\I18n\TranslationManager;
 use Tuedion\CookieConsent\Integrations\RecipeRegistry;
 
 if (!defined('ABSPATH')) {
@@ -13,7 +15,7 @@ if (!defined('ABSPATH')) {
 
 final class Compiler
 {
-    public const TRANSIENT_KEY = 'tdcc_runtime_cfg_v133';
+    public const TRANSIENT_KEY = 'tdcc_runtime_cfg_v142';
     public const LEGACY_TRANSIENT_KEY = 'tuedion_cookie_runtime_config';
 
     /**
@@ -25,6 +27,9 @@ final class Compiler
 
         delete_transient(self::TRANSIENT_KEY);
         delete_transient(self::LEGACY_TRANSIENT_KEY);
+        delete_transient('tdcc_runtime_cfg_v141');
+        delete_transient('tdcc_runtime_cfg_v140');
+        delete_transient('tdcc_runtime_cfg_v133');
         delete_transient('tdcc_runtime_cfg_v132');
         delete_transient('tdcc_runtime_cfg_v130');
         delete_transient('tdcc_runtime_cfg_v124');
@@ -35,6 +40,9 @@ final class Compiler
         $supportedLanguages = array_keys(\Tuedion\CookieConsent\I18n\LanguagePacks::SUPPORTED_LANGUAGES);
         foreach ($supportedLanguages as $lang) {
             delete_transient(self::TRANSIENT_KEY . '_' . $lang);
+            delete_transient('tdcc_runtime_cfg_v141_' . $lang);
+            delete_transient('tdcc_runtime_cfg_v140_' . $lang);
+            delete_transient('tdcc_runtime_cfg_v133_' . $lang);
             delete_transient('tdcc_runtime_cfg_v132_' . $lang);
             delete_transient('tdcc_runtime_cfg_v130_' . $lang);
             delete_transient('tdcc_runtime_cfg_v124_' . $lang);
@@ -167,13 +175,29 @@ final class Compiler
         // 4. Build language translations across world languages + custom imports
         $translations = \Tuedion\CookieConsent\I18n\LanguagePacks::getAll($s['categories']);
 
-        // Merge custom imported translations if available
-        $customTranslations = get_option(\Tuedion\CookieConsent\I18n\TranslationManager::CUSTOM_TRANSLATIONS_OPTION, []);
+        // Merge custom imported translations if available (cleanse any static cookieTable first)
+        $customTranslations = get_option(TranslationManager::CUSTOM_TRANSLATIONS_OPTION, []);
         if (is_array($customTranslations) && !empty($customTranslations)) {
-            foreach ($customTranslations as $code => $dict) {
+            $cleanedCustom = false;
+            foreach ($customTranslations as $code => &$dict) {
                 if (is_array($dict)) {
+                    if (isset($dict['preferencesModal']['sections']) && is_array($dict['preferencesModal']['sections'])) {
+                        foreach ($dict['preferencesModal']['sections'] as &$sec) {
+                            if (is_array($sec) && isset($sec['cookieTable'])) {
+                                unset($sec['cookieTable']);
+                                $cleanedCustom = true;
+                            }
+                        }
+                        unset($sec);
+                    }
                     $translations[$code] = array_replace_recursive($translations[$code] ?? [], $dict);
                 }
+            }
+            unset($dict);
+
+            // Auto-heal the database option if legacy static cookieTable entries were present
+            if ($cleanedCustom) {
+                update_option(TranslationManager::CUSTOM_TRANSLATIONS_OPTION, $customTranslations, false);
             }
         }
 
@@ -199,6 +223,11 @@ final class Compiler
         $showReject = !empty($banner['show_reject_button']);
         $showManage = !empty($banner['show_manage_button']);
 
+        $currentDomain = wp_parse_url(home_url(), PHP_URL_HOST);
+        if (!is_string($currentDomain) || empty($currentDomain)) {
+            $currentDomain = isset($_SERVER['HTTP_HOST']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_HOST'])) : 'localhost';
+        }
+
         foreach ($translations as $code => &$trans) {
             if (isset($trans['consentModal']) && is_array($trans['consentModal'])) {
                 if (!$showReject) {
@@ -207,6 +236,66 @@ final class Compiler
                 if (!$showManage) {
                     unset($trans['consentModal']['showPreferencesBtn']);
                 }
+            }
+
+            // Strict Global GDPR & Zero-Ghost Sanitization on preferencesModal sections
+            if (isset($trans['preferencesModal']['sections']) && is_array($trans['preferencesModal']['sections'])) {
+                foreach ($trans['preferencesModal']['sections'] as $secIdx => &$sec) {
+                    if (!is_array($sec) || !isset($sec['cookieTable']) || !is_array($sec['cookieTable'])) {
+                        continue;
+                    }
+
+                    $rawBody = (array) ($sec['cookieTable']['body'] ?? []);
+                    $cleanBody = [];
+
+                    foreach ($rawBody as $row) {
+                        if (!is_array($row)) {
+                            continue;
+                        }
+
+                        $rowName = strtolower(trim((string) ($row['name'] ?? '')));
+
+                        // Strict Architecture Rule #19: WordPress authentication & admin cookies must NEVER appear in public visitor tables
+                        if ($rowName === '' || str_starts_with($rowName, 'wordpress_') || str_starts_with($rowName, 'wp-settings-')) {
+                            continue;
+                        }
+
+                        // Ensure duration is NEVER undefined, null, or empty
+                        $rawDur = trim((string) ($row['duration'] ?? ''));
+                        if ($rawDur === '' || $rawDur === 'undefined') {
+                            $dictEntry = CookieTableBuilder::COOKIE_DICTIONARY[$rowName]
+                                ?? CookieTableBuilder::COOKIE_DICTIONARY[$row['name'] ?? '']
+                                ?? null;
+                            $durKey = $dictEntry['duration'] ?? 'session';
+                            $row['duration'] = CookieTableBuilder::resolveDuration($durKey, $code);
+                        }
+
+                        // Ensure domain is NEVER empty or undefined
+                        $rawDom = trim((string) ($row['domain'] ?? ''));
+                        if ($rawDom === '' || $rawDom === 'undefined') {
+                            $row['domain'] = $currentDomain;
+                        }
+
+                        // Ensure description is NEVER empty or undefined
+                        $rawDesc = trim((string) ($row['desc'] ?? ''));
+                        if ($rawDesc === '' || $rawDesc === 'undefined') {
+                            $dictEntry = CookieTableBuilder::COOKIE_DICTIONARY[$rowName]
+                                ?? CookieTableBuilder::COOKIE_DICTIONARY[$row['name'] ?? '']
+                                ?? null;
+                            $row['desc'] = $dictEntry['desc'][$code] ?? $dictEntry['desc']['en'] ?? __('Essential system cookie.', 'tuedion-cookie');
+                        }
+
+                        $cleanBody[] = $row;
+                    }
+
+                    // Zero-Ghost policy: If category has no valid cookies, remove cookieTable completely
+                    if (empty($cleanBody)) {
+                        unset($sec['cookieTable']);
+                    } else {
+                        $sec['cookieTable']['body'] = array_values($cleanBody);
+                    }
+                }
+                unset($sec);
             }
         }
         unset($trans);

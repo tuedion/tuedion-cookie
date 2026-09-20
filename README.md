@@ -2,7 +2,7 @@
 
 [![WordPress Version](https://img.shields.io/badge/WordPress-%3E%3D%206.2-blue.svg?style=flat-square&logo=wordpress)](https://wordpress.org)
 [![PHP Version](https://img.shields.io/badge/PHP-%3E%3D%208.2-777bb4.svg?style=flat-square&logo=php)](https://php.net)
-[![Stable Release](https://img.shields.io/badge/version-1.3.3-success.svg?style=flat-square)](https://github.com/tuedion/tuedion-cookie)
+[![Stable Release](https://img.shields.io/badge/version-1.4.2-success.svg?style=flat-square)](https://github.com/tuedion/tuedion-cookie)
 [![Accessibility](https://img.shields.io/badge/WCAG-2.2%20AA%20Compliant-green.svg?style=flat-square)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 [![Google Consent Mode](https://img.shields.io/badge/Google%20Consent%20Mode-v2%20Ready-F4B400.svg?style=flat-square&logo=google)](https://developers.google.com/tag-platform/security/guides/consent)
 [![License](https://img.shields.io/badge/License-GPLv2%20or%20later-orange.svg?style=flat-square)](https://www.gnu.org/licenses/gpl-2.0.html)
@@ -182,6 +182,27 @@ Tuedion Cookie includes ready-to-use shortcodes for your Cookie Policy and Priva
 ---
 
 ## 📝 Changelog
+
+### = 1.4.2 =
+* **Smart Scan & Full Scan:** Added Smart Scan (XML sitemap & dynamic menu link discovery) and Full Website Scan alongside the Quick Sampler, complete with real-time multi-phase progress telemetry.
+* **Database Performance:** Optimized queries when auditing large post and custom post type catalogs, preventing database query slowdowns.
+* **Cookie Lifespan Accuracy:** Improved duration calculation across all 9 languages in public tables and declaration shortcodes.
+* **Security & Hardening:** Enhanced crawler network security with secure-by-default SSL verification and strictly sanitized administrative endpoints.
+* **WordPress Standards:** Fully verified against the latest WordPress 6.x and VIP coding standards.
+
+### = 1.4.1 =
+* **Privacy & Isolation:** Ensured internal WordPress authentication and UI state cookies (`wordpress_logged_in_*`, `wp-settings-*`) are isolated from public visitor preferences.
+* **Scan Scope & CPT Discovery:** Added dynamic Custom Post Type (CPT), Page, and Post scope selector with interactive chips and multi-step animated progress bar.
+* **Scheduled Background Crawl Scope:** Added configurable content type scope for WP-Cron background automated scanning.
+* **Performance:** Updated runtime configuration cache for instant asset synchronization.
+
+### = 1.4.0 =
+* **Scanner v2 Enterprise Architecture:** Decoupled cookie intelligence into three distinct, extensible layers: Cookie Database, Service Registry (40+ enterprise services), and Detection Engine.
+* **Open Cookie Database Integration:** Integrated offline community-curated cookie catalogue with exact $O(1)$ lookup and wildcard matching, supported by an optional manual admin updater.
+* **Multi-Factor Confidence Scoring:** Introduced deterministic scoring (0-100%) and 5 confidence tiers (`Confirmed`, `Very Likely`, `Probable`, `Possible`, `Weak`) with comprehensive evidence trails.
+* **Storage Key Auditing:** Expanded client-side DOM audit to safely detect `localStorage` and `sessionStorage` tracker keys without accessing or storing values.
+* **UI & Transparency:** Added dynamic confidence badges, verified Open Cookie DB markers, and refined admin UI styling.
+* **Cache Busting:** Incremented runtime transient cache keys to `v140`.
 
 ### = 1.3.3 =
 * **Security & Isolation:** Hardened Cookie Scanner to extract non-sensitive cookie names only; isolated WordPress authentication and session cookies.

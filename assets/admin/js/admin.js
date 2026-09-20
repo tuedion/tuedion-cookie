@@ -711,6 +711,8 @@
         }
     }
 
+    window.tdccShowToast = tdccShowToast;
+
     /**
      * HTML entity escaper for safe DOM insertion
      */
