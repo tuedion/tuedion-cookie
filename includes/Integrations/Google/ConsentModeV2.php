@@ -91,6 +91,8 @@ final class ConsentModeV2
         // Format early inline JavaScript
         $jsonStates = (string) wp_json_encode($defaultStates, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP);
         $jsonConfig = (string) wp_json_encode($clientConfig, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP);
+        $jsonMapping = (string) wp_json_encode($mapping, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP);
+        $escapedCookieName = esc_js($cookieName);
 
         $inlineJs = "window.dataLayer = window.dataLayer || [];\n";
         $inlineJs .= "function gtag(){dataLayer.push(arguments);}\n";
@@ -105,6 +107,27 @@ final class ConsentModeV2
         }
 
         $inlineJs .= "window.tuedionGcmConfig = {$jsonConfig};\n";
+
+        // Zero-latency early consent hydration for returning visitors
+        $inlineJs .= "(function(){\n";
+        $inlineJs .= "    try {\n";
+        $inlineJs .= "        var c = document.cookie.match(/(?:^|; )\\s*" . $escapedCookieName . "\\s*=\\s*([^;]+)/);\n";
+        $inlineJs .= "        var raw = c ? decodeURIComponent(c[1]) : (window.localStorage ? window.localStorage.getItem('" . $escapedCookieName . "') : null);\n";
+        $inlineJs .= "        if (raw) {\n";
+        $inlineJs .= "            var p = JSON.parse(raw);\n";
+        $inlineJs .= "            if (p && Array.isArray(p.categories) && (p.revision === undefined || p.revision === " . $currentRevision . ")) {\n";
+        $inlineJs .= "                var u = {};\n";
+        $inlineJs .= "                var m = {$jsonMapping};\n";
+        $inlineJs .= "                for (var s in m) {\n";
+        $inlineJs .= "                    var cat = m[s];\n";
+        $inlineJs .= "                    u[s] = (cat === 'necessary' || s === 'security_storage' || p.categories.indexOf(cat) !== -1) ? 'granted' : 'denied';\n";
+        $inlineJs .= "                }\n";
+        $inlineJs .= "                gtag('consent', 'update', u);\n";
+        $inlineJs .= "                window.dataLayer.push({event: 'tuedion_consent_update', source_event: 'early_head_restore', tuedion_accepted_categories: p.categories, consent_signals: u});\n";
+        $inlineJs .= "            }\n";
+        $inlineJs .= "        }\n";
+        $inlineJs .= "    } catch (e) {}\n";
+        $inlineJs .= "})();\n";
 
         if ($debugMode) {
             $inlineJs .= "console.log('[Tuedion Cookie] GCM v2 Early Default State Injected (Cache-Immune Denied Default):', {$jsonStates});\n";

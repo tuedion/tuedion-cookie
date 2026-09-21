@@ -1,0 +1,19 @@
+{
+  "name": "tuedion-cookie",
+  "version": "1.5.0",
+  "description": "Professional WordPress Cookie Consent, Embed Interception & Google Consent Mode v2 Engine",
+  "author": "Tuedion",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://tuedion.com",
+  "scripts": {
+    "build": "node scripts/build-bundle.js",
+    "bundle": "node scripts/build-bundle.js",
+    "start": "node scripts/build-bundle.js --watch",
+    "lint:js": "wp-scripts lint-js assets/public/js",
+    "lint:css": "wp-scripts lint-style assets/public/css",
+    "format": "wp-scripts format"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^27.0.0"
+  }
+}

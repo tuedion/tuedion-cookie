@@ -13,11 +13,12 @@ desktop.ini
 *.log
 error_log
 
-# Node / Build artifacts (if any in future)
+# Node / Build artifacts & scripts
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+scripts/
 
 # Backup & temporary files
 *.bak

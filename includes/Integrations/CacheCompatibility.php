@@ -23,6 +23,10 @@ final class CacheCompatibility
      */
     public const EXCLUDED_PATTERNS = [
         'tuedion',
+        'tuedion-cookie',
+        'tuedion-cookie.bundle.min.js',
+        'tuedion-cookie.bundle.min.css',
+        'tuedion-cookie-bundle',
         'cookieconsent',
         'cookieconsent.umd.js',
         'cookieconsent-vendor',
@@ -44,15 +48,13 @@ final class CacheCompatibility
 
     public static function register(): void
     {
-        // 1. WP Rocket
+        // 1. WP Rocket — Exclude from Delay JS (interaction delay), but allow Defer JS
         add_filter('rocket_delay_js_exclusions', [self::class, 'filterArrayExclusions']);
-        add_filter('rocket_exclude_defer_js', [self::class, 'filterArrayExclusions']);
         add_filter('rocket_exclude_js', [self::class, 'filterArrayExclusions']);
         add_filter('rocket_lazyload_iframe', [self::class, 'excludeIframeFromLazyload'], 10, 2);
 
-        // 2. LiteSpeed Cache
+        // 2. LiteSpeed Cache — Exclude from Delay JS, allow Defer JS
         add_filter('litespeed_optm_js_excludes', [self::class, 'filterArrayExclusions']);
-        add_filter('litespeed_optm_js_defer_exc', [self::class, 'filterArrayExclusions']);
         add_filter('litespeed_optm_delay_js_excludes', [self::class, 'filterArrayExclusions']);
 
         // 3. Autoptimize
@@ -62,13 +64,11 @@ final class CacheCompatibility
         add_filter('sgo_javascript_combine_exclude', [self::class, 'filterArrayExclusions']);
         add_filter('sgo_js_minify_exclude', [self::class, 'filterArrayExclusions']);
 
-        // 5. Perfmatters
+        // 5. Perfmatters — Exclude from Delay JS, allow Defer JS
         add_filter('perfmatters_delay_js_exclusions', [self::class, 'filterArrayExclusions']);
-        add_filter('perfmatters_defer_js_exclusions', [self::class, 'filterArrayExclusions']);
 
-        // 6. FlyingPress
+        // 6. FlyingPress — Exclude from Delay JS, allow Defer JS
         add_filter('flying_press_delay_js_exclude', [self::class, 'filterArrayExclusions']);
-        add_filter('flying_press_defer_js_exclude', [self::class, 'filterArrayExclusions']);
 
         // 7. WP-Optimize
         add_filter('wp_optimize_minify_default_exclusions', [self::class, 'filterArrayExclusions']);
@@ -79,11 +79,9 @@ final class CacheCompatibility
 
         // 9. Breeze (Cloudways)
         add_filter('breeze_minify_js_exclude', [self::class, 'filterArrayExclusions']);
-        add_filter('breeze_defer_js_exclude', [self::class, 'filterArrayExclusions']);
 
         // 10. Swift Performance
         add_filter('swift_performance_merge_scripts_exclude', [self::class, 'filterArrayExclusions']);
-        add_filter('swift_performance_defer_scripts_exclude', [self::class, 'filterArrayExclusions']);
 
         // Cache Purge hooks on save/publish
         add_action('tuedion_cookie_settings_saved', [self::class, 'purgeAllCaches']);
@@ -162,12 +160,11 @@ final class CacheCompatibility
             $dirty = true;
         }
 
-        // Sync exclude_defer_js
+        // Ensure our patterns are NOT in exclude_defer_js (so WP Rocket allows defer)
         $deferExclusions = is_array($rocketOptions['exclude_defer_js'] ?? null) ? $rocketOptions['exclude_defer_js'] : [];
-        $originalDeferCount = count($deferExclusions);
-        $deferExclusions = array_unique(array_merge($deferExclusions, self::EXCLUDED_PATTERNS));
-        if (count($deferExclusions) !== $originalDeferCount) {
-            $rocketOptions['exclude_defer_js'] = array_values($deferExclusions);
+        $cleanedDefer = array_values(array_diff($deferExclusions, self::EXCLUDED_PATTERNS));
+        if (count($cleanedDefer) !== count($deferExclusions)) {
+            $rocketOptions['exclude_defer_js'] = $cleanedDefer;
             $dirty = true;
         }
 

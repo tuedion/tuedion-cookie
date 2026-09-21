@@ -1,2 +1,10 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# WordPress.org release export-ignore rules
+.git* export-ignore
+package.json export-ignore
+package-lock.json export-ignore
+scripts/ export-ignore
+*.md export-ignore
+

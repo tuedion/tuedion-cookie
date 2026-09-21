@@ -5,7 +5,7 @@ Tags: cookie, consent, gdpr, privacy, cookieconsent
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.4.2
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,6 +101,13 @@ Note: Tuedion Cookie does NOT inject or initiate any of the above external servi
 5. **Diagnostics & Developer Hub:** Runtime configuration inspector, script tracker inventory, and cache hints.
 
 == Changelog ==
+
+= 1.5.0 =
+* Performance: Consolidated public frontend into unified, minified JS and CSS bundles (tuedion-cookie.bundle.min.js & .bundle.min.css), eliminating 1.6s+ PageSpeed render-blocking network waterfall.
+* WordPress 7.1 Architecture: Implemented native dependency-aware script loading strategy (strategy => 'defer') with full backward and forward compatibility (WordPress 6.3 - 7.1+).
+* Cache Compatibility: Refined speed optimizer integration across WP Rocket, LiteSpeed Cache, Perfmatters, and FlyingPress—preserving delay-until-interaction immunity while permitting non-blocking browser defer.
+* Google Consent Mode v2: Introduced Zero-Latency Early Hydration in wp_head priority 0, restoring returning visitor consent immediately for Google Tag Manager and GA4 without external JS dependencies.
+* WordPress Dev Tooling: Added official @wordpress/scripts toolchain with package.json (npm run build, lint, format) and standalone dual-runtime (Node.js & PHP CLI) production bundlers.
 
 = 1.4.2 =
 * Feature: Introduced Smart Scan with automated XML sitemap discovery and dynamic navigation link crawling.
