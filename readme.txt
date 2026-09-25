@@ -5,7 +5,7 @@ Tags: cookie, consent, gdpr, privacy, cookieconsent
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,6 +101,13 @@ Note: Tuedion Cookie does NOT inject or initiate any of the above external servi
 5. **Diagnostics & Developer Hub:** Runtime configuration inspector, script tracker inventory, and cache hints.
 
 == Changelog ==
+
+= 1.5.1 =
+* Fix: Resolved layout collapse on Google Maps and standalone iframes by restoring normal relative flow positioning on div[data-service].tdcc-managed outside Elementor video wrappers.
+* Fix: Fixed iframe unlock cycle where dynamically created consented iframes were intercepted and converted back into placeholder DIVs by the prototype interceptor and MutationObserver.
+* Fix: Updated syncIframes to properly support granular service acceptance (google-maps, youtube, vimeo) without rejecting unconsented services globally.
+* Enhancement: Expanded Google Maps embed detection across all international domains (google.com/maps, maps.google.*, google.[cTLD]/maps).
+* Cache Flush: Bumped plugin and asset version to 1.5.1 to force immediate cache renewal across browsers, CDNs, and WordPress cache plugins.
 
 = 1.5.0 =
 * Performance: Consolidated public frontend into unified, minified JS and CSS bundles (tuedion-cookie.bundle.min.js & .bundle.min.css), eliminating 1.6s+ PageSpeed render-blocking network waterfall.

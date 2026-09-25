@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
 
 final class Compiler
 {
-    public const TRANSIENT_KEY = 'tdcc_runtime_cfg_v142';
+    public const TRANSIENT_KEY = 'tdcc_runtime_cfg_v151';
     public const LEGACY_TRANSIENT_KEY = 'tuedion_cookie_runtime_config';
 
     /**
@@ -27,6 +27,8 @@ final class Compiler
 
         delete_transient(self::TRANSIENT_KEY);
         delete_transient(self::LEGACY_TRANSIENT_KEY);
+        delete_transient('tdcc_runtime_cfg_v150');
+        delete_transient('tdcc_runtime_cfg_v142');
         delete_transient('tdcc_runtime_cfg_v141');
         delete_transient('tdcc_runtime_cfg_v140');
         delete_transient('tdcc_runtime_cfg_v133');
@@ -40,6 +42,8 @@ final class Compiler
         $supportedLanguages = array_keys(\Tuedion\CookieConsent\I18n\LanguagePacks::SUPPORTED_LANGUAGES);
         foreach ($supportedLanguages as $lang) {
             delete_transient(self::TRANSIENT_KEY . '_' . $lang);
+            delete_transient('tdcc_runtime_cfg_v150_' . $lang);
+            delete_transient('tdcc_runtime_cfg_v142_' . $lang);
             delete_transient('tdcc_runtime_cfg_v141_' . $lang);
             delete_transient('tdcc_runtime_cfg_v140_' . $lang);
             delete_transient('tdcc_runtime_cfg_v133_' . $lang);

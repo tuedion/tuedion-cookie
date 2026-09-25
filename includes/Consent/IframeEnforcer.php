@@ -187,12 +187,12 @@ final class IframeEnforcer
 
         // 3. Google Maps
         $srcLower = strtolower($src);
-        if (str_contains($srcLower, 'google.com/maps') || str_contains($srcLower, 'maps.google.')) {
+        if (str_contains($srcLower, 'google.com/maps') || str_contains($srcLower, 'maps.google.') || preg_match('/google\.[a-z.]+\/maps/i', $srcLower)) {
             return [
                 'service'  => 'google-maps',
                 'id'       => $src,
                 'params'   => '',
-                'category' => 'marketing',
+                'category' => RecipeRegistry::resolveServiceCategory('google-maps', 'marketing'),
             ];
         }
 
@@ -290,10 +290,16 @@ final class IframeEnforcer
         }
         $classAttr = esc_attr(implode(' ', array_unique($classes)));
 
-        // Extract style if present
+        // Extract style if present, or preserve explicit height from iframe attributes
         $styleAttr = '';
         if (preg_match('/\bstyle\s*=\s*(["\'])(.*?)\1/i', $attributesStr, $styleMatch)) {
             $styleAttr = sprintf(' style="%s"', esc_attr(trim($styleMatch[2])));
+        } elseif (preg_match('/\bheight\s*=\s*(["\'])(.*?)\1/i', $attributesStr, $heightMatch)) {
+            $hVal = trim($heightMatch[2]);
+            if (is_numeric($hVal)) {
+                $hVal .= 'px';
+            }
+            $styleAttr = sprintf(' style="min-height: %s;"', esc_attr($hVal));
         }
 
         // Determine thumbnail if available

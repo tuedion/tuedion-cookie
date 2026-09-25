@@ -13,7 +13,7 @@ if (!defined('ABSPATH')) {
  */
 final class CookieDatabase
 {
-    public const TRANSIENT_KEY = 'tdcc_cookie_db_index_v140';
+    public const TRANSIENT_KEY = 'tdcc_cookie_db_index_v151';
 
     /**
      * @var array{exact: array<string, array<string, mixed>>, wildcard: list<array<string, mixed>>, metadata: array<string, mixed>}|null

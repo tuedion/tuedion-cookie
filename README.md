@@ -2,7 +2,7 @@
 
 [![WordPress Version](https://img.shields.io/badge/WordPress-%3E%3D%206.2-blue.svg?style=flat-square&logo=wordpress)](https://wordpress.org)
 [![PHP Version](https://img.shields.io/badge/PHP-%3E%3D%208.2-777bb4.svg?style=flat-square&logo=php)](https://php.net)
-[![Stable Release](https://img.shields.io/badge/version-1.5.0-success.svg?style=flat-square)](https://github.com/tuedion/tuedion-cookie)
+[![Stable Release](https://img.shields.io/badge/version-1.5.1-success.svg?style=flat-square)](https://github.com/tuedion/tuedion-cookie)
 [![Accessibility](https://img.shields.io/badge/WCAG-2.2%20AA%20Compliant-green.svg?style=flat-square)](https://www.w3.org/WAI/standards-guidelines/wcag/)
 [![Google Consent Mode](https://img.shields.io/badge/Google%20Consent%20Mode-v2%20Ready-F4B400.svg?style=flat-square&logo=google)](https://developers.google.com/tag-platform/security/guides/consent)
 [![License](https://img.shields.io/badge/License-GPLv2%20or%20later-orange.svg?style=flat-square)](https://www.gnu.org/licenses/gpl-2.0.html)
@@ -182,6 +182,13 @@ Tuedion Cookie includes ready-to-use shortcodes for your Cookie Policy and Priva
 ---
 
 ## 📝 Changelog
+
+### = 1.5.1 =
+* **Iframe & Google Maps Layout Fix:** Resolved layout collapse on Google Maps and standalone iframes by restoring normal relative flow positioning on `div[data-service].tdcc-managed` outside Elementor video wrappers.
+* **Iframe Consent Unlock Cycle Fix:** Fixed lifecycle bug where dynamically created consented iframes were intercepted and converted back into placeholder DIVs by the prototype interceptor and MutationObserver.
+* **Granular Service Acceptance:** Updated `syncIframes` to properly support granular service acceptance (`google-maps`, `youtube`, `vimeo`) without rejecting unconsented services globally.
+* **International Embed Detection:** Expanded Google Maps embed detection across all international domains (`google.com/maps`, `maps.google.*`, `google.[cTLD]/maps`).
+* **Cache Flush:** Bumped plugin and asset version to 1.5.1 to force immediate cache renewal across browsers, CDNs, and WordPress cache plugins.
 
 ### = 1.5.0 =
 * **Performance & Asset Consolidation:** Consolidated public frontend into unified, minified JS and CSS bundles (`tuedion-cookie.bundle.min.js` & `.bundle.min.css`), eliminating 1.6s+ PageSpeed render-blocking network waterfalls.

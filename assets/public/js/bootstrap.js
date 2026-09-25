@@ -64,16 +64,28 @@
     /**
      * Instant consent checker reading directly from cc_cookie.
      * Operates synchronously before CookieConsent UMD finishes booting.
+     * Supports both whole-category and service-level checks.
      */
-    function hasMarketingConsent() {
+    function hasMarketingConsent(service) {
         if (window.CookieConsent && typeof window.CookieConsent.acceptedCategory === 'function') {
-            return window.CookieConsent.acceptedCategory('marketing');
+            if (window.CookieConsent.acceptedCategory('marketing')) {
+                return true;
+            }
+            if (service && typeof window.CookieConsent.acceptedService === 'function') {
+                return window.CookieConsent.acceptedService(service, 'marketing');
+            }
         }
         try {
             var match = document.cookie.match(/(?:^|;)\s*cc_cookie\s*=\s*([^;]+)/);
             if (!match) return false;
             var val = JSON.parse(decodeURIComponent(match[1]));
-            return Array.isArray(val.categories) && val.categories.indexOf('marketing') !== -1;
+            if (Array.isArray(val.categories) && val.categories.indexOf('marketing') !== -1) {
+                return true;
+            }
+            if (service && val.services && Array.isArray(val.services.marketing)) {
+                return val.services.marketing.indexOf(service) !== -1;
+            }
+            return false;
         } catch (e) {
             return false;
         }
@@ -106,7 +118,7 @@
         }
 
         // 3. Google Maps
-        if (u.indexOf('google.com/maps') !== -1 || u.indexOf('maps.google.') !== -1) {
+        if (u.indexOf('google.com/maps') !== -1 || u.indexOf('maps.google.') !== -1 || /google\.[a-z.]+\/maps/i.test(u)) {
             return { service: 'google-maps', id: u, params: '', originalSrc: u };
         }
 
@@ -160,10 +172,17 @@
      */
     function transformIframeToDiv(iframe) {
         if (!iframe || iframe.hasAttribute('data-tdcc-processed')) return null;
+        if (iframe.getAttribute('data-tdcc-consented') === '1' || (iframe.closest && iframe.closest('div[data-service], .cll'))) {
+            return null;
+        }
 
         var rawSrc = extractIframeUrl(iframe);
         var parsed = parseEmbedSource(rawSrc);
         if (!parsed) {
+            return null;
+        }
+
+        if (hasMarketingConsent(parsed.service)) {
             return null;
         }
 
@@ -191,10 +210,17 @@
         } else if (parsed.service === 'vimeo') {
             div.setAttribute('data-thumbnail', 'https://vumbnail.com/' + parsed.id + '.jpg');
             div.setAttribute('data-title', iframe.getAttribute('title') || 'Vimeo');
+        } else if (parsed.service === 'google-maps') {
+            div.setAttribute('data-title', iframe.getAttribute('title') || 'Google Maps');
         }
 
         if (iframe.getAttribute('style')) {
             div.setAttribute('style', iframe.getAttribute('style'));
+        } else if (iframe.getAttribute('height')) {
+            var h = iframe.getAttribute('height');
+            if (h) {
+                div.style.minHeight = (/^\d+$/.test(h)) ? (h + 'px') : h;
+            }
         }
 
         if (iframe.parentNode) {
@@ -213,15 +239,24 @@
 
         var origSetAttribute = HTMLIFrameElement.prototype.setAttribute;
         HTMLIFrameElement.prototype.setAttribute = function (name, val) {
-            if ((name === 'src' || name === 'data-lazy-src') && !hasMarketingConsent()) {
+            if (this.getAttribute('data-tdcc-consented') === '1' || this.hasAttribute('data-tdcc-consented')) {
+                return origSetAttribute.call(this, name, val);
+            }
+            if (this.closest && this.closest('div[data-service], .cll')) {
+                return origSetAttribute.call(this, name, val);
+            }
+            if (name === 'src' || name === 'data-lazy-src') {
                 var parsed = parseEmbedSource(val);
-                if (parsed) {
+                if (parsed && !hasMarketingConsent(parsed.service)) {
                     this.setAttribute('data-tdcc-blocked-src', val);
                     this.setAttribute('data-tdcc-service', parsed.service);
                     this.setAttribute('data-tdcc-id', parsed.id);
                     if (parsed.params) this.setAttribute('data-tdcc-params', parsed.params);
                     var self = this;
                     setTimeout(function () {
+                        if (self.getAttribute('data-tdcc-consented') === '1' || (self.closest && self.closest('div[data-service], .cll'))) {
+                            return;
+                        }
                         if (self.parentNode) {
                             var div = transformIframeToDiv(self);
                             if (div && window.iframemanager) {
@@ -242,24 +277,31 @@
         if (srcDesc && srcDesc.set) {
             Object.defineProperty(HTMLIFrameElement.prototype, 'src', {
                 set: function (val) {
-                    if (!hasMarketingConsent()) {
-                        var parsed = parseEmbedSource(val);
-                        if (parsed) {
-                            this.setAttribute('data-tdcc-blocked-src', val);
-                            this.setAttribute('data-tdcc-service', parsed.service);
-                            this.setAttribute('data-tdcc-id', parsed.id);
-                            if (parsed.params) this.setAttribute('data-tdcc-params', parsed.params);
-                            var self = this;
-                            setTimeout(function () {
-                                if (self.parentNode) {
-                                    var div = transformIframeToDiv(self);
-                                    if (div && window.iframemanager) {
-                                        initIframeManager();
-                                    }
+                    if (this.getAttribute('data-tdcc-consented') === '1' || this.hasAttribute('data-tdcc-consented')) {
+                        return srcDesc.set.call(this, val);
+                    }
+                    if (this.closest && this.closest('div[data-service], .cll')) {
+                        return srcDesc.set.call(this, val);
+                    }
+                    var parsed = parseEmbedSource(val);
+                    if (parsed && !hasMarketingConsent(parsed.service)) {
+                        this.setAttribute('data-tdcc-blocked-src', val);
+                        this.setAttribute('data-tdcc-service', parsed.service);
+                        this.setAttribute('data-tdcc-id', parsed.id);
+                        if (parsed.params) this.setAttribute('data-tdcc-params', parsed.params);
+                        var self = this;
+                        setTimeout(function () {
+                            if (self.getAttribute('data-tdcc-consented') === '1' || (self.closest && self.closest('div[data-service], .cll'))) {
+                                return;
+                            }
+                            if (self.parentNode) {
+                                var div = transformIframeToDiv(self);
+                                if (div && window.iframemanager) {
+                                    initIframeManager();
                                 }
-                            }, 0);
-                            return srcDesc.set.call(this, 'about:blank');
-                        }
+                            }
+                        }, 0);
+                        return srcDesc.set.call(this, 'about:blank');
                     }
                     return srcDesc.set.call(this, val);
                 },
@@ -335,15 +377,35 @@
      * Uses Orest Bida iframemanager if available.
      */
     function syncIframes() {
-        if (!window.CookieConsent) return;
+        if (!window.CookieConsent || !window.tdccIframeManager) return;
 
         var isMarketingAccepted = window.CookieConsent.acceptedCategory('marketing');
 
-        if (window.tdccIframeManager) {
-            if (isMarketingAccepted) {
-                window.tdccIframeManager.acceptService('all');
+        if (isMarketingAccepted) {
+            window.tdccIframeManager.acceptService('all');
+            return;
+        }
+
+        // Granular service-level consent check (Google Maps, YouTube, Vimeo)
+        var knownServices = ['youtube', 'vimeo', 'google-maps'];
+        for (var s = 0; s < knownServices.length; s++) {
+            var svc = knownServices[s];
+            var isSvcAccepted = false;
+
+            if (typeof window.CookieConsent.acceptedService === 'function') {
+                isSvcAccepted = window.CookieConsent.acceptedService(svc, 'marketing');
+            }
+
+            if (!isSvcAccepted) {
+                var prefs = typeof window.CookieConsent.getUserPreferences === 'function' ? window.CookieConsent.getUserPreferences() : null;
+                var acceptedMap = (prefs && prefs.acceptedServices && prefs.acceptedServices.marketing) || [];
+                isSvcAccepted = Array.isArray(acceptedMap) && acceptedMap.indexOf(svc) !== -1;
+            }
+
+            if (isSvcAccepted) {
+                window.tdccIframeManager.acceptService(svc);
             } else {
-                window.tdccIframeManager.rejectService('all');
+                window.tdccIframeManager.rejectService(svc);
             }
         }
     }
@@ -399,6 +461,7 @@
                     thumbnailUrl: 'https://i3.ytimg.com/vi/{data-id}/hqdefault.jpg',
                     iframe: {
                         allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen;',
+                        'data-tdcc-consented': '1',
                     },
                     languages: {
                         tr: {
@@ -453,6 +516,7 @@
                     thumbnailUrl: 'https://vumbnail.com/{data-id}.jpg',
                     iframe: {
                         allow: 'autoplay; fullscreen; picture-in-picture;',
+                        'data-tdcc-consented': '1',
                     },
                     languages: {
                         tr: {
@@ -506,6 +570,7 @@
                     embedUrl: '{data-id}',
                     iframe: {
                         allow: 'fullscreen;',
+                        'data-tdcc-consented': '1',
                     },
                     languages: {
                         tr: {
@@ -558,9 +623,16 @@
             }
         });
 
-        // If marketing is already accepted in current session, synchronize immediately
+        // If marketing or individual services are already accepted in current session, synchronize immediately
         if (hasMarketingConsent()) {
             im.acceptService('all');
+        } else {
+            var knownServices = ['youtube', 'vimeo', 'google-maps'];
+            for (var ks = 0; ks < knownServices.length; ks++) {
+                if (hasMarketingConsent(knownServices[ks])) {
+                    im.acceptService(knownServices[ks]);
+                }
+            }
         }
     }
 
@@ -569,13 +641,30 @@
      */
     function setupIframeDelegation() {
         document.addEventListener('click', function (e) {
-            // Iframemanager individual load button (.c-l-b)
-            var imLoadBtn = e.target.closest('.c-l-b');
+            // Iframemanager load buttons (.c-l-b and .c-la-b)
+            var imLoadBtn = e.target.closest('.c-l-b, .c-la-b');
             if (imLoadBtn && window.CookieConsent) {
                 var parentDiv = imLoadBtn.closest('div[data-service]');
                 var serviceName = parentDiv ? parentDiv.getAttribute('data-service') : 'youtube';
                 if (typeof window.CookieConsent.acceptService === 'function') {
-                    window.CookieConsent.acceptService(serviceName, 'marketing');
+                    var accepted = window.CookieConsent.acceptService(serviceName, 'marketing');
+                    if (!accepted && typeof window.CookieConsent.acceptCategory === 'function') {
+                        window.CookieConsent.acceptCategory('marketing');
+                    }
+                } else if (typeof window.CookieConsent.acceptCategory === 'function') {
+                    window.CookieConsent.acceptCategory('marketing');
+                }
+
+                // Resilient fallback: ensure iframe container becomes visible even if onload is delayed
+                if (parentDiv) {
+                    setTimeout(function () {
+                        if (!parentDiv.classList.contains('c-h-b')) {
+                            var ifr = parentDiv.querySelector('iframe');
+                            if (ifr && ifr.src && ifr.src !== 'about:blank') {
+                                parentDiv.classList.add('c-h-b');
+                            }
+                        }
+                    }, 1200);
                 }
             }
 
@@ -587,7 +676,10 @@
                 var svc = unlockBtn.getAttribute('data-tdcc-service');
                 if (window.CookieConsent) {
                     if (svc && typeof window.CookieConsent.acceptService === 'function') {
-                        window.CookieConsent.acceptService(svc, cat);
+                        var okSvc = window.CookieConsent.acceptService(svc, cat);
+                        if (!okSvc && cat) {
+                            window.CookieConsent.acceptCategory(cat);
+                        }
                     } else if (cat) {
                         window.CookieConsent.acceptCategory(cat);
                     }
@@ -811,6 +903,23 @@
             }
         }
 
+        // Ensure marketing category defines standard embed services so CookieConsent.acceptService() succeeds
+        if (cfg.categories && cfg.categories.marketing) {
+            if (!cfg.categories.marketing.services || typeof cfg.categories.marketing.services !== 'object') {
+                cfg.categories.marketing.services = {};
+            }
+            var defaultServices = {
+                'google-maps': { label: 'Google Maps' },
+                'youtube': { label: 'YouTube' },
+                'vimeo': { label: 'Vimeo' }
+            };
+            for (var dKey in defaultServices) {
+                if (!cfg.categories.marketing.services[dKey]) {
+                    cfg.categories.marketing.services[dKey] = defaultServices[dKey];
+                }
+            }
+        }
+
         return cfg;
     }
 
@@ -875,6 +984,9 @@
 
                 // Handle attribute mutations (e.g. WP Rocket swapping data-lazy-src or src)
                 if (mutation.type === 'attributes' && mutation.target && mutation.target.tagName === 'IFRAME') {
+                    if (mutation.target.getAttribute('data-tdcc-consented') === '1' || (mutation.target.closest && mutation.target.closest('div[data-service], .cll'))) {
+                        continue;
+                    }
                     if (transformIframeToDiv(mutation.target)) {
                         needsReinit = true;
                     }
@@ -887,12 +999,18 @@
                     if (node.nodeType !== 1) continue;
 
                     if (node.tagName === 'IFRAME') {
+                        if (node.getAttribute('data-tdcc-consented') === '1' || (node.closest && node.closest('div[data-service], .cll'))) {
+                            continue;
+                        }
                         if (transformIframeToDiv(node)) {
                             needsReinit = true;
                         }
                     } else if (node.querySelectorAll) {
-                        var nested = node.querySelectorAll('iframe:not([data-tdcc-processed])');
+                        var nested = node.querySelectorAll('iframe:not([data-tdcc-processed]):not([data-tdcc-consented])');
                         for (var j = 0; j < nested.length; j++) {
+                            if (nested[j].getAttribute('data-tdcc-consented') === '1' || (nested[j].closest && nested[j].closest('div[data-service], .cll'))) {
+                                continue;
+                            }
                             if (transformIframeToDiv(nested[j])) {
                                 needsReinit = true;
                             }

@@ -471,12 +471,12 @@ final class ServiceRegistry
                 category: 'functionality',
                 provider: 'Google LLC',
                 domains: [
-                    'google.com/maps',
+                    'google.com',
                     'maps.google.com',
                 ],
                 iframePatterns: [
-                    'google.com/maps/embed',
-                    'maps.google.com/maps',
+                    'google.com/maps',
+                    'maps.google.com',
                 ],
                 autoClear: [
                     '/^NID$/',

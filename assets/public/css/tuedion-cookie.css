@@ -294,7 +294,20 @@
    Elementor Video & IframeManager Compatibility Layer
    ========================================================================== */
 
-/* 1. Ensure div[data-service] fills Elementor, Gutenberg, and theme wrappers */
+/* Base managed iframe element in normal flow (Google Maps, Gutenberg embeds, widgets, standard iframes) */
+div[data-service].tdcc-managed {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 250px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    border-radius: 8px;
+    overflow: hidden !important;
+}
+
+/* 1. Ensure div[data-service] fills Elementor Video and custom aspect-ratio wrappers */
 .elementor-wrapper .tdcc-iframe-wrapper,
 .elementor-widget-video .tdcc-iframe-wrapper,
 .elementor-video-wrapper .tdcc-iframe-wrapper,
@@ -303,8 +316,7 @@
 .elementor-widget-video div[data-service],
 .elementor-video-wrapper div[data-service],
 .elementor-fit-aspect-ratio div[data-service],
-div[data-service].elementor-video,
-div[data-service].tdcc-managed {
+div[data-service].elementor-video {
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
@@ -338,6 +350,40 @@ div[data-service] .cll {
     height: 100% !important;
     display: block !important;
     z-index: 2 !important;
+}
+
+/* Ensure active consented iframe cleanly expands to fill container */
+div[data-service].c-h-b .cll iframe {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+    border: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 10 !important;
+    pointer-events: auto !important;
+}
+
+/* Hide all placeholder elements when consent is granted and iframe is active */
+div[data-service].c-h-b .cll .c-bg,
+div[data-service].c-h-b .cll .c-bg-i,
+div[data-service].c-h-b .cll .c-nt,
+div[data-service].c-h-b .cll .c-ld {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    z-index: -1 !important;
+}
+
+/* When loading (.c-h-n), fade out notice container so loading spinner is clear */
+div[data-service].c-h-n .cll .c-t-cn {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
 }
 
 /* 4. Content layer (.c-nt) - perfectly centered */
